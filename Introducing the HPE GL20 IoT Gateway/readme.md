@@ -1,3 +1,7 @@
+https://developer.hpe.com/blog/introducing-the-hpe-gl20-iot-gateway/
+---
+# Introducing the HPE GL20 IoT Gateway
+
 <img src="https://hpe-developer-portal.s3.amazonaws.com/uploads/media/2020/12/h4-1610447678726.jpg" width="80%" height="80%"/>  
    
 HPE IoT Gateways enable organizations to rapidly acquire, analyze and take action on real-time data as it’s being collected for additional analysis at a later stage. Bringing computing and analytics close to the edge accelerates the speed of your decision-making and reduces the chance of lost opportunities or a missed red flag. In this post, I’ll be discussing the HPE GL20 IoT Gateway, a fun device for the edge. The HPE GL20 has an 8-bit digital input/output (DIO) capability designed specifically to address IoT needs. For detailed product information, check out the [Quick Spec](https://h20195.www2.hpe.com/v2/GetDocument.aspx?docname=c04884769).
