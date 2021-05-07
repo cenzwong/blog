@@ -23,6 +23,10 @@ Inside the Kubernetes Tenant, at the bottom, there are web terminal for you to i
 ## 3. HPE Kubectl Plugin
 If you wanna use Kubectl remotely, you have to install Kubectl-plugin in order to get the session ID to access HPE Ezmeral. To install the Kubectl-hpecp plugin, you can run the following command.
 
+| Screenshot      | Description |
+| ----------- | ----------- |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant-03.png)      | At the bottom, you can click initiate to initiate the web terminal instance.  |
+
 ### First: Make sure you have Kubectl install.
 ```bash
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
