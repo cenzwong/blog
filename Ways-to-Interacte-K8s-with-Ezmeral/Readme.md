@@ -5,7 +5,7 @@ HPE Ezmeral Software Platform has a bundle of software that helps you run, manag
 ![](https://github.com/helloezmeral/cdn/blob/main/HelloWorld%20with%20EPIC%20MLOps.png?raw=true)
 
 # Table of Contents
-1. [WebUI](## 1. WebUI)
+1. [WebUI](#1-webui)
 2. [WebTerminal](## 2. WebTerminal)
 3. [HPE Kubectl Plugin](## 3. HPE Kubectl Plugin)
   3.1. [HPE Kubectl Plugin](## 3. HPE Kubectl Plugin)
