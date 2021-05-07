@@ -1,9 +1,5 @@
-# Ways to Interact K8s with Ezmeral
-
 HPE Ezmeral Software Platform has a bundle of software that helps you run, manage, control, and secure the apps, data, and IT that run your business. One of which is the HPE Ezmeral Container Platform (HPE ECP). It is a unified cloud container software platform built on Kubernetes. How exactly you can connect to HPE ECP to interact with K8s? Don't panic! This blog post will introduce to you most, if not all, of the ways to connect with the Kubernetes inside HPE ECP.
-
 ![](https://github.com/helloezmeral/cdn/blob/main/HelloWorld%20with%20EPIC%20MLOps.png?raw=true)
-
 # Table of Contents
 - 1. [WebUI](#1-webui)
 - 2. [WebTerminal](#2-WebTerminal)
@@ -15,10 +11,9 @@ HPE Ezmeral Software Platform has a bundle of software that helps you run, manag
         - 3.2.3. [Using REST API](#323-using-rest-api)
 - 4. [hpecp Python Library](#4-hpecp-python-library-pre-alpha)
 
-
-
 ## 1. WebUI
 The first method is, of course, through the web UI. 
+
 | Screenshot      | Description |
 | ----------- | ----------- |
 | ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Cluster.png)     | In the Main Menu, you can manage and navigate around Kubernetes.  |
@@ -74,7 +69,9 @@ sudo mv ./kubectl-hpecp /usr/local/bin
 
 ### 3.2 Getting the ```kubeconfig``` file
 #### 3.2.1 Using ```kubectl hpecp refresh``` command
+
 The ```kubectl hpecp refresh``` command gets the user a new Kubeconfig. Using the Kubeconfig, you can interact with Kubernetes inside HPE Ezmeral.
+
 ```bash
 kubectl hpecp refresh <ip_address, host alias, or hostname> --insecure --hpecp-user=<new_username> --hpecp-pass=<new_password>
 # Example
@@ -82,16 +79,20 @@ kubectl hpecp refresh 172.16.10.41 --insecure --hpecp-user=your-username --hpecp
 kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure --hpecp-user=your-username --hpecp-pass=your-pass
 kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure
 ```
+
 - After running hpecp refresh command, it will prompt some messages. Follow the instruction to define the Kubeconfig file as a shell environment variable.
+
 ![image](https://user-images.githubusercontent.com/72959956/117413580-bab71980-af48-11eb-808e-1f46f074451c.png)
 
 ```bash
 # Example
 export KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config"
 ```
+
 #### 3.2.2 Download the Kubeconfig file manually
 ![image](https://user-images.githubusercontent.com/72959956/117415089-7a589b00-af4a-11eb-8fbb-54386bcbdbbd.png)
 - Download your ```kubeconfig``` file, and define the Kubeconfig file as a shell environment variable
+
 ```bash
 # Example
 export KUBECONFIG="/the/path/of/your/kubeconfig"
@@ -99,7 +100,9 @@ export KUBECONFIG="/the/path/of/your/kubeconfig"
 
 #### 3.2.3 Using REST API
 HPE Ezmeral Container Platform provides REST API for you to interact. Here is the command that downloads the Kubeconfig file.
+
 - Authenticate as a tenant user in the specified tenant, getting the session ID: 
+
 ```bash
 curl -k -i -s --request POST "http://ez53-gateway.hpeilab.com:8080/api/v2/session" \
 --header 'Accept: application/json' \
@@ -121,7 +124,9 @@ Server: HPE Ezmeral Container Platform 5.3
 
 201 Created
 ```
+
 - Get the Kubeconfig file for your tenant working context: 
+
 ```bash
 curl -k -s --request GET "http://ez53-gateway.hpeilab.com:8080/api/v2/k8skubeconfig" \
 --header "X-BDS-SESSION: /api/v2/session/__thisisthesessionid__" \
@@ -131,7 +136,9 @@ curl -k -s --request GET "http://ez53-gateway.hpeilab.com:8080/api/v2/k8skubecon
 # Define the Kubeconfig file as a shell environment variable
 export KUBECONFIG=kubeconfig
 ```
+
 - Combining two commands into one command
+
 ```bash
 curl -k -s --request GET "http://<you-ez-gateway>:8080/api/v2/k8skubeconfig" \
 --header "X-BDS-SESSION: $(curl -k -i -s --request POST "http://<you-ez-gateway>:8080/api/v2/session" \
