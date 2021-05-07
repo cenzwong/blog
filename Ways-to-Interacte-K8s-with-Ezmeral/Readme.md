@@ -60,7 +60,8 @@ sudo mv ./kubectl-hpecp /usr/local/bin
 > - https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/
 
 ### 3.2 Getting the ```kubeconfig``` file
-#### Using ```kubectl hpecp refresh``` command
+#### 3.2.1 Using ```kubectl hpecp refresh``` command
+The ```kubectl hpecp refresh``` command gets the user a new Kubeconfig. Using the Kubeconfig, you can interact with Kubernetes inside HPE Ezmeral.
 ```bash
 kubectl hpecp refresh <ip_address, host alias, or hostname> --insecure --hpecp-user=<new_username> --hpecp-pass=<new_password>
 # Example
@@ -68,57 +69,36 @@ kubectl hpecp refresh 172.16.10.41 --insecure --hpecp-user=your-username --hpecp
 kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure --hpecp-user=your-username --hpecp-pass=your-pass
 kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure
 ```
-- After running hpecp refresh command, it will prompt some message, follow the instruction
+- After running hpecp refresh command, it will prompt some messages. Follow the instruction.
 ![image](https://user-images.githubusercontent.com/72959956/117413580-bab71980-af48-11eb-808e-1f46f074451c.png)
 
 ```bash
 # Example
 export KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config"
 ```
-#### Download the Kubeconfig file manually
+#### 3.2.2 Download the Kubeconfig file manually
 ![image](https://user-images.githubusercontent.com/72959956/117415089-7a589b00-af4a-11eb-8fbb-54386bcbdbbd.png)
-
+- Download your ```kubeconfig``` file, and export it to the environment
 ```bash
 # Example
 export KUBECONFIG="/the/path/of/your/kubeconfig"
 ```
 
-#### Using REST API
+#### 3.2.3 Using REST API
+HPE Ezmeral Container Platform has provide REST API for you to interact. Here is the command that download the Kubeconfig file.
 
+
+> Resources
+> - https://docs.containerplatform.hpe.com/53/reference/accessing-the-applications/API_Access.html
+> - https://github.com/HewlettPackard/hpe-notebooks/tree/master/HPECPAPI
+> - https://github.com/bluedatainc/solutions/tree/master/APIs
 
 ## 4. hpecp python library
 
 
-
-
-### Alternative using kubeconfig file
-- This is a temperary method, the key will expire
-- download the file, view it inside the browser and copy to the bash
-```
-hpeadmin@awb51:~/myAWB/app01/deliverables$ nano kubeconfig
-hpeadmin@awb51:~/myAWB/app01/deliverables$ export KUBECONFIG=./kubeconfig 
-hpeadmin@awb51:~/myAWB/app01/deliverables$ kubectl get pods
-
-save the kubeconfig file
-export KUBECONFIG="kubeconfig"
-kubectl get pods
-```
-
-### Kubedirector
-```
-# these are running application
-kubectl get KubeDirectorCluster
-kubectl delete  KubeDirectorCluster codeserver
-
-```
-
-
 ---
 # 2. REST APIs
-## Resources
-- https://docs.containerplatform.hpe.com/53/reference/accessing-the-applications/API_Access.html
-- https://github.com/HewlettPackard/hpe-notebooks/tree/master/HPECPAPI
-- https://github.com/bluedatainc/solutions/tree/master/APIs
+
 
 ## Getting Started
 ### HPECPAPI notes
