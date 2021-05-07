@@ -6,4 +6,8 @@ HPE Ezmeral Software Platform has a bundle of software helps you run, manage, co
 
 ## 1. WebUI
 
-## 2. WebSSH
+## 2. WebTerminal
+
+## 3. Kubectl-plugin
+
+## 4. 
