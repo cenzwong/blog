@@ -8,9 +8,7 @@ HPE Ezmeral Software Platform has a bundle of software helps you run, manage, co
 The first method is, of course, though the web UI. 
 | Screenshot      | Description |
 | ----------- | ----------- |
-| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Cluster.png)      | \
-In the Main Menu, you can manage and navigate around Kubernetes.      \
-|
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Cluster.png)      | In the Main Menu, you can manage and navigate around Kubernetes.  |
 | ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Dashboard.png)   | You can access to the Kubernetes Dashboard, just like what you did with Open-Source Kubernetes  |
 
 ## 2. WebTerminal
