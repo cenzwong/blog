@@ -25,12 +25,13 @@ If you wanna use Kubectl remotely, you have to install Kubectl-plugin in order t
 
 | Screenshot      | Description |
 | ----------- | ----------- |
-| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant-03.png)      | At the bottom, you can click initiate to initiate the web terminal instance.  |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant-03.png)      | You can download the require binary here as well  |
 
 ### First: Make sure you have Kubectl install.
 ```bash
+# Download the latest version of kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-# and place it anywhere in your PATH:
+# And place it anywhere in your PATH:
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
 > Reference
@@ -39,10 +40,18 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 ### Second: Install hpe kubectl plugin
 ```bash
-# This link might subject to be changed, renew this link with HPE Ezmeral
+# This link might subject to be changed, renew this link on HPE Ezmeral
+# Download kubectl-hpecp binary and untar the file
 wget https://bluedata-releases.s3.amazonaws.com/kubectl-epic/3.4/14/linux/kubectl-hpecp.star
-sudo mv ./kubectl /usr/local/bin
+tar xf kubectl-hpecp.star
+# And place it anywhere in your PATH:
+sudo mv ./kubectl-hpecp /usr/local/bin
 ```
+- check kubectl-hpecp is installed correctly
+| Screenshot      | Command |
+| ----------- | ----------- |
+| ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-plugin-list.png)      | ``` kubectl plugin list ```  |
+| ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-hpecp-h.png)      | ``` kubectl hpecp -h ```  |
 
 ### Third:
 
