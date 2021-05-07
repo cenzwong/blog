@@ -49,10 +49,10 @@ sudo mv ./kubectl-hpecp /usr/local/bin
 ```
 - check kubectl-hpecp is installed correctly
 
-| Screenshot      | Command |
+| Command | Screenshot      | 
 | ----------- | ----------- |
-| ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-plugin-list.png)      | ``` kubectl plugin list ```  |
-| ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-hpecp-h.png)      | ``` kubectl hpecp -h ```  |
+| ``` kubectl plugin list ``` | ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-plugin-list.png)        |
+| ``` kubectl hpecp -h ``` | ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-hpecp-h.png)       |
 
 ### Third:
 
