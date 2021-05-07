@@ -35,7 +35,7 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 # And place it anywhere in your PATH:
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
-> Reference
+> Reference:
 > - https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 > 
 
@@ -55,7 +55,7 @@ sudo mv ./kubectl-hpecp /usr/local/bin
 | ``` kubectl plugin list ``` | ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-plugin-list.png)        |
 | ``` kubectl hpecp -h ``` | ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-hpecp-h.png)       |
 
-> Reference
+> Reference:
 > - https://docs.containerplatform.hpe.com/53/reference/kubernetes/using-kubernetes/Using_the_HPE_Kubectl_Plugin.html
 > - https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/
 
@@ -69,7 +69,7 @@ kubectl hpecp refresh 172.16.10.41 --insecure --hpecp-user=your-username --hpecp
 kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure --hpecp-user=your-username --hpecp-pass=your-pass
 kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure
 ```
-- After running hpecp refresh command, it will prompt some messages. Follow the instruction.
+- After running hpecp refresh command, it will prompt some messages. Follow the instruction to define the Kubeconfig file as a shell environment variable.
 ![image](https://user-images.githubusercontent.com/72959956/117413580-bab71980-af48-11eb-808e-1f46f074451c.png)
 
 ```bash
@@ -78,7 +78,7 @@ export KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config"
 ```
 #### 3.2.2 Download the Kubeconfig file manually
 ![image](https://user-images.githubusercontent.com/72959956/117415089-7a589b00-af4a-11eb-8fbb-54386bcbdbbd.png)
-- Download your ```kubeconfig``` file, and export it to the environment
+- Download your ```kubeconfig``` file, and define the Kubeconfig file as a shell environment variable
 ```bash
 # Example
 export KUBECONFIG="/the/path/of/your/kubeconfig"
@@ -86,23 +86,7 @@ export KUBECONFIG="/the/path/of/your/kubeconfig"
 
 #### 3.2.3 Using REST API
 HPE Ezmeral Container Platform has provide REST API for you to interact. Here is the command that download the Kubeconfig file.
-
-
-> Resources
-> - https://docs.containerplatform.hpe.com/53/reference/accessing-the-applications/API_Access.html
-> - https://github.com/HewlettPackard/hpe-notebooks/tree/master/HPECPAPI
-> - https://github.com/bluedatainc/solutions/tree/master/APIs
-
-## 4. hpecp python library
-
-
----
-# 2. REST APIs
-
-
-## Getting Started
-### HPECPAPI notes
-
+- Authenticate as a tenant user in the specified tenant, getting the session ID: 
 ```bash
 curl -k -i -s --request POST "http://ez53-gateway.hpeilab.com:8080/api/v2/session" \
 --header 'Accept: application/json' \
@@ -113,37 +97,37 @@ curl -k -i -s --request POST "http://ez53-gateway.hpeilab.com:8080/api/v2/sessio
 "tenant_name": "test-tenant"
 }'
 
-#
+# output
 HTTP/1.1 201 Created
 Access-Control-Allow-Origin: *
 Content-Length: 13
 Content-Type: text/plain
 Date: Fri, 30 Apr 2021 13:18:38 GMT
-Location: /api/v2/session/thisisthesessionid
+Location: /api/v2/session/__thisisthesessionid__
 Server: HPE Ezmeral Container Platform 5.3
 
 201 Created
 ```
+- Get the Kubeconfig file for your tenant working context: 
 ```bash
 curl -k -s --request GET "http://ez53-gateway.hpeilab.com:8080/api/v2/k8skubeconfig" \
---header "X-BDS-SESSION: /api/v2/session/dac075f6-5bcf-4f3d-9a22-5dd0bf67a804" \
+--header "X-BDS-SESSION: /api/v2/session/__thisisthesessionid__" \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' > ./kubeconfig
 
+# Define the Kubeconfig file as a shell environment variable
 export KUBECONFIG=kubeconfig
 ```
-
-
-### code
+- Combining into one command
 ```bash
-curl -k -s --request GET "http://ez53-gateway.hpeilab.com:8080/api/v2/k8skubeconfig" \
---header "X-BDS-SESSION: $(curl -k -i -s --request POST "http://ez53-gateway.hpeilab.com:8080/api/v2/session" \
+curl -k -s --request GET "http://<you-ez-gateway>:8080/api/v2/k8skubeconfig" \
+--header "X-BDS-SESSION: $(curl -k -i -s --request POST "http://<you-ez-gateway>:8080/api/v2/session" \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-"name": "change-your-user-name",
-"password": "change-your-user-password",
-"tenant_name": "change-the-tenant-you-want"
+"name": "<change-your-user-name>",
+"password": "<change-your-user-password>",
+"tenant_name": "<change-the-tenant-you-want>"
 }' | grep Location | awk '{print $2}' | tr -d '\r')" \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' > ./kubeconfig
@@ -153,11 +137,15 @@ export KUBECONFIG="./kubeconfig"
 kubectl get pods
 ```
 
+> Resources:
+> - https://docs.containerplatform.hpe.com/53/reference/accessing-the-applications/API_Access.html
+> - https://github.com/HewlettPackard/hpe-notebooks/tree/master/HPECPAPI
+> - https://github.com/bluedatainc/solutions/tree/master/APIs
 
----
-# 3. hpecp python library
-## Resources
-- https://github.com/hpe-container-platform-community/hpecp-python-library
-- https://hpe-container-platform-community.github.io/hpecp-python-library/hpecp.license.html
-- https://pypi.org/project/hpecp/
-## Getting Started
+## 4. hpecp python library
+
+
+> Resources
+> - https://github.com/hpe-container-platform-community/hpecp-python-library
+> - https://hpe-container-platform-community.github.io/hpecp-python-library/hpecp.license.html
+> - https://pypi.org/project/hpecp/
