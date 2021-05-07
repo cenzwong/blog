@@ -118,7 +118,7 @@ curl -k -s --request GET "http://ez53-gateway.hpeilab.com:8080/api/v2/k8skubecon
 # Define the Kubeconfig file as a shell environment variable
 export KUBECONFIG=kubeconfig
 ```
-- Combining into one command
+- Combining two commands into one command
 ```bash
 curl -k -s --request GET "http://<you-ez-gateway>:8080/api/v2/k8skubeconfig" \
 --header "X-BDS-SESSION: $(curl -k -i -s --request POST "http://<you-ez-gateway>:8080/api/v2/session" \
@@ -142,10 +142,14 @@ kubectl get pods
 > - https://github.com/HewlettPackard/hpe-notebooks/tree/master/HPECPAPI
 > - https://github.com/bluedatainc/solutions/tree/master/APIs
 
-## 4. hpecp python library
-
+## 4. hpecp python library (pre-alpha)
+If you are looking for a way to interact HPE Ezmeral programmatically, you can keep an eye on the hpecp python library from HPE Container Platform Community. Notes that it is still a prototype, it may be unstable and subject to change until this library reaches beta.
 
 > Resources
 > - https://github.com/hpe-container-platform-community/hpecp-python-library
 > - https://hpe-container-platform-community.github.io/hpecp-python-library/hpecp.license.html
 > - https://pypi.org/project/hpecp/
+> 
+
+## Conclusion
+HPE Ezmeral Container Platform provides different ways for you to interact with kubernetes. Pick your favourite way on your favor environment. Happy Coding!
