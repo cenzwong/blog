@@ -5,7 +5,11 @@ HPE Ezmeral Software Platform has a bundle of software helps you run, manage, co
 ![](https://github.com/helloezmeral/cdn/blob/main/HelloWorld%20with%20EPIC%20MLOps.png?raw=true)
 
 ## 1. WebUI
-The first method is, of course, thought the web UI. After login to HPE Ezmeral, you will see at the left hand side, there are Kubernetes session. You can access to the Kubernetes dashboard here, or click the tenant to deploy kubernetes application
+The first method is, of course, though the web UI. After login to HPE Ezmeral, you will see in the left hand side, there are Kubernetes session. You can access to the Kubernetes dashboard here, or click the tenant to deploy kubernetes application
+| Screenshot      | Description |
+| ----------- | ----------- |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Cluster.png)      | Title       |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Dashboard.png)   | Text        |
 
 ## 2. WebTerminal
 Inside the Tenant, you can see at the bottom, there are web terminal enable here for you to interact with the Kubenetes, you can enter kubectl command directly here
