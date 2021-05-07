@@ -71,8 +71,8 @@ kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure
 ![image](https://user-images.githubusercontent.com/72959956/117413580-bab71980-af48-11eb-808e-1f46f074451c.png)
 
 ```bash
+# Example
 export KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config"
-KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config:/home/hpeadmin/.kube/config" kubectl config view
 ```
 
 
