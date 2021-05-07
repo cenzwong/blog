@@ -8,12 +8,16 @@ HPE Ezmeral Software Platform has a bundle of software helps you run, manage, co
 The first method is, of course, though the web UI. 
 | Screenshot      | Description |
 | ----------- | ----------- |
-| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Cluster.png)      | In the Main Menu, you can manage and navigate around Kubernetes.  |
-| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Dashboard.png)   | You can access to the Kubernetes Dashboard, just like what you did with Open-Source Kubernetes  |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Cluster.png)     | In the Main Menu, you can manage and navigate around Kubernetes.  |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Dashboard.png)   | You can access to the Kubernetes Dashboard, just like what you did with Open-Source Kubernetes.  |
 
 ## 2. WebTerminal
-Inside the Tenant, you can see at the bottom, there are web terminal enable here for you to interact with the Kubenetes, you can enter kubectl command directly here
+Inside the Kubernetes Tenant, at the bottom, there are web terminal for you to interact with the Kubenetes with ```Kubectl``` command.
 
+| Screenshot      | Description |
+| ----------- | ----------- |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant.png)      | At the bottom, you can click initiate to initiate the web terminal instance.  |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant-02.png)   | Type your lovely ```kubectl``` command to interact with kubernetes  |
 
 
 ## 3. Kubectl-plugin
