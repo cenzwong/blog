@@ -6,11 +6,13 @@ HPE Ezmeral Software Platform has a bundle of software that helps you run, manag
 
 # Table of Contents
 1. [WebUI](#1-webui)
-2. [WebTerminal](## 2. WebTerminal)
-3. [HPE Kubectl Plugin](## 3. HPE Kubectl Plugin)
-  3.1. [HPE Kubectl Plugin](## 3. HPE Kubectl Plugin)
-  3.2. [HPE Kubectl Plugin](## 3. HPE Kubectl Plugin)
-  3.3. [HPE Kubectl Plugin](## 3. HPE Kubectl Plugin)
+2. [WebTerminal](#2-WebTerminal)
+3. [HPE Kubectl Plugin](#3-HPE-Kubectl-Plugin)
+  3.1. [Installation of Kubectl and Kubectl HPECP Plugin](#31-installation-of-kubectl-and-kubectl-hpecp)
+  3.2. [Getting the Kubeconfig File](#32-getting-the-kubeconfig-file)
+    3.2.1 [HPE Kubectl Plugin](#321-using-kubectl-hpecp-refresh-command)
+    3.2.2 [Manual Download](#322-download-the-kubeconfig-file-manually)
+    3.2.3 [Using REST API](#323-using-rest-api)
 4. [hpecp Python Library](## 4. hpecp python library (pre-alpha))
 
 ## 1. WebUI
