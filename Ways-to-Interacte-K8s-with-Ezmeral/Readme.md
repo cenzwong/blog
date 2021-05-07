@@ -15,13 +15,7 @@ HPE Ezmeral Software Platform has a bundle of software that helps you run, manag
         - 3.2.3. [Using REST API](#323-using-rest-api)
 - 4. [hpecp Python Library](#4-hpecp-python-library-pre-alpha)
 
-```mermaid
-graph TD;
-  A-->B;
-  A-->C;
-  B-->D;
-  C-->D;
-```
+
 
 ## 1. WebUI
 The first method is, of course, through the web UI. 
