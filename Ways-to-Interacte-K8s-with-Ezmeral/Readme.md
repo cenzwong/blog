@@ -30,8 +30,9 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
 > Reference
-> - https://docs.containerplatform.hpe.com/53/reference/kubernetes/using-kubernetes/Using_the_HPE_Kubectl_Plugin.html
-> - https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/
+> - https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+> 
+
 - Second: Install hpe kubectl plugin
 ```bash
 sudo mv ./kubectl /usr/local/bin
@@ -39,9 +40,9 @@ sudo mv ./kubectl /usr/local/bin
 
 - Third:
 
-### Reference
-- https://docs.containerplatform.hpe.com/53/reference/kubernetes/using-kubernetes/Using_the_HPE_Kubectl_Plugin.html
-- https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/
+> Reference
+> - https://docs.containerplatform.hpe.com/53/reference/kubernetes/using-kubernetes/Using_the_HPE_Kubectl_Plugin.html
+> - https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/
 
 ## 4. Download Kubeconfig
 
