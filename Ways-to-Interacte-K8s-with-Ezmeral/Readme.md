@@ -27,7 +27,8 @@ If you wanna use Kubectl remotely, you have to install Kubectl-plugin in order t
 | ----------- | ----------- |
 | ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant-03.png)      | You can download the require binary here as well  |
 
-### First: Make sure you have Kubectl install.
+### 3.1 Installation of ```kubectl``` and ```kubectl-hpecp```
+#### Step 1: Make sure you have Kubectl install.
 ```bash
 # Download the latest version of kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -38,7 +39,7 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 > - https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 > 
 
-### Second: Install hpe kubectl plugin
+### Step 2: Install hpe kubectl plugin
 ```bash
 # This link might subject to be changed, renew this link on HPE Ezmeral
 # Download kubectl-hpecp binary and untar the file
@@ -54,11 +55,26 @@ sudo mv ./kubectl-hpecp /usr/local/bin
 | ``` kubectl plugin list ``` | ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-plugin-list.png)        |
 | ``` kubectl hpecp -h ``` | ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-hpecp-h.png)       |
 
-### Third:
-
 > Reference
 > - https://docs.containerplatform.hpe.com/53/reference/kubernetes/using-kubernetes/Using_the_HPE_Kubectl_Plugin.html
 > - https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/
+
+### 3.2 Getting the ```kubeconfig``` file
+```bash
+kubectl hpecp refresh <ip_address, host alias, or hostname> --insecure --hpecp-user=<new_username> --hpecp-pass=<new_password>
+# Example
+kubectl hpecp refresh 172.16.10.41 --insecure --hpecp-user=your-username --hpecp-pass=your-pass
+kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure --hpecp-user=your-username --hpecp-pass=your-pass
+kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure
+```
+- After running hpecp refresh command, it will prompt some message, follow the instruction
+![image](https://user-images.githubusercontent.com/72959956/117413580-bab71980-af48-11eb-808e-1f46f074451c.png)
+
+```bash
+export KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config"
+KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config:/home/hpeadmin/.kube/config" kubectl config view
+```
+
 
 ## 4. Download Kubeconfig
 
