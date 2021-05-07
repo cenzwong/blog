@@ -48,6 +48,7 @@ tar xf kubectl-hpecp.star
 sudo mv ./kubectl-hpecp /usr/local/bin
 ```
 - check kubectl-hpecp is installed correctly
+
 | Screenshot      | Command |
 | ----------- | ----------- |
 | ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-plugin-list.png)      | ``` kubectl plugin list ```  |
