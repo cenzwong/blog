@@ -1,6 +1,8 @@
 This blog post is also on HPE Developer Blog\
 https://developer.hpe.com/blog/introducing-the-hpe-gl20-iot-gateway/
+
 ---
+
 # Introducing the HPE GL20 IoT Gateway
 
 <img src="https://hpe-developer-portal.s3.amazonaws.com/uploads/media/2020/12/h4-1610447678726.jpg" width="80%" height="80%"/>  
