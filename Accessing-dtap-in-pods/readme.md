@@ -24,7 +24,7 @@ apt install openjdk-11-jdk-headless -y
 ```
 wget https://apache.website-solution.net/hadoop/common/hadoop-3.3.0/hadoop-3.3.0.tar.gz
 tar zxf hadoop-*.tar.gz
-mv hadoop-3.3.0 hadoop
+mv hadoop-3.3.0 $HOME/hadoop
 ```
 ### Move directory to hadoop
 ```
