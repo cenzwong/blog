@@ -67,7 +67,11 @@ export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$HADOOP_HOME/lib/:/opt/bdfs/bluedata-d
 pwd: $HADOOP_HOME
 bin/hadoop
 bin/hdfs dfs -ls dtap://TenantStorage/
-bin/hdfs dfs -mkdir dtap://TenantStorage/user
+hdfs dfs -mkdir dtap://TenantStorage/user
+hdfs dfs -put helloworld.txt dtap://TenantStorage/cenz
+hdfs dfs -put -f helloworld.txt dtap://TenantStorage/cenz # force replacement
+hdfs dfs -cat dtap://TenantStorage/cenz/helloworld.txt
+hdfs dfs -rm dtap://TenantStorage/cenz/helloworld.txt
 ```
 
 ## Notes:
