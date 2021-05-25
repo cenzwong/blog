@@ -67,5 +67,11 @@ export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$HADOOP_HOME/lib/:/opt/bdfs/bluedata-d
 pwd: $HADOOP_HOME
 bin/hadoop
 bin/hdfs dfs -ls dtap://TenantStorage/
+bin/hdfs dfs -mkdir dtap://TenantStorage/user
+```
 
+## Notes:
+- to get rid of the bin/, we can add the bin file to path
+```
+export PATH=$PATH:$HADOOP_HOME:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
 ```
