@@ -59,7 +59,8 @@ export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$HADOOP_HOME/lib/:/opt/bdfs/bluedata-d
   </property>
 </configuration>
 ```
-
+### or replace an online template
+- https://github.com/helloezmeral/hpe-binary/tree/main/hadoop-dtap-config
 # Testing command
 ```
 pwd: $HADOOP_HOME
