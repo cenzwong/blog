@@ -30,7 +30,7 @@ mv hadoop-3.3.0 hadoop
 ```
 cd hadoop
 ```
-### Config the require environment
+### Config the required environment
 ```
 # $HADOOP_HOME/etc/hadoop/hadoop-env.sh
 
