@@ -1,6 +1,6 @@
 # Accessing dtap
 
-ref: https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/datataps/Accessing_DataTaps_in_Kubernetes_Pods.html
+> ref: https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/datataps/Accessing_DataTaps_in_Kubernetes_Pods.html
 
 ## Step 1: Prepare the environment
 ![image](https://user-images.githubusercontent.com/72959956/119443704-9cc92180-bd5c-11eb-8fce-b6b53823336c.png)
@@ -73,5 +73,6 @@ bin/hdfs dfs -mkdir dtap://TenantStorage/user
 ## Notes:
 - to get rid of the bin/, we can add the bin file to path
 ```
+export HADOOP_HOME=$HOME/hadoop
 export PATH=$PATH:$HADOOP_HOME:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
 ```
