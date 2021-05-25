@@ -31,19 +31,17 @@ mv hadoop-3.3.0 hadoop
 cd hadoop
 ```
 ### Config the required environment
+- $HADOOP_HOME/etc/hadoop/hadoop-env.sh
 ```
-# $HADOOP_HOME/etc/hadoop/hadoop-env.sh
-
-# this two to make hadoop command run successfullyx, line 54, 58
+# this two to make hadoop command run successfully, line 54, 58, 126
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
 export HADOOP_HOME=$HOME/hadoop
 
 # this command is datatap specific
 export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$HADOOP_HOME/lib/:/opt/bdfs/bluedata-dtap.jar
 ```
-
+- $HADOOP_HOME/etc/hadoop/core-site.xml 
 ```
-# $HADOOP_HOME/etc/hadoop/core-site.xml
 <configuration>
   <property>
     <name>fs.dtap.impl</name>
