@@ -87,7 +87,8 @@ export KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config"
 ```
 
 #### Download the Kubeconfig file manually
-![image](https://user-images.githubusercontent.com/72959956/117415089-7a589b00-af4a-11eb-8fbb-54386bcbdbbd.png)
+![image](https://user-images.githubusercontent.com/72959956/119962105-4b799600-bfd9-11eb-985d-2c867162902e.png)
+
 - Download your ```kubeconfig``` file, and define the Kubeconfig file as a shell environment variable
 
 ```bash
