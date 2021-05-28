@@ -1,43 +1,40 @@
-# Ways to Interact K8s with Ezmeral
+# Ways to interact with Kubernetes Clusters managed by HPE Ezmeral Container Platform
 HPE Ezmeral Software Platform has a bundle of software that helps you run, manage, control, and secure the apps, data, and IT that run your business. One of which is the HPE Ezmeral Container Platform (HPE ECP). It is a unified cloud container software platform built on Kubernetes. How exactly you can connect to HPE ECP to interact with K8s? Don't panic! This blog post will introduce to you most, if not all, of the ways to connect with the Kubernetes inside HPE ECP.
+
+HPE Ezmeral Software Platform consists of a bundle of software that helps you run, manage, control, and secure the apps, data, and IT that run your business. A major component is the HPE Ezmeral Container Platform (HPE ECP),a unified cloud container software platform built on Kubernetes (K8s). You can enjoy a better user experience of simplified Kubernetes management to deploy and manage multiple Kubernetes clusters across your environment with a multi-tenant control plane. But how exactly do you connect through HPE ECP to interact with K8s? Don't panic! This blog post will introduce to you most, if not all, of the ways to connect with the Kubernetes using HPE ECP.
+
 ![](https://github.com/helloezmeral/cdn/blob/main/HelloWorld%20with%20EPIC%20MLOps.png?raw=true)
-## Table of Contents
-- 1. [WebUI](#1-webui)
-- 2. [WebTerminal](#2-WebTerminal)
-- 3. [HPE Kubectl Plugin](#3-HPE-Kubectl-Plugin)
-   - 3.1. [Installation of Kubectl and Kubectl HPECP Plugin](#31-installation-of-kubectl-and-kubectl-hpecp)
-   - 3.2. [Getting the Kubeconfig File](#32-getting-the-kubeconfig-file)
-        - 3.2.1. [HPE Kubectl Plugin](#321-using-kubectl-hpecp-refresh-command)
-        - 3.2.2. [Manual Download](#322-download-the-kubeconfig-file-manually)
-        - 3.2.3. [Using REST API](#323-using-rest-api)
-- 4. [hpecp Python Library](#4-hpecp-python-library-pre-alpha)
+![image](https://user-images.githubusercontent.com/72959956/119956810-0bfc7b00-bfd4-11eb-8e2e-25d50ee022b3.png)
 
-## 1. WebUI
-The first method is, of course, through the web UI. 
+
+## WebUI
+The first method by which you can interact with a Kubernetes Cluster using HPE ECP is, of course, through the web user interface (WebUI).
 
 | Screenshot      | Description |
 | ----------- | ----------- |
-| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Cluster.png)     | In the Main Menu, you can manage and navigate around Kubernetes.  |
-| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Dashboard.png)   | You can access the Kubernetes Dashboard, just like what you did with Open-Source Kubernetes.  |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Cluster.png)     | As administrator of the HPE Ezmeral CP, you can manage and monitor the status of the K8s clusters managed by HPE ECP.  |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Dashboard.png)   | You can access the Kubernetes Dashboard, just as you would do with open source Kubernetes.  |
 
-## 2. WebTerminal
-Inside the Kubernetes Tenant, at the bottom, there is a web terminal for you to interact with the Kubernetes with ```Kubectl``` command.
-
-| Screenshot      | Description |
-| ----------- | ----------- |
-| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant.png)      | At the bottom, you can click initiate to initiate the web terminal instance.  |
-| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant-02.png)   | Type your lovely ``` kubectl ``` command to interact with Kubernetes  |
-
-
-## 3. HPE Kubectl Plugin
-If you wanna use Kubectl remotely, you have to install Kubectl-plugin to get the session ID to access HPE Ezmeral. To install the Kubectl-hpecp plugin, you can run the following command.
+## WebTerminal
+Inside the Kubernetes Tenant, at the bottom, there is a web terminal for you to interact with Kubernetes using the ```kubectl``` command.
 
 | Screenshot      | Description |
 | ----------- | ----------- |
-| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant-03.png)      | You can download the required binary here as well  |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant.png)      | At the bottom, you can click "Initialize" to initiate the web terminal instance.  |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant-02.png)   | Type your ``` kubectl ``` command to interact with Kubernetes.  |
 
-### 3.1 Installation of ```kubectl``` and ```kubectl-hpecp```
-#### Step 1: Make sure you have Kubectl install.
+
+## HPE Kubectl Plugin
+If you want to use kubectl remotely, you must first install the kubectl-plugin to get the session ID to access HPE Ezmeral. To install the kubectl-hpecp plugin, you can run the following command. The HPE kubectl plugin is required to establish the tenant’s authenticated kubectl requests. Therefore, if you want to use kubectl remotely as a tenant user, you must first install the HPE kubectl plugin (kubectl-hpecp) to get an HPE ECP authentication token (a session ID), fetch the kubconfig manifest file, and then interact with the managed K8s clusters.
+
+To install the kubectl-hpecp plugin, first fetch the plugin from the WebUI. Log in as a tenant user, and click on Download HPE Kubectl Plugin (as shown in the picture below) and download the plugin and installation instructions according to your target operating system. The following codes are executed in Linux environment.
+
+| Screenshot      | Description |
+| ----------- | ----------- |
+| ![](https://github.com/helloezmeral/cdn/raw/main/K8s-Tenant-03.png)      | You can download the required binary here as well.  |
+
+### Installation of ```kubectl``` and ```kubectl-hpecp```
+#### Step 1: Make sure you have ```kubectl``` install.
 ```bash
 # Download the latest version of kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -45,7 +42,7 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
 > Reference:
-> - https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+> - [How to install and set up kubectl on Linux](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 > 
 
 #### Step 2: Install hpe kubectl plugin
@@ -57,7 +54,7 @@ tar xf kubectl-hpecp.star
 # And place it anywhere in your PATH:
 sudo mv ./kubectl-hpecp /usr/local/bin
 ```
-- check kubectl-hpecp is installed correctly
+Check kubectl-hpecp is installed correctly.
 
 | Command | Screenshot      | 
 | ----------- | ----------- |
@@ -65,13 +62,13 @@ sudo mv ./kubectl-hpecp /usr/local/bin
 | ``` kubectl hpecp -h ``` | ![](https://github.com/helloezmeral/cdn/raw/main/kubectl-hpecp-h.png)       |
 
 > Reference:
-> - https://docs.containerplatform.hpe.com/53/reference/kubernetes/using-kubernetes/Using_the_HPE_Kubectl_Plugin.html
-> - https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/
+> - [Using the HPE Kubectl Plugin](https://docs.containerplatform.hpe.com/53/reference/kubernetes/using-kubernetes/Using_the_HPE_Kubectl_Plugin.html)
+> - [Extend kubectl with plugins](https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/)
 
-### 3.2 Getting the ```kubeconfig``` file
-#### 3.2.1 Using ```kubectl hpecp refresh``` command
+### Getting the ```kubeconfig``` file
+#### Using ```kubectl hpecp refresh``` command
 
-The ```kubectl hpecp refresh``` command gets the user a new Kubeconfig. Using the Kubeconfig, you can interact with Kubernetes inside HPE Ezmeral.
+The ```kubectl hpecp refresh``` command gets the user a new Kubeconfig. Using the Kubeconfig, you can interact with Kubernetes through the HPE Ezmeral Container Platform.
 
 ```bash
 kubectl hpecp refresh <ip_address, host alias, or hostname> --insecure --hpecp-user=<new_username> --hpecp-pass=<new_password>
@@ -81,7 +78,7 @@ kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure --hpecp-user=your-user
 kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure
 ```
 
-- After running hpecp refresh command, it will prompt some messages. Follow the instruction to define the Kubeconfig file as a shell environment variable.
+Running the hpecp refresh command, will prompt some messages. Follow the instructions to define the Kubeconfig file as a shell environment variable.
 
 ![image](https://user-images.githubusercontent.com/72959956/117413580-bab71980-af48-11eb-808e-1f46f074451c.png)
 
@@ -90,7 +87,7 @@ kubectl hpecp refresh ez53-gateway.hpeilab.com --insecure
 export KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config"
 ```
 
-#### 3.2.2 Download the Kubeconfig file manually
+#### Download the Kubeconfig file manually
 ![image](https://user-images.githubusercontent.com/72959956/117415089-7a589b00-af4a-11eb-8fbb-54386bcbdbbd.png)
 - Download your ```kubeconfig``` file, and define the Kubeconfig file as a shell environment variable
 
@@ -99,10 +96,10 @@ export KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config"
 export KUBECONFIG="/the/path/of/your/kubeconfig"
 ```
 
-#### 3.2.3 Using REST API
-HPE Ezmeral Container Platform provides REST API for you to interact. Here is the command that downloads the Kubeconfig file.
+#### Using REST API
+HPE Ezmeral Container Platform provides REST API for you to interact with. Here is the command that downloads the Kubeconfig file.
 
-- Authenticate as a tenant user in the specified tenant, getting the session ID: 
+Authenticate as a tenant user in the specified tenant, getting the session ID:
 
 ```bash
 curl -k -i -s --request POST "http://ez53-gateway.hpeilab.com:8080/api/v2/session" \
@@ -126,7 +123,7 @@ Server: HPE Ezmeral Container Platform 5.3
 201 Created
 ```
 
-- Get the Kubeconfig file for your tenant working context: 
+Get the Kubeconfig file for your tenant working context: 
 
 ```bash
 curl -k -s --request GET "http://ez53-gateway.hpeilab.com:8080/api/v2/k8skubeconfig" \
@@ -137,8 +134,7 @@ curl -k -s --request GET "http://ez53-gateway.hpeilab.com:8080/api/v2/k8skubecon
 # Define the Kubeconfig file as a shell environment variable
 export KUBECONFIG=kubeconfig
 ```
-
-- Combining two commands into one command
+The screenshot below shows you how you can combine two commands into a single command:
 
 ```bash
 curl -k -s --request GET "http://<you-ez-gateway>:8080/api/v2/k8skubeconfig" \
@@ -159,18 +155,19 @@ kubectl get pods
 ```
 
 > Resources:
-> - https://docs.containerplatform.hpe.com/53/reference/accessing-the-applications/API_Access.html
-> - https://github.com/HewlettPackard/hpe-notebooks/tree/master/HPECPAPI
-> - https://github.com/bluedatainc/solutions/tree/master/APIs
+> - [API_Access](https://docs.containerplatform.hpe.com/53/reference/accessing-the-applications/API_Access.html)
+> - [Jupyter Notebook: Introduction to the HPE Ezmeral Container Platform REST API](https://github.com/HewlettPackard/hpe-notebooks/tree/master/HPECPAPI)
+> - [API documents](https://github.com/bluedatainc/solutions/tree/master/APIs)
+> - [HPE Container Platform REST API](https://developer.hpe.com/blog/hpe-container-platform-rest-api-part-1-authenticating/)
 
 ## 4. hpecp python library (pre-alpha)
 If you are looking for a way to interact with HPE Ezmeral programmatically, you can keep an eye on the hpecp python library from HPE Container Platform Community. Note that it is still a prototype, it may be unstable and subject to change until this library reaches beta.
 
 > Reference:
-> - https://github.com/hpe-container-platform-community/hpecp-python-library
-> - https://hpe-container-platform-community.github.io/hpecp-python-library/hpecp.license.html
-> - https://pypi.org/project/hpecp/
+> - [Github: HPECP Python Library](https://github.com/hpe-container-platform-community/hpecp-python-library)
+> - [HPE Container Platform Python Library Documentation](https://hpe-container-platform-community.github.io/hpecp-python-library/index.html)
+> - [HPECP PYthon Pypi](https://pypi.org/project/hpecp/)
 > 
 
 ## Conclusion
-HPE Ezmeral Container Platform provides different ways for you to interact with Kubernetes. Just pick your favorite way in your favorite environment. Happy Kubectl!
+As you can see, HPE Ezmeral Container Platform provides a number of different ways for you to interact with Kubernetes in order to …. Just pick your favorite way for your favorite environment. Happy kubectl!
