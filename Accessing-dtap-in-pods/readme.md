@@ -1,7 +1,7 @@
 # Accessing dtap in pods
 
-1. (Hadoop FS Shell)[# 1. Access dtap using hadoop fs shell]
-2. (Pyspark)[# 2. Access dtap using pyspark]
+1. [Hadoop FS Shell](# 1. Access dtap using hadoop fs shell)
+2. [Pyspark](# 2. Access dtap using pyspark)
 
 
 > ref: https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/datataps/Accessing_DataTaps_in_Kubernetes_Pods.html
