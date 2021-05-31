@@ -93,6 +93,7 @@ pip install pyspark
 ```
 ### Method one, initiate pyspark session with jars
 ```bash
+# bash
 pyspark --jars /opt/bdfs/bluedata-dtap.jar
 ```
 ```py
@@ -105,6 +106,7 @@ text.take(5)
 
 ### Method two, initiate python and initiate pyspark with jars later
 ```bash
+# bash
 python3
 ```
 ```py
