@@ -119,5 +119,5 @@ text = sc.textFile("dtap://TenantStorage/HPE.txt")
 text.take(5)
 ```
 
-
+> ref: https://github.com/delta-io/delta/issues/346
 
