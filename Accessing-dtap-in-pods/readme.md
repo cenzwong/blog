@@ -132,4 +132,5 @@ text.take(5)
 ```
 
 > ref: https://github.com/delta-io/delta/issues/346
+> https://spark.apache.org/docs/latest/configuration.html#runtime-environment
 
