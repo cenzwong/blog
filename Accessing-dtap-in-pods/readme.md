@@ -10,6 +10,13 @@ Click the enable DataTap when creating KubeDirector Application
 - a extra /opt/bdfs/* will be mounted
 - ![image](https://user-images.githubusercontent.com/72959956/119444172-66d86d00-bd5d-11eb-8cfa-053b692963e5.png)
 
+```
+    <name>fs.dtap.impl</name>
+    <value>com.bluedata.hadoop.bdfs.Bdfs</value>
+
+    <name>fs.AbstractFileSystem.dtap.impl</name>
+    <value>com.bluedata.hadoop.bdfs.BdAbstractFS</value>
+```
 
 # 1. Access dtap using hadoop fs shell
 > ref: https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html
@@ -105,6 +112,7 @@ sc._jsc.hadoopConfiguration().set('fs.AbstractFileSystem.dtap.impl', 'com.blueda
 text = sc.textFile("dtap://TenantStorage/HPE.txt")
 text.take(5)
 ```
+![image](https://user-images.githubusercontent.com/72959956/120171213-61cf5e00-c234-11eb-8928-2514e8b867a8.png)
 
 ### Method two, initiate python and initiate pyspark with jars later
 ```bash
