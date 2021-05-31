@@ -96,6 +96,8 @@ pip install pyspark
 # bash
 pyspark --jars /opt/bdfs/bluedata-dtap.jar
 ```
+![image](https://user-images.githubusercontent.com/72959956/120170783-e8d00680-c233-11eb-9fe8-136da9996fdc.png)
+
 ```py
 # pyspark
 sc._jsc.hadoopConfiguration().set('fs.dtap.impl', 'com.bluedata.hadoop.bdfs.Bdfs')
