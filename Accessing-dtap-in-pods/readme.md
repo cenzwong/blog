@@ -98,6 +98,10 @@ export PATH=$PATH:$HADOOP_HOME:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
 ## Install pyspark
 There are lots of way to install Spark. For the most simplest purpose, I just do the
 ```bash
+# install pyspark & Java
+apt-get install python3 -y
+apt-get install python3-pip -y
+DEBIAN_FRONTEND=noninteractive apt-get install openjdk-11-jdk-headless -y
 pip install pyspark
 ```
 ### Method one, initiate pyspark session with jars
