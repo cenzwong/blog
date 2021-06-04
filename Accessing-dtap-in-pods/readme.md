@@ -26,9 +26,9 @@ The generic approach can be concluded into this two step:
 2. Configure Hadoop with the following values.
 
 | name | value |
----
-- fs.dtap.impl: com.bluedata.hadoop.bdfs.Bdfs
-- fs.AbstractFileSystem.dtap.impl: com.bluedata.hadoop.bdfs.BdAbstractFS
+|---|---|
+| fs.dtap.impl | com.bluedata.hadoop.bdfs.Bdfs |
+| fs.AbstractFileSystem.dtap.impl | com.bluedata.hadoop.bdfs.BdAbstractFS |
 
 # 1. Access dtap using hadoop fs shell
 > ref: https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html
