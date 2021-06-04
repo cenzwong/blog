@@ -16,7 +16,7 @@ First and foremost, we have to enable DataTaps of the application. This can be d
 
 ![image](https://user-images.githubusercontent.com/72959956/119443704-9cc92180-bd5c-11eb-8fce-b6b53823336c.png)
 
-This will result in mounting a lot of files at /opt/bdfs/ of your pod. If you can see these files in your pod, this means that your pod is DataTap enabled, and you are now ready to access the files in DataTap.
+This will result in mounting a lot of files at /opt/bdfs/ of your pod. If you can see the files, shown below, in your pod, this means that your pod is DataTap enabled, and you are now ready to access the files in DataTap.\
 ![image](https://user-images.githubusercontent.com/72959956/119444172-66d86d00-bd5d-11eb-8cfa-053b692963e5.png)
 
 ```
