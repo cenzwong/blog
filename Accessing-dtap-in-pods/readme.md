@@ -4,12 +4,16 @@
 (I want to find a better version of this graph showing kubernetes instead of EPIC, will you guys has that picture? if not, I will create my own.)
 ![image](https://user-images.githubusercontent.com/72959956/120766016-62296b00-c54c-11eb-9a2e-6d2ec90e0871.png)
 
-Handling different protocol of files is always a pain for an data analyst. DataTap is a file system connector which aims to alleviate the pain developers had. DataTap provides HDFS protocol abstraction that allows big data applications like Spark to run unmodified with fast access to data sources other than HDFS, i.e. MapR-FS and NFS. Using DataTap, you can unify your code while the underlying data sources can be swap from HDFS, MapR-FS or NFS. This flexibility allows developers like you to focus more on coding rather than the infrastructure. More information of DataTap can be founded [here](https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/copy_About_DataTaps.html)
+Handling different protocol of files is always a pain for an data analyst. DataTap is a file system connector which aims to alleviate the pain developers had. DataTap provides HDFS protocol abstraction that allows big data applications like Spark to run unmodified with fast access to data sources other than HDFS, i.e. MapR-FS and NFS. Using DataTap, you can unify your code while the underlying data sources can be swap from HDFS, MapR-FS or NFS. This flexibility allows developers like you to focus more on coding rather than the infrastructure. More information of DataTap can be founded [here](https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/copy_About_DataTaps.html).
+
+In this blog, I will introduce two ways to access DataTaps in Kubernetes. The first method will be accessing the DataTaps using HDFS Commands and the second method will be directly reading data from Apache Spark (using pyspark). Here we go.
 
 1. [Hadoop FS Shell](#1-access-dtap-using-hadoop-fs-shell)
 2. [Pyspark](#2-access-dtap-using-pyspark)
 
 ## **Enable dtap when creating the pod**
+First and foremost, we have to enable DataTaps of the application. This can be done by ticking "Enable DataTaps" box when creating the application.
+
 ![image](https://user-images.githubusercontent.com/72959956/119443704-9cc92180-bd5c-11eb-8fce-b6b53823336c.png)\
 Click the enable DataTap when creating KubeDirector Application
 - a extra /opt/bdfs/* will be mounted
