@@ -67,7 +67,7 @@ export HADOOP_HOME=$HOME/hadoop
 # This variable is DataTap specific. Located at line 126.
 export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$HADOOP_HOME/lib/:/opt/bdfs/bluedata-dtap.jar
 ```
-In ```$HADOOP_HOME/etc/hadoop/core-site.xml``` file:
+In ```$HADOOP_HOME/etc/hadoop/core-site.xml``` file, configure Hadoop with the following values:
 ```
 <configuration>
   <property>
