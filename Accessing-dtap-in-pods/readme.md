@@ -20,6 +20,9 @@ This will result in mounting a lot of files at ```/opt/bdfs/``` of your pod. If 
 
 ![image](https://user-images.githubusercontent.com/72959956/119444172-66d86d00-bd5d-11eb-8cfa-053b692963e5.png)
 
+
+The generic approach can be concluded into this two step:
+1. Add ```bluedata-dtap.jar``` to the classpath
 ```
     <name>fs.dtap.impl</name>
     <value>com.bluedata.hadoop.bdfs.Bdfs</value>
