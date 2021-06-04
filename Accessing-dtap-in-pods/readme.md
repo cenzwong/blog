@@ -58,7 +58,7 @@ mv hadoop-3.3.0 $HOME/hadoop                                                    
 cd $HOME/hadoop                                                                           # Move directory to hadoop
 ```
 ### Configure the required environment
-In ```$HADOOP_HOME/etc/hadoop/hadoop-env.sh``` file, assign the following environment variables (```JAVA_HOME```, ```HADOOP_HOME```, ```HADOOP_CLASSPATH```):
+In ```$HADOOP_HOME/etc/hadoop/hadoop-env.sh``` file, assign the following environment variables (```$JAVA_HOME```, ```$HADOOP_HOME```, ```$HADOOP_CLASSPATH```):
 ```
 # These two variables is needed for HDFS command running successfully. Located at line 54, 58.
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
@@ -101,7 +101,7 @@ bin/hdfs dfs -rm dtap://TenantStorage/cenz/helloworld.txt
 ```
 
 > Tips:
-> - to get rid of the bin/, we can add the bin file to path
+> - to get rid of the file path ```bin/```, we can add the Hadoop ```bin``` and ```sbin``` file to ```$PATH```
 > ```
 > export HADOOP_HOME=$HOME/hadoop
 > export PATH=$PATH:$HADOOP_HOME:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
