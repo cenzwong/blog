@@ -29,6 +29,8 @@ The generic approach can be concluded into this two step:
 |---|---|
 | fs.dtap.impl | com.bluedata.hadoop.bdfs.Bdfs |
 | fs.AbstractFileSystem.dtap.impl | com.bluedata.hadoop.bdfs.BdAbstractFS |
+| fs.dtap.impl.disable.cache* | false |
+*optional
 
 # 1. Access dtap using hadoop fs shell
 > ref: https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html
