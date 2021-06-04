@@ -23,7 +23,10 @@ This will result in mounting a lot of files at ```/opt/bdfs/``` of your pod. If 
 
 The generic approach can be concluded into this two step:
 1. Add ```/opt/bdfs/bluedata-dtap.jar``` to the classpath.
-2. Configure Hadoop with the following ```name: value``` pairs.
+2. Configure Hadoop with the following values.
+
+| name | value |
+---
 - fs.dtap.impl: com.bluedata.hadoop.bdfs.Bdfs
 - fs.AbstractFileSystem.dtap.impl: com.bluedata.hadoop.bdfs.BdAbstractFS
 
