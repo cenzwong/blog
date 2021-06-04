@@ -36,29 +36,30 @@ The generic approach can be concluded into this two step:
 > Reference:
 > - [Accessing DataTaps in Kubernetes Pods](https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/datataps/Accessing_DataTaps_in_Kubernetes_Pods.html)
 
-# 1. Access dtap using HDFS commands
+# Access dtap using HDFS commands
 > ref: https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html
 
 ## Install Hadoop
-### Install the dependency
+Some of the Kubedirector App provided by HPE is pre-installed a well configure Hadoop for you. Hence, the following installation steps can be skips
+### Step 1: Install OpenJDK and the dependency
 ```
 apt update && apt upgrade -y
 apt install wget -y
+
+# install openjdk
+DEBIAN_FRONTEND=noninteractive apt-get install openjdk-11-jdk-headless -y
 ```
-### Install OpenJDK
+### Download Hadoop and untar hadoop
+You can always find the latest version of hadoop on [Apache Hadoop Releases](https://hadoop.apache.org/releases.html).
 ```
-# install openjdk # option: 6, 31
-apt install openjdk-11-jdk-headless -y
-```
-### Download hadoop and untar hadoop
-```
-wget https://apache.website-solution.net/hadoop/common/hadoop-3.3.0/hadoop-3.3.0.tar.gz
-tar zxf hadoop-*.tar.gz
-mv hadoop-3.3.0 $HOME/hadoop
+wget https://apache.website-solution.net/hadoop/common/hadoop-3.3.0/hadoop-3.3.0.tar.gz # Download Hadoop binary
+tar zxf hadoop-*.tar.gz           # Untar Hadoop binary
+mv hadoop-3.3.0 $HOME/hadoop      # Rename and move Hadoop folder to $HOME
+cd $HOME/hadoop                   # Move directory to hadoop
 ```
 ### Move directory to hadoop
 ```
-cd hadoop
+cd $HOME/hadoop
 ```
 ### Config the required environment
 - $HADOOP_HOME/etc/hadoop/hadoop-env.sh
