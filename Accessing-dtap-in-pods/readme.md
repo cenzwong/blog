@@ -1,6 +1,7 @@
 # Accessing dtap in pods
 
 ## What is DataTap?
+(I want to find a modern version of this graph showing kubernetes instead of EPIC, will you guys has that picture? if not, I will create my own.)
 ![image](https://user-images.githubusercontent.com/72959956/120766016-62296b00-c54c-11eb-9a2e-6d2ec90e0871.png)
 
 
