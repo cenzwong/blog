@@ -12,7 +12,7 @@ In this blog, I will introduce two ways to access DataTaps in Kubernetes. The fi
 2. [Pyspark](#2-access-dtap-using-pyspark)
 
 ## **Enable dtap when creating the pod**
-First and foremost, we have to enable DataTaps of the application. This can be done by ticking "Enable DataTaps" box when creating the application.
+First and foremost, we have to enable DataTaps of the application. This can be done by ticking "Enable DataTap" box when creating the application.
 
 ![image](https://user-images.githubusercontent.com/72959956/119443704-9cc92180-bd5c-11eb-8fce-b6b53823336c.png)\
 Click the enable DataTap when creating KubeDirector Application
