@@ -3,6 +3,9 @@
 1. [Hadoop FS Shell](#1-access-dtap-using-hadoop-fs-shell)
 2. [Pyspark](#2-access-dtap-using-pyspark)
 
+DataTap file system connector.
+
+
 
 > ref: https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/datataps/Accessing_DataTaps_in_Kubernetes_Pods.html
 
