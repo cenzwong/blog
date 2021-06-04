@@ -1,6 +1,13 @@
 # Accessing dtap in pods
 
 ## What is DataTap?
+![image](https://user-images.githubusercontent.com/72959956/120766016-62296b00-c54c-11eb-9a2e-6d2ec90e0871.png)
+
+
+
+
+
+
 
 1. [Hadoop FS Shell](#1-access-dtap-using-hadoop-fs-shell)
 2. [Pyspark](#2-access-dtap-using-pyspark)
