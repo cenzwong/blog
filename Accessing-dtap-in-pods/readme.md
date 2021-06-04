@@ -14,10 +14,10 @@ In this blog, I will introduce two ways to access DataTaps in Kubernetes. The fi
 ## **Enable dtap when creating the pod**
 First and foremost, we have to enable DataTaps of the application. This can be done by ticking "Enable DataTap" box when creating the application.
 
-![image](https://user-images.githubusercontent.com/72959956/119443704-9cc92180-bd5c-11eb-8fce-b6b53823336c.png)\
-Click the enable DataTap when creating KubeDirector Application
-- a extra /opt/bdfs/* will be mounted
-- ![image](https://user-images.githubusercontent.com/72959956/119444172-66d86d00-bd5d-11eb-8cfa-053b692963e5.png)
+![image](https://user-images.githubusercontent.com/72959956/119443704-9cc92180-bd5c-11eb-8fce-b6b53823336c.png)
+
+This will result in mounting a lot of files at /opt/bdfs/ of your pod. If you can see these files in your pod, this means that your pod is DataTap enabled, and you are now ready to access the files in DataTap.
+![image](https://user-images.githubusercontent.com/72959956/119444172-66d86d00-bd5d-11eb-8cfa-053b692963e5.png)
 
 ```
     <name>fs.dtap.impl</name>
