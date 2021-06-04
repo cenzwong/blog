@@ -1,21 +1,13 @@
 # Accessing dtap in pods
 
 ## What is DataTap?
-(I want to find a modern version of this graph showing kubernetes instead of EPIC, will you guys has that picture? if not, I will create my own.)
+(I want to find a better version of this graph showing kubernetes instead of EPIC, will you guys has that picture? if not, I will create my own.)
 ![image](https://user-images.githubusercontent.com/72959956/120766016-62296b00-c54c-11eb-9a2e-6d2ec90e0871.png)
 
-
-
-
-
-
+Handling different protocol of files is always a pain for an data analyst. DataTap is a file system connector which aims to alleviate the pain developers had. DataTap provides HDFS protocol abstraction that allows big data applications like Spark to run unmodified with fast access to data sources other than HDFS, i.e. MapR-FS and NFS. Using DataTap, you can unify your code while the underlying data sources can be swap from HDFS, MapR-FS or NFS. This flexibility allows developers like you to focus more on coding rather than the infrastructure. 
 
 1. [Hadoop FS Shell](#1-access-dtap-using-hadoop-fs-shell)
 2. [Pyspark](#2-access-dtap-using-pyspark)
-
-DataTap file system connector.
-
-
 
 > ref: https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/datataps/Accessing_DataTaps_in_Kubernetes_Pods.html
 
