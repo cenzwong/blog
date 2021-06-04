@@ -39,9 +39,9 @@ The generic approach can be concluded into this two step:
 # Access dtap using HDFS commands
 > ref: https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html
 
-## Install Hadoop
+## Prepare Hadoop
 Some of the Kubedirector App provided by HPE is pre-installed a well configure Hadoop for you. Hence, the following installation steps can be skips
-### Step 1: Install OpenJDK and the dependency
+### Install OpenJDK and the dependency
 ```
 apt update && apt upgrade -y
 apt install wget -y
@@ -86,26 +86,26 @@ In ```$HADOOP_HOME/etc/hadoop/core-site.xml``` file, configure Hadoop with the f
   </property>
 </configuration>
 ```
-### or replace an online template
-- https://github.com/helloezmeral/hpe-binary/tree/main/hadoop-dtap-config
-## Testing command
+### Alternative
+I have prepared an example configuration file on [Github](https://github.com/helloezmeral/hpe-binary/tree/main/hadoop-dtap-config). If your Hadoop is do not have special configuration, you can simply download and replace your existing configuration file.
+## Test your HDFS command
 ```
-pwd: $HADOOP_HOME
+# Current working directory -> $HADOOP_HOME
 bin/hadoop
 bin/hdfs dfs -ls dtap://TenantStorage/
-hdfs dfs -mkdir dtap://TenantStorage/user
-hdfs dfs -put helloworld.txt dtap://TenantStorage/cenz
-hdfs dfs -put -f helloworld.txt dtap://TenantStorage/cenz # force replacement
-hdfs dfs -cat dtap://TenantStorage/cenz/helloworld.txt
-hdfs dfs -rm dtap://TenantStorage/cenz/helloworld.txt
+bin/hdfs dfs -mkdir dtap://TenantStorage/user
+bin/hdfs dfs -put helloworld.txt dtap://TenantStorage/cenz
+bin/hdfs dfs -put -f helloworld.txt dtap://TenantStorage/cenz # force replacement
+bin/hdfs dfs -cat dtap://TenantStorage/cenz/helloworld.txt
+bin/hdfs dfs -rm dtap://TenantStorage/cenz/helloworld.txt
 ```
 
-## Notes:
-- to get rid of the bin/, we can add the bin file to path
-```
-export HADOOP_HOME=$HOME/hadoop
-export PATH=$PATH:$HADOOP_HOME:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
-```
+> Tips:
+> - to get rid of the bin/, we can add the bin file to path
+> ```
+> export HADOOP_HOME=$HOME/hadoop
+> export PATH=$PATH:$HADOOP_HOME:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+> ```
 
 # 2. Access dtap using pyspark
 ## Install pyspark
