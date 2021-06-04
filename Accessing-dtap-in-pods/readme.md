@@ -33,7 +33,10 @@ The generic approach can be concluded into this two step:
 
 *optional
 
-# 1. Access dtap using hadoop fs shell
+> Reference:
+> - [Accessing DataTaps in Kubernetes Pods](https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/datataps/Accessing_DataTaps_in_Kubernetes_Pods.html)
+
+# 1. Access dtap using HDFS commands
 > ref: https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html
 
 ## Install Hadoop
