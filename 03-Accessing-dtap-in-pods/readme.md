@@ -41,8 +41,6 @@ The generic approach can be concluded into this two step:
 ![image](https://user-images.githubusercontent.com/72959956/121467262-5f66c400-c9eb-11eb-958d-911f18281a27.png)
 
 # Access dtap using HDFS commands
-> ref: https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html
-
 ## Prepare Hadoop
 Some of the Kubedirector App provided by HPE is pre-installed a well-configured Hadoop for you. Hence, the following installation steps can be skip.
 ### Install OpenJDK and the dependency
@@ -124,9 +122,11 @@ bin/hdfs dfs -rm dtap://TenantStorage/cenz/helloworld.txt
 > export PATH=$PATH:$HADOOP_HOME:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
 > ```
 
+> Reference: 
+> [Hadoop File System Shell Document](https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html)
 
 # 2. Access dtap using pyspark
-## Install pyspark
+## Install ```pyspark```
 There are lots of way to install Spark. The simplest way is to install pyspark package directly using ```pip install pyspark```. Run the following to install the prerequisite packages and pyspark.
 ```bash
 # install pyspark & Java
@@ -136,7 +136,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install openjdk-11-jdk-headless -y
 pip install pyspark
 ```
 There are two ways to interact with pyspark. The first one is execute the ```pyspark``` command in bash to initiate the pyspark session. The second way is that to treat pyspark as the module which ```python``` kernel can import to. (```import pyspark```)
-### Method one: initiate pyspark session with jars
+### Method one: initiate ```pyspark``` session with jars
 Initiate Spark's interactive shell in python using the following command. In order to use datatap with pyspark, you have to add external jar as arguments to pyspark.
 ```bash
 # bash
@@ -161,7 +161,7 @@ text.take(5)
 ```
 ![image](https://user-images.githubusercontent.com/72959956/120171213-61cf5e00-c234-11eb-8928-2514e8b867a8.png)
 
-### Method two: initiate python and initiate pyspark with jars at runtime
+### Method two: initiate ```python``` and initiate ```pyspark``` with jars at runtime
 
 Run the Python Shell first:
 ```bash
