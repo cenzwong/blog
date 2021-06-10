@@ -4,7 +4,7 @@
 (I want to find a better version of this graph showing kubernetes instead of EPIC, will you guys has that picture? if not, I will create my own.)
 ![image](https://user-images.githubusercontent.com/72959956/120766016-62296b00-c54c-11eb-9a2e-6d2ec90e0871.png)
 
-Handling different protocol of files is always a pain for an data analyst. DataTap is a file system connector which aims to alleviate the pain developers had. DataTap provides HDFS protocol abstraction that allows big data applications like Spark to run unmodified with fast access to data sources other than HDFS, i.e. MapR-FS and NFS. Using DataTap, you can unify your code while the underlying data sources can be swap from HDFS, MapR-FS or NFS. This flexibility allows developers like you to focus more on coding rather than the infrastructure. More information of DataTap can be founded [here](https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/copy_About_DataTaps.html).
+Handling different protocol of files is always a pain for an data analyst. DataTap is a file system connector which aims to alleviate the pain developers had. DataTap provides HDFS protocol abstraction that allows big data applications like Spark to run unmodified with fast access to data sources other than HDFS, i.e. HPE Ezmeral Data Fabric XD (former named MapR-FS/XD) and NFS. Using DataTap, you can unify your code while the underlying data sources can be swap from HDFS, MapR-FS or NFS. This flexibility allows developers like you to focus more on coding rather than the infrastructure. More information of DataTap can be founded [here](https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/copy_About_DataTaps.html).
 
 In this blog, I will introduce two ways to access DataTaps in Kubernetes. The first method will be accessing the DataTaps using HDFS Commands and the second method will be directly reading data from Apache Spark (using pyspark). Here we go.
 
@@ -95,8 +95,7 @@ I have prepared an example configuration file on [Github](https://github.com/hel
 ## Test your HDFS command
 Here is some common commands used to interacted with datatap.
 ```bash
-# bash
-# Current working directory -> $HADOOP_HOME
+# bash, Current working directory -> $HADOOP_HOME
 
 # Check the version of the hadoop
 bin/hadoop version
@@ -148,15 +147,15 @@ pyspark --jars /opt/bdfs/bluedata-dtap.jar
 After starting the interactive shell, ```Spark Context``` and ```Spark Session``` is automatically initiate for you.
 ![image](https://user-images.githubusercontent.com/72959956/120170783-e8d00680-c233-11eb-9fe8-136da9996fdc.png)
 
-Similarly, we have to specify the Hadoop configuration. 
+Similarly, we have to specify the Hadoop configurations. 
 ```py
 # pyspark
 
-# specify the Hadoop configuration.
+# Specify the Hadoop configurations.
 sc._jsc.hadoopConfiguration().set('fs.dtap.impl', 'com.bluedata.hadoop.bdfs.Bdfs')
 sc._jsc.hadoopConfiguration().set('fs.AbstractFileSystem.dtap.impl', 'com.bluedata.hadoop.bdfs.BdAbstractFS')
 
-# Commands for reading DataTap file
+# Commands for reading DataTap file.
 text = sc.textFile("dtap://TenantStorage/HPE.txt")
 text.take(5)
 ```
@@ -170,7 +169,7 @@ Run the Python Shell first:
 python3
 ```
 
-Add the path to jar file using Spark configuration command at Runtime.
+Add the path to jar file using Spark configuration command at runtime:
 ```py
 # python
 from pyspark import SparkConf, SparkContext
@@ -179,13 +178,16 @@ from pyspark import SparkConf, SparkContext
 conf = SparkConf().set("spark.jars", "/opt/bdfs/bluedata-dtap.jar")
 sc = SparkContext( conf=conf)
 
-
+# Specify the Hadoop configurations.
 sc._jsc.hadoopConfiguration().set('fs.dtap.impl', 'com.bluedata.hadoop.bdfs.Bdfs')
 sc._jsc.hadoopConfiguration().set('fs.AbstractFileSystem.dtap.impl', 'com.bluedata.hadoop.bdfs.BdAbstractFS')
+
+# Commands for reading DataTap file.
 text = sc.textFile("dtap://TenantStorage/HPE.txt")
 text.take(5)
 ```
 
-> ref: https://github.com/delta-io/delta/issues/346
-> https://spark.apache.org/docs/latest/configuration.html#runtime-environment
+> References: 
+> [Spark Document: Runtime Environment](https://spark.apache.org/docs/latest/configuration.html#runtime-environment)
+> [Related GitHub Issues](https://github.com/delta-io/delta/issues/346)
 
