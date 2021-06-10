@@ -94,7 +94,8 @@ In ```$HADOOP_HOME/etc/hadoop/core-site.xml``` file, configure Hadoop with the f
 I have prepared an example configuration file on [Github](https://github.com/helloezmeral/hpe-binary/tree/main/hadoop-dtap-config). If your Hadoop do not have special configuration, you can simply download and replace your existing configuration file.
 ## Test your HDFS command
 Here is some common commands used to interacted with datatap.
-```
+```bash
+# bash
 # Current working directory -> $HADOOP_HOME
 
 # Check the version of the hadoop
@@ -127,7 +128,7 @@ bin/hdfs dfs -rm dtap://TenantStorage/cenz/helloworld.txt
 
 # 2. Access dtap using pyspark
 ## Install pyspark
-There are lots of way to install Spark. For the most simplest purpose, I just do the
+There are lots of way to install Spark. The simplest way is to install pyspark package directly using ```pip install pyspark```. Run the following to install the prerequisite packages and pyspark.
 ```bash
 # install pyspark & Java
 apt-get install python3 -y
@@ -135,32 +136,49 @@ apt-get install python3-pip -y
 DEBIAN_FRONTEND=noninteractive apt-get install openjdk-11-jdk-headless -y
 pip install pyspark
 ```
-### Method one, initiate pyspark session with jars
+There are two ways to interact with pyspark. The first one is execute the ```pyspark``` command in bash to initiate the pyspark session. The second way is that to treat pyspark as the module which ```python``` kernel can import to. (```import pyspark```)
+### Method one: initiate pyspark session with jars
+Initiate Spark's interactive shell in python using the following command. In order to use datatap with pyspark, you have to add external jar as arguments to pyspark.
 ```bash
 # bash
+
+# Specify the path of the jars files
 pyspark --jars /opt/bdfs/bluedata-dtap.jar
 ```
+After starting the interactive shell, ```Spark Context``` and ```Spark Session``` is automatically initiate for you.
 ![image](https://user-images.githubusercontent.com/72959956/120170783-e8d00680-c233-11eb-9fe8-136da9996fdc.png)
 
+Similarly, we have to specify the Hadoop configuration. 
 ```py
 # pyspark
+
+# specify the Hadoop configuration.
 sc._jsc.hadoopConfiguration().set('fs.dtap.impl', 'com.bluedata.hadoop.bdfs.Bdfs')
 sc._jsc.hadoopConfiguration().set('fs.AbstractFileSystem.dtap.impl', 'com.bluedata.hadoop.bdfs.BdAbstractFS')
+
+# Commands for reading DataTap file
 text = sc.textFile("dtap://TenantStorage/HPE.txt")
 text.take(5)
 ```
 ![image](https://user-images.githubusercontent.com/72959956/120171213-61cf5e00-c234-11eb-8928-2514e8b867a8.png)
 
-### Method two, initiate python and initiate pyspark with jars later
+### Method two: initiate python and initiate pyspark with jars at runtime
+
+Run the Python Shell first:
 ```bash
 # bash
 python3
 ```
+
+Add the path to jar file using Spark configuration command at Runtime.
 ```py
 # python
 from pyspark import SparkConf, SparkContext
+
+# Specify the path of the jars files
 conf = SparkConf().set("spark.jars", "/opt/bdfs/bluedata-dtap.jar")
 sc = SparkContext( conf=conf)
+
 
 sc._jsc.hadoopConfiguration().set('fs.dtap.impl', 'com.bluedata.hadoop.bdfs.Bdfs')
 sc._jsc.hadoopConfiguration().set('fs.AbstractFileSystem.dtap.impl', 'com.bluedata.hadoop.bdfs.BdAbstractFS')
