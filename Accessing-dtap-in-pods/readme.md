@@ -36,6 +36,10 @@ The generic approach can be concluded into this two step:
 > Reference:
 > - [Accessing DataTaps in Kubernetes Pods](https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/datataps/Accessing_DataTaps_in_Kubernetes_Pods.html)
 
+## Uniform Resource Identifier
+![image](https://user-images.githubusercontent.com/72959956/121467168-35150680-c9eb-11eb-901c-77e83097cdf9.png)
+![image](https://user-images.githubusercontent.com/72959956/121467262-5f66c400-c9eb-11eb-958d-911f18281a27.png)
+
 # Access dtap using HDFS commands
 > ref: https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html
 
@@ -87,16 +91,29 @@ In ```$HADOOP_HOME/etc/hadoop/core-site.xml``` file, configure Hadoop with the f
 </configuration>
 ```
 ### Alternative
-I have prepared an example configuration file on [Github](https://github.com/helloezmeral/hpe-binary/tree/main/hadoop-dtap-config). If your Hadoop is do not have special configuration, you can simply download and replace your existing configuration file.
+I have prepared an example configuration file on [Github](https://github.com/helloezmeral/hpe-binary/tree/main/hadoop-dtap-config). If your Hadoop do not have special configuration, you can simply download and replace your existing configuration file.
 ## Test your HDFS command
+Here is some common commands used to interacted with datatap.
 ```
 # Current working directory -> $HADOOP_HOME
-bin/hadoop
+
+# Check the version of the hadoop
+bin/hadoop version
+
+# List the files from the default TenantStorage Data Source
 bin/hdfs dfs -ls dtap://TenantStorage/
+
+# Make new directory user in dtap://TenantStorage/
 bin/hdfs dfs -mkdir dtap://TenantStorage/user
+
+# Move the text files helloworld.txt to "cenz" folder
 bin/hdfs dfs -put helloworld.txt dtap://TenantStorage/cenz
 bin/hdfs dfs -put -f helloworld.txt dtap://TenantStorage/cenz # force replacement
+
+# Concatenate a file in dtap
 bin/hdfs dfs -cat dtap://TenantStorage/cenz/helloworld.txt
+
+# Remove a file in dtap
 bin/hdfs dfs -rm dtap://TenantStorage/cenz/helloworld.txt
 ```
 
@@ -106,6 +123,7 @@ bin/hdfs dfs -rm dtap://TenantStorage/cenz/helloworld.txt
 > export HADOOP_HOME=$HOME/hadoop
 > export PATH=$PATH:$HADOOP_HOME:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
 > ```
+
 
 # 2. Access dtap using pyspark
 ## Install pyspark
