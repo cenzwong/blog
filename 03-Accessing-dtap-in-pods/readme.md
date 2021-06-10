@@ -44,7 +44,7 @@ The generic approach can be concluded into this two step:
 > ref: https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html
 
 ## Prepare Hadoop
-Some of the Kubedirector App provided by HPE is pre-installed a well configure Hadoop for you. Hence, the following installation steps can be skips
+Some of the Kubedirector App provided by HPE is pre-installed a well-configured Hadoop for you. Hence, the following installation steps can be skip.
 ### Install OpenJDK and the dependency
 ```
 apt update && apt upgrade -y
