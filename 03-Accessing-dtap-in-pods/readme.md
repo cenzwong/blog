@@ -1,10 +1,10 @@
 # Accessing dtap in pods
 
 ## What is DataTap?
-(I want to find a better version of this graph showing kubernetes instead of EPIC, will you guys has that picture? if not, I will create my own.)
+(I want to find a better version of this graph showing Kubernetes instead of EPIC, will you guys have that picture? if not, I will create my own.)
 ![image](https://user-images.githubusercontent.com/72959956/120766016-62296b00-c54c-11eb-9a2e-6d2ec90e0871.png)
 
-Handling different protocol of files is always a pain for an data analyst. DataTap is a file system connector which aims to alleviate the pain developers had. DataTap provides HDFS protocol abstraction that allows big data applications like Spark to run unmodified with fast access to data sources other than HDFS, i.e. HPE Ezmeral Data Fabric XD (former named MapR-FS/XD) and NFS. Using DataTap, you can unify your code while the underlying data sources can be swap from HDFS, MapR-FS or NFS. This flexibility allows developers like you to focus more on coding rather than the infrastructure. More information of DataTap can be founded [here](https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/copy_About_DataTaps.html).
+Handling different protocols of files is always a pain for a data analyst. DataTap is a file system connector that aims to alleviate the pain developers had. DataTap provides HDFS protocol abstraction that allows big data applications like Spark to run unmodified with fast access to data sources other than HDFS, i.e. HPE Ezmeral Data Fabric XD (formerly named MapR-FS/XD) and NFS. Using DataTap, you can unify your code while the underlying data sources can be swap from HDFS, MapR-FS, or NFS. This flexibility allows developers like you to focus more on coding rather than the infrastructure. More information on DataTap can be founded [here](https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/copy_About_DataTaps.html).
 
 In this blog, I will introduce two ways to access DataTaps in Kubernetes. The first method will be accessing the DataTaps using HDFS Commands and the second method will be directly reading data from Apache Spark (using pyspark). Here we go.
 
@@ -12,7 +12,7 @@ In this blog, I will introduce two ways to access DataTaps in Kubernetes. The fi
 2. [Pyspark](#2-access-dtap-using-pyspark)
 
 ## **Enable dtap when creating the pod**
-First and foremost, we have to enable DataTaps of the application. This can be done by ticking "Enable DataTap" box when creating the application.
+First and foremost, we have to enable DataTaps of the application. This can be done by ticking the "Enable DataTap" box when creating the application.
 
 ![image](https://user-images.githubusercontent.com/72959956/119443704-9cc92180-bd5c-11eb-8fce-b6b53823336c.png)
 
@@ -21,7 +21,7 @@ This will result in mounting a lot of files at ```/opt/bdfs/``` of your pod. If 
 ![image](https://user-images.githubusercontent.com/72959956/120776952-58593500-c557-11eb-9dcd-4146d581a761.png)
 
 
-The generic approach can be concluded into this two step:
+The generic approach can be concluded into this two steps:
 1. Add ```/opt/bdfs/bluedata-dtap.jar``` to the classpath.
 2. Configure Hadoop with the following values.
 
@@ -42,7 +42,7 @@ The generic approach can be concluded into this two step:
 
 # Access dtap using HDFS commands
 ## Prepare Hadoop
-Some of the Kubedirector App provided by HPE is pre-installed a well-configured Hadoop for you. Hence, the following installation steps can be skip.
+Some of the Kubedirector App provided by HPE is pre-installed a well-configured Hadoop for you. Hence, the following installation steps can be skipped.
 ### Install OpenJDK and the dependency
 ```
 apt update && apt upgrade -y
@@ -51,8 +51,8 @@ apt install wget -y
 # install openjdk
 DEBIAN_FRONTEND=noninteractive apt-get install openjdk-11-jdk-headless -y
 ```
-### Download Hadoop and untar hadoop
-You can always find the latest version of hadoop on [Apache Hadoop Releases](https://hadoop.apache.org/releases.html).
+### Download Hadoop and untar Hadoop
+You can always find the latest version of Hadoop on [Apache Hadoop Releases](https://hadoop.apache.org/releases.html).
 ```
 wget https://apache.website-solution.net/hadoop/common/hadoop-3.3.0/hadoop-3.3.0.tar.gz   # Download Hadoop binary
 tar zxf hadoop-*.tar.gz                                                                   # Untar Hadoop binary
@@ -89,9 +89,9 @@ In ```$HADOOP_HOME/etc/hadoop/core-site.xml``` file, configure Hadoop with the f
 </configuration>
 ```
 ### Alternative
-I have prepared an example configuration file on [Github](https://github.com/helloezmeral/hpe-binary/tree/main/hadoop-dtap-config). If your Hadoop do not have special configuration, you can simply download and replace your existing configuration file.
+I have prepared an example configuration file on [Github](https://github.com/helloezmeral/hpe-binary/tree/main/hadoop-dtap-config). If your Hadoop does not have a special configuration, you can simply download and replace your existing configuration file.
 ## Test your HDFS command
-Here is some common commands used to interacted with datatap.
+Here are some common commands used to interact with datatap.
 ```bash
 # bash, Current working directory -> $HADOOP_HOME
 
@@ -135,16 +135,16 @@ apt-get install python3-pip -y
 DEBIAN_FRONTEND=noninteractive apt-get install openjdk-11-jdk-headless -y
 pip install pyspark
 ```
-There are two ways to interact with pyspark. The first one is execute the ```pyspark``` command in bash to initiate the pyspark session. The second way is that to treat pyspark as the module which ```python``` kernel can import to. (```import pyspark```)
+There are two ways to interact with pyspark. The first one is to execute the ```pyspark``` command in bash to initiate the pyspark session. The second way is that to treat pyspark as the module which ```python``` kernel can import to. (```import pyspark```)
 ### Method one: initiate ```pyspark``` session with jars
-Initiate Spark's interactive shell in python using the following command. In order to use datatap with pyspark, you have to add external jar as arguments to pyspark.
+Initiate Spark's interactive shell in python using the following command. In order to use datatap with pyspark, you have to add an external jar as arguments to pyspark.
 ```bash
 # bash
 
 # Specify the path of the jars files
 pyspark --jars /opt/bdfs/bluedata-dtap.jar
 ```
-After starting the interactive shell, ```Spark Context``` and ```Spark Session``` is automatically initiate for you.
+After starting the interactive shell, ```Spark Context``` and ```Spark Session``` are automatically initiate for you.
 ![image](https://user-images.githubusercontent.com/72959956/120170783-e8d00680-c233-11eb-9fe8-136da9996fdc.png)
 
 Similarly, we have to specify the Hadoop configurations. 
@@ -191,3 +191,4 @@ text.take(5)
 > [Spark Document: Runtime Environment](https://spark.apache.org/docs/latest/configuration.html#runtime-environment)
 > [Related GitHub Issues](https://github.com/delta-io/delta/issues/346)
 
+## Takeaway
