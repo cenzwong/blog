@@ -44,7 +44,7 @@ The generic approach can be concluded into this two steps:
 ## Prepare Hadoop
 Some of the Kubedirector App provided by HPE is pre-installed a well-configured Hadoop for you. Hence, the following installation steps can be skipped.
 ### Install OpenJDK and the dependency
-```
+```bash
 apt update && apt upgrade -y
 apt install wget -y
 
@@ -53,7 +53,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install openjdk-11-jdk-headless -y
 ```
 ### Download Hadoop and untar Hadoop
 You can always find the latest version of Hadoop on [Apache Hadoop Releases](https://hadoop.apache.org/releases.html).
-```
+```bash
 wget https://apache.website-solution.net/hadoop/common/hadoop-3.3.0/hadoop-3.3.0.tar.gz   # Download Hadoop binary
 tar zxf hadoop-*.tar.gz                                                                   # Untar Hadoop binary
 mv hadoop-3.3.0 $HOME/hadoop                                                              # Rename and move Hadoop folder to $HOME
@@ -61,7 +61,7 @@ cd $HOME/hadoop                                                                 
 ```
 ### Configure the required environment
 In ```$HADOOP_HOME/etc/hadoop/hadoop-env.sh``` file, assign the following environment variables (```$JAVA_HOME```, ```$HADOOP_HOME```, ```$HADOOP_CLASSPATH```):
-```
+```bash
 # These two variables is needed for HDFS command running successfully. Located at line 54, 58.
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
 export HADOOP_HOME=$HOME/hadoop
@@ -70,7 +70,7 @@ export HADOOP_HOME=$HOME/hadoop
 export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$HADOOP_HOME/lib/:/opt/bdfs/bluedata-dtap.jar
 ```
 In ```$HADOOP_HOME/etc/hadoop/core-site.xml``` file, configure Hadoop with the following values:
-```
+```xml
 <configuration>
   <property>
     <name>fs.dtap.impl</name>
