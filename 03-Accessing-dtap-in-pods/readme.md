@@ -41,6 +41,11 @@ The generic approach can be concluded into this two steps:
 ![image](https://user-images.githubusercontent.com/72959956/121467262-5f66c400-c9eb-11eb-958d-911f18281a27.png)
 
 # Access dtap using HDFS commands
+## Introduction
+The Hadoop distributed file system (HDFS) is the key component of the Hadoop ecosystem. HDFS commands, of course, is the commands which responsible for manipulate files for HDFS. 
+
+storing large data sets of structured or unstructured data across various nodes and thereby maintaining the metadata in the form of log files. To use the HDFS commands, first you need to start the Hadoop services using the following command:
+
 ## Prepare Hadoop
 Some of the Kubedirector App provided by HPE is pre-installed a well-configured Hadoop for you. Hence, the following installation steps can be skipped.
 ### Install OpenJDK and the dependency
@@ -126,6 +131,8 @@ bin/hdfs dfs -rm dtap://TenantStorage/cenz/helloworld.txt
 > [Hadoop File System Shell Document](https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html)
 
 # 2. Access dtap using pyspark
+## Introduction
+
 ## Install ```pyspark```
 There are lots of way to install Spark. The simplest way is to install pyspark package directly using ```pip install pyspark```. Run the following to install the prerequisite packages and pyspark.
 ```bash
