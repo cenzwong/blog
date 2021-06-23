@@ -1,5 +1,13 @@
 # Getting Started with MapR
 
+## Filesystem
+### Accessing via NFS Mount
+```
+mkdir /mapr
+
+
+```
+
 ## list element in MapR
 ```curl
 bin/hadoop
