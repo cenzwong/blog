@@ -24,3 +24,13 @@
 ![image](https://user-images.githubusercontent.com/72959956/122021550-56fdf700-cdf8-11eb-9c31-e0d171c7406e.png)
 ![image](https://user-images.githubusercontent.com/72959956/122021576-5ebd9b80-cdf8-11eb-9810-36d744560327.png)
 ![image](https://user-images.githubusercontent.com/72959956/122021616-667d4000-cdf8-11eb-8400-2dc03f4290f3.png)
+
+## Possible Error
+![image](https://user-images.githubusercontent.com/72959956/124234611-d6086480-db46-11eb-849e-7d4f7a8c35e4.png)
+- Solution
+```
+# 1: exec into the pod
+kubectl exec -it <pod name> -- /bin/bash
+# 2: changed the access mode for the core-site.xml
+chmod 666 core-site.xml
+```
