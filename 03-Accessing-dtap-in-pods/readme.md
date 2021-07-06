@@ -2,8 +2,8 @@
 
 In this blog, I will introduce two ways to access DataTaps in Kubernetes. The first method will be accessing the DataTaps using HDFS Commands and the second method will be directly reading data from Apache Spark (using pyspark). Here we go.
 
-1. [Hadoop FS Shell](#1-access-datataps-using-hdfs-commands)
-2. [Pyspark](#2-access-datataps-using-pyspark)
+1. [Hadoop FS Shell](#access-datataps-using-hdfs-commands)
+2. [Pyspark](#access-datataps-using-pyspark)
 
 ## What is DataTap?
 (I want to find a better version of this graph showing Kubernetes instead of EPIC, will you guys have that picture? if not, I will create my own.)
