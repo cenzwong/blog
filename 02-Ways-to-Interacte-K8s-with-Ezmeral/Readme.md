@@ -87,6 +87,9 @@ Download your ```Kubeconfig``` file, and define the path to the ```Kubeconfig```
 export KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config"
 ```
 
+![image](https://user-images.githubusercontent.com/72959956/125402356-e6da9500-e3e6-11eb-8ff8-eafdd9f19abf.png)
+
+
 ```bat
 # Windows
 set KUBECONFIG=C:\Users\Administrator\Desktop\ClassFiles\mykubeconfig
