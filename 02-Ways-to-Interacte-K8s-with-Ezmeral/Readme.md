@@ -87,6 +87,12 @@ Download your ```Kubeconfig``` file, and define the path to the ```Kubeconfig```
 export KUBECONFIG="/home/hpeadmin/.kube/.hpecp/ez53-gateway.hpeilab.com/config"
 ```
 
+```bat
+# Windows
+set KUBECONFIG=C:\Users\Administrator\Desktop\ClassFiles\mykubeconfig
+```
+
+
 #### Download the ```Kubeconfig``` file manually
 ![image](https://user-images.githubusercontent.com/72959956/119962105-4b799600-bfd9-11eb-985d-2c867162902e.png)
 
@@ -154,7 +160,11 @@ export KUBECONFIG="./kubeconfig"
 kubectl get pods
 ```
 
+#### Running Kubectl commands without setting variable
 
+```bash
+kubectl get nodes --kubeconfig=mykubeconfig
+```
 
 > Resources:
 > - [API_Access](https://docs.containerplatform.hpe.com/53/reference/accessing-the-applications/API_Access.html)
