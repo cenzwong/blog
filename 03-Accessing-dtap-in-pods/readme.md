@@ -8,6 +8,8 @@ In this blog, I will introduce two ways to access DataTaps in Kubernetes. The fi
 ## What is DataTap?
 (I want to find a better version of this graph showing Kubernetes instead of EPIC, will you guys have that picture? if not, I will create my own.)
 ![image](https://user-images.githubusercontent.com/72959956/120766016-62296b00-c54c-11eb-9a2e-6d2ec90e0871.png)
+![image](https://user-images.githubusercontent.com/72959956/126251305-e100faf1-aac5-410b-8c67-cb7cdd01a50b.png)
+
 
 Handling different protocols of file systems is always a pain for a data analyst. DataTap is a file system connector that aims to alleviate the pain developers had. DataTap provides HDFS protocol abstraction that allows big data applications like Spark to run unmodified with fast access to data sources other than HDFS, i.e. HPE Ezmeral Data Fabric XD (formerly named MapR-FS/XD) and NFS. Using DataTap, you can unify your code while the underlying data sources can be swap from HDFS, MapR-FS, or NFS. This flexibility allows developers like you to focus more on coding rather than the infrastructure. More information on DataTap can be founded [here](https://docs.containerplatform.hpe.com/53/reference/kubernetes/tenant-project-administration/copy_About_DataTaps.html).
 
