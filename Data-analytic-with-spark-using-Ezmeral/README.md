@@ -28,9 +28,19 @@
 ## Possible Error
 ![image](https://user-images.githubusercontent.com/72959956/124234611-d6086480-db46-11eb-849e-7d4f7a8c35e4.png)
 - Solution
+### control it in notebook
+```bash
+# Grap the kubectl credential
+kubectl hpecp refresh ez-gateway.hpeilab.com --insecure --hpecp-user=hpecli --hpecp-pass=hpecli
+kubectl get pods --all-namespaces
+kubectl get pods --namespace=poc-tenant
+kubectl exec -it testnotebook-controller-6kq7r-0 --namespace=poc-tenant -- /bin/bash
+```
+
+### Using WebTerminal
 ```
 # 1: exec into the pod
 kubectl exec -it <pod name> -- /bin/bash
 # 2: changed the access mode for the core-site.xml
-chmod 666 core-site.xml
+chmod 666 /opt/bluedata/hadoop-2.8.5/etc/hadoop/core-site.xml
 ```
