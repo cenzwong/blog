@@ -17,7 +17,7 @@ You can see there is a lot of different kernel is already installed for you. No 
 
 
 ## Preparing the datasets
-Imagine we had a very large csv file ready for analysis, we have to find someone to put it to the distributed filesystem. Of course, you can do that with the graphic user interface HPE ECP provided with
+Imagine we had a very large csv file ready for analysis, we have to find someone to put it to the distributed filesystem. Of course, you can do that with the graphic user interface HPE ECP provided.
 
 ![image](https://user-images.githubusercontent.com/72959956/120461217-67f84280-c3cc-11eb-9126-e69cacef4432.png)
 ![image](https://user-images.githubusercontent.com/72959956/120461299-76def500-c3cc-11eb-9857-5b760ef62e62.png)
