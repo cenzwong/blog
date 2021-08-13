@@ -17,7 +17,8 @@ You can see there is a lot of different kernel is already installed for you. No 
 
 
 ## Preparing the datasets
-Imagine we had a large csv
+Imagine we had a very large csv file ready for analysis, we have to find someone to put it to the distributed filesystem. Of course, you can do that with the graphic user interface HPE ECP provided with
+
 ![image](https://user-images.githubusercontent.com/72959956/120461217-67f84280-c3cc-11eb-9126-e69cacef4432.png)
 ![image](https://user-images.githubusercontent.com/72959956/120461299-76def500-c3cc-11eb-9857-5b760ef62e62.png)
 ![image](https://user-images.githubusercontent.com/72959956/120461869-fa98e180-c3cc-11eb-8a6f-72d91d29c102.png)
@@ -30,6 +31,14 @@ Imagine we had a large csv
 ```
 
 # Into the pyspark
+
+
+
+
+
+
+
+
 ![image](https://user-images.githubusercontent.com/72959956/122021373-333ab100-cdf8-11eb-9e58-edbccf43f0b2.png)
 ![image](https://user-images.githubusercontent.com/72959956/122021431-3e8ddc80-cdf8-11eb-9c61-d9bd400a4c9b.png)
 ![image](https://user-images.githubusercontent.com/72959956/122021467-45b4ea80-cdf8-11eb-8ca4-ffc11c03f1ad.png)
