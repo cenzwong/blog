@@ -1,4 +1,8 @@
-# Data Analytic with pySpark Using HPE Ezmeral
+# Data Analytic with pySpark Using HPE Ezmeral Container Platform
+
+[Apache Spark](https://spark.apache.org/) is a unified analytics engine for big data processing. It allows developers to perform data processing files in distributed filesystem, like Hadoop distributed filesystem or HPE Ezmeral Data Fabric (formerly known as MapR-XD). Setting up Spark environment is always a pain for data scientist. HPE Ezmeral Container Platorm is here for making your life easier.
+
+
 
 ![image](https://user-images.githubusercontent.com/72959956/120459929-39c63300-c3cb-11eb-9e7a-65189f4367d3.png)
 ![image](https://user-images.githubusercontent.com/72959956/120459957-4185d780-c3cb-11eb-8011-95e09ab7b9c3.png)
