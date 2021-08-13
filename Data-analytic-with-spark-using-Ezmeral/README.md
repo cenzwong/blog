@@ -18,26 +18,54 @@ You can see there is a lot of different kernel is already installed for you. No 
 
 ## Preparing the datasets
 Imagine we had a very large csv file ready for analysis, we have to find someone to put it to the distributed filesystem. Of course, you can do that with the graphic user interface HPE ECP provided.
-
 ![image](https://user-images.githubusercontent.com/72959956/120461217-67f84280-c3cc-11eb-9126-e69cacef4432.png)
-![image](https://user-images.githubusercontent.com/72959956/120461299-76def500-c3cc-11eb-9857-5b760ef62e62.png)
+
+The other way would be do that within the Jupyter environment. You drag the file to the Jupyter Lab and run the following commands to put the file to the TenantStorage through DataTap.
+
+```bash
+# Put a file from local filesystem to distributed filesystem using HDFS commands
+hdfs dfs -put enhanced_sur_covid_19_eng.csv dtap://TenantStorage/enhanced_sur_covid_19_eng.csv
+# List the files or directories
+hdfs dfs -ls dtap://TenantStorage/
+# List the files or directories
+hdfs dfs -tail dtap://TenantStorage/enhanced_sur_covid_19_eng_.csv
+```
 ![image](https://user-images.githubusercontent.com/72959956/120461869-fa98e180-c3cc-11eb-8a6f-72d91d29c102.png)
 
 
+# Getting Start with PySpark
+
+The pySpark module is already installed it for you. No extra installation is needed. So convenient, isn't it. To connect the pyspark runtime to read files from DataTap, some configurations is needed.
+
+```py
+# python
+from pyspark import SparkConf, SparkContext
+
+# Specify the path of the jars files
+conf = SparkConf().set("spark.jars", "/opt/bdfs/bluedata-dtap.jar")
+sc = SparkContext(conf=conf)
+# Specify the Hadoop configurations.
+sc._jsc.hadoopConfiguration().set('fs.dtap.impl', 'com.bluedata.hadoop.bdfs.Bdfs')
+sc._jsc.hadoopConfiguration().set('fs.AbstractFileSystem.dtap.impl', 'com.bluedata.hadoop.bdfs.BdAbstractFS')
 ```
-# jupyter
-!hdfs dfs -ls dtap://TenantStorage/
-!hdfs dfs -tail dtap://TenantStorage/enhanced_sur_covid_19_eng_.csv
+
+
+```py
+# Commands for reading DataTap file.
+text = sc.textFile("dtap://TenantStorage/hello.txt")
+text.take(5)
 ```
 
-# Into the pyspark
 
+```py
+from pyspark.sql import SparkSession
 
+spark = SparkSession.builder.getOrCreate()
 
-
-
-
-
+# Commands for reading DataTap csv file.
+df = spark.read.csv('dtap://TenantStorage/enhanced_sur_covid_19_eng.csv', header=True, inferSchema=True)
+df.take(3)
+```
 
 ![image](https://user-images.githubusercontent.com/72959956/122021373-333ab100-cdf8-11eb-9e58-edbccf43f0b2.png)
 ![image](https://user-images.githubusercontent.com/72959956/122021431-3e8ddc80-cdf8-11eb-9c61-d9bd400a4c9b.png)
