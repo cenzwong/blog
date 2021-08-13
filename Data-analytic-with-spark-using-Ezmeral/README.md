@@ -1,12 +1,15 @@
 # Data Analytic with pySpark Using HPE Ezmeral Container Platform
 
-[Apache Spark](https://spark.apache.org/) is a unified analytics engine for big data processing. It allows developers to perform data processing files in distributed filesystem, like Hadoop distributed filesystem or HPE Ezmeral Data Fabric (formerly known as MapR-XD). Setting up Spark environment is always a pain for data scientist. HPE Ezmeral Container Platorm is here for making your life easier.
+PySpark is an interface for Apache Spark in Python. [Apache Spark](https://spark.apache.org/) is a unified analytics engine for big data processing. It allows developers to perform data processing on files in distributed filesystem, like Hadoop distributed filesystem or HPE Ezmeral Data Fabric (formerly known as MapR-XD). Setting up Spark environment is always a pain for data scientist. HPE Ezmeral Container Platorm is here for making your life easier. You can run Spark on a standalone pods or run on top a kubernetes cluster. Your way, your choice. In this blog, I will have a walk through to all of you to see how easy that is to run spark job with HPE Ezmeral Container Platform.
 
-
-
+## Running Spark in Standalone Mode
+First, we have to prepare our favorite Jupyter environment. Inside a tenant, navigate to Notebooks tab. You will see a Jupyter Kubedirector app prepared for you. After clicking the "Launch" button, you will need to configure the compute resource needed.
 ![image](https://user-images.githubusercontent.com/72959956/120459929-39c63300-c3cb-11eb-9e7a-65189f4367d3.png)
-![image](https://user-images.githubusercontent.com/72959956/120459957-4185d780-c3cb-11eb-8011-95e09ab7b9c3.png)
+<!-- ![image](https://user-images.githubusercontent.com/72959956/120459957-4185d780-c3cb-11eb-8011-95e09ab7b9c3.png) -->
+As you can see below, you have to specify the name of the notebook. In order to expand access to shared data by specifying a named path to a specified storage resource, click 'Enable DataTap' here.
 ![image](https://user-images.githubusercontent.com/72959956/120460214-801b9200-c3cb-11eb-94c0-e86bb70dad57.png)
+
+
 ![image](https://user-images.githubusercontent.com/72959956/120460537-cc66d200-c3cb-11eb-8410-3b7ec95051d5.png)
 ![image](https://user-images.githubusercontent.com/72959956/120460678-ea343700-c3cb-11eb-9aef-8afc9252d471.png)
 ![image](https://user-images.githubusercontent.com/72959956/120461217-67f84280-c3cc-11eb-9126-e69cacef4432.png)
