@@ -6,7 +6,8 @@ PySpark is an interface for Apache Spark in Python. [Apache Spark](https://spark
 First, we have to prepare our favorite Jupyter environment. Inside a MLOps tenant, navigate to Notebooks tab. You will see a Jupyter Kubedirector app prepared for you. After clicking the "Launch" button, you will need to configure the compute resource needed.
 ![image](https://user-images.githubusercontent.com/72959956/120459929-39c63300-c3cb-11eb-9e7a-65189f4367d3.png)
 <!-- ![image](https://user-images.githubusercontent.com/72959956/120459957-4185d780-c3cb-11eb-8011-95e09ab7b9c3.png) -->
-As you can see below, you have to specify the name of the notebook. In order to expand access to shared data by specifying a named path to a specified storage resource, click 'Enable DataTap' here.
+As you can see below, you have to specify the name of the notebook. In order to  by specifying a named path to a specified storage resource, Click 'Enable DataTap' to expand access to shared data, by specifying a named path to a specified storage resource.
+
 ![image](https://user-images.githubusercontent.com/72959956/120460214-801b9200-c3cb-11eb-94c0-e86bb70dad57.png)
 
 Switch to the Notebook Endpoints tab and you will see the access points are prepared for you. What you have to do is clicking the link and, after logining in with your LDAP/AD account, your favorite Jupyter environment is ready for you.
