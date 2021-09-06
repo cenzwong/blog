@@ -19,10 +19,10 @@ Different kernels are already installed for you. No matter which languages you a
 
 
 ## Preparing the datasets
-Imagine we had a very large csv file ready for analysis, we have to find someone to put it to the distributed filesystem. Of course, you can do that with the graphic user interface HPE ECP provided.
+Imagine we had a very large CSV file ready for analysis. We have to put the file to the distributed filesystem. Of course, you can do that with the graphic user interface HPE ECP provided.
 ![image](https://user-images.githubusercontent.com/72959956/120461217-67f84280-c3cc-11eb-9126-e69cacef4432.png)
 
-The other way would be do that within the Jupyter environment. You drag the file to the Jupyter Lab and run the following commands to put the file to the TenantStorage through DataTap.
+The other way would be do that within the Jupyter environment. Just drag the file to the left panel of the Jupyter Lab and run the following commands to put the file to the TenantStorage through DataTap.
 
 ```bash
 # Put a file from local filesystem to distributed filesystem using HDFS commands
@@ -36,9 +36,9 @@ hdfs dfs -tail dtap://TenantStorage/enhanced_sur_covid_19_eng_.csv
 ![image](https://user-images.githubusercontent.com/72959956/129331881-dbe602e7-b3d9-4541-a9d0-4ea274aa7e51.png)
 
 
-# Getting Start with PySpark
+# Getting Started with PySpark
 
-The pySpark module is already installed it for you. No extra installation is needed. So convenient, isn't it. To connect the pyspark runtime to read files from DataTap, some configurations is needed.
+The pySpark module is already installed it for you. No extra installation is needed. So convenient, isn't it. Some configurations for the pySpark runtime is needed in order to read files from DataTap.
 
 ```py
 # python3 kernel
