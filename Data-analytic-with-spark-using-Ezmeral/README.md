@@ -10,10 +10,11 @@ As you can see below, you have to specify the name of the notebook. In order to 
 
 ![image](https://user-images.githubusercontent.com/72959956/120460214-801b9200-c3cb-11eb-94c0-e86bb70dad57.png)
 
-Switch to the Notebook Endpoints tab and you will see the access points are prepared for you. What you have to do is clicking the link and, after logining in with your LDAP/AD account, your favorite Jupyter environment is ready for you.
+Switching to the Notebook Endpoints tab, the access points are prepared for you. Just click the link and, after logining in with your LDAP/AD account, your favorite Jupyter environment is ready for you.
+
 ![image](https://user-images.githubusercontent.com/72959956/120460678-ea343700-c3cb-11eb-9aef-8afc9252d471.png)
 
-You can see there is a lot of different kernel is already installed for you. No matter which language you are using, there will be one who suit you with your ML project. Notices that PySpark Kernel is for using Spark with Livy and Spark Operator. To run simple spark job, just use Python3 kernel and import pyspark module manually.
+Different kernels are already installed for you. No matter which languages you are using, there will be one who suit you with your ML project. Notices that PySpark Kernel is for using Spark with Livy and Spark Operator. To run simple spark job, just use Python3 kernel and import pyspark module manually.
 ![image](https://user-images.githubusercontent.com/72959956/120460537-cc66d200-c3cb-11eb-8410-3b7ec95051d5.png)
 
 
