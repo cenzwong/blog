@@ -10,7 +10,7 @@ As you can see below, you have to specify the name of the notebook. In order to 
 
 ![image](https://user-images.githubusercontent.com/72959956/120460214-801b9200-c3cb-11eb-94c0-e86bb70dad57.png)
 
-Switching to the Notebook Endpoints tab, the access points are prepared for you. Just click the link and, after logining in with your LDAP/AD account, your favorite Jupyter environment is ready for you.
+Switching to the Notebook Endpoints tab, the access points are prepared for you. Just click the link and, after logging in with your LDAP/AD account, your favorite Jupyter environment is ready for you.
 
 ![image](https://user-images.githubusercontent.com/72959956/120460678-ea343700-c3cb-11eb-9aef-8afc9252d471.png)
 
