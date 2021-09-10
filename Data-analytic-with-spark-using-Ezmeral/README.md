@@ -7,6 +7,7 @@ First, we have to prepare our favorite Jupyter environment. Inside a MLOps tenan
 ![image](https://user-images.githubusercontent.com/72959956/120459929-39c63300-c3cb-11eb-9e7a-65189f4367d3.png)
 <!-- ![image](https://user-images.githubusercontent.com/72959956/120459957-4185d780-c3cb-11eb-8011-95e09ab7b9c3.png) -->
 As you can see below, you have to specify the name of the notebook. In order to  by specifying a named path to a specified storage resource, Click 'Enable DataTap' to expand access to shared data, by specifying a named path to a specified storage resource.
+![image](https://user-images.githubusercontent.com/72959956/132812471-d1ce5ce8-0d47-41ae-bd96-879262018f84.png)
 
 ![image](https://user-images.githubusercontent.com/72959956/120460214-801b9200-c3cb-11eb-94c0-e86bb70dad57.png)
 
