@@ -50,9 +50,10 @@ sudo ./install.sh
 # and you will see
 #  ----Harbor has been installed and started successfully.----
 ```
-===
-# newest image is here: https://github.com/goharbor/harbor/releases
-wget https://github.com/goharbor/harbor/releases/download/v2.2.2/harbor-offline-installer-v2.2.2.tgz & tar -vxf harbor-offline-installer-v2.2.2.tgz
+### sample harbor.yml
+- https://github.com/helloezmeral/HPE-Ezmeral-HelloWorld/blob/main/setting-up-airgap/harbor.yml
+```
+
 cp harbor.yml.template harbor.yml
 nano harbor.yml
 # After Configure
@@ -66,5 +67,5 @@ sudo ./install.sh
 sudo mkdir /data
 sudo chmod 777 /data
 sudo ./install.sh
+```
 
-===
