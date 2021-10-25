@@ -44,6 +44,11 @@ kubectl label service k8s-bc hpecp.hpe.com/hpecp-internal-gateway=true
 
 http://ez-gateway.hpeilab.com:10014/
 
+
+
+# delete everything
+kubectl delete services/kubernetes-bootcamp-$studentId
+kubectl delete deployment/kubernetes-bootcamp-$studentId
 ```
 
 
