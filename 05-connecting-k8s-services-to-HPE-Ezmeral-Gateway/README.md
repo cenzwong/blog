@@ -34,6 +34,7 @@ curl http://ez-vm02.hpeilab.com:31299/api/v1/namespaces/default/pods/k8s-bc-796d
 
 
 kubectl scale deployments/k8s-bc --replicas=4
+kubectl get pods -l app=k8s-bc
 curl ez-vm02.hpeilab.com:31299 # also work in broswer
 curl ez-vm02.hpeilab.com:31299 # will change different pods
 
@@ -44,3 +45,10 @@ kubectl label service k8s-bc hpecp.hpe.com/hpecp-internal-gateway=true
 http://ez-gateway.hpeilab.com:10014/
 
 ```
+
+
+# How to scale your application
+
+# Using a Service to Expose Your App
+
+# Map HPE Ezmeral Gateway to your Services
