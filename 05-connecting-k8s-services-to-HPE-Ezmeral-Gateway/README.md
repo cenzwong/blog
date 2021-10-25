@@ -4,7 +4,6 @@ Gateway (4): These hosts are also required. The Gateway hosts map both the IP ad
 
 ![image](https://user-images.githubusercontent.com/72959956/138654527-77f3bf2c-f001-4fc7-88f3-d17436368dc3.png)
 
-![image](https://user-images.githubusercontent.com/72959956/138656121-42c193df-3397-4035-8027-2bf66c201557.png)
 ![image](https://user-images.githubusercontent.com/72959956/138656214-73c9418f-e291-4678-b3a2-c318a318d325.png)
 
 
