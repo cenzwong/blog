@@ -1,10 +1,13 @@
 ---
-title: "PySpark Big-O Complexity: Algorithmic Bounds in Distributed Systems"
+title: "PySpark Big-O Complexity"
+subtitle: "Algorithmic Bounds in Distributed Systems"
 description: "An in-depth analysis of the mathematical and hardware complexity of PySpark transformations, evaluating Narrow vs. Wide operations, shuffle bottlenecks, and JVM-to-Python serialization costs."
 date: 2026-05-22
 tags: PySpark, BigData, Algorithms, Performance
 slug: pyspark-big-o-complexity
+author: Cenz Wong & Gemini AI
 ---
+
 
 ## The Distributed Algorithmic Paradigm
 

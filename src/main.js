@@ -138,6 +138,7 @@ async function renderHome() {
               <span class="post-tag">${primaryTag}</span>
             </div>
             <h3>${post.title}</h3>
+            ${post.subtitle ? `<h4 class="post-card-subtitle">${post.subtitle}</h4>` : ''}
             <p>${post.description}</p>
           </div>
           <div class="post-readmore">
@@ -151,6 +152,10 @@ async function renderHome() {
       <div class="hero-section">
         <h1>Welcome to Cenz.Blog</h1>
         <p>A statically-compiled website powered entirely by a client-side JSON search index.</p>
+        <a href="#/about" class="symbiosis-hero-badge glass">
+          <span class="pulse-dot"></span>
+          <span class="badge-text">Distilled Knowledge from AI Collaboration &rarr;</span>
+        </a>
       </div>
       
       <h2 class="section-title">Latest Articles</h2>
@@ -237,6 +242,7 @@ async function executeSearch(query, resultsContainer, statsContainer) {
     
     for (const post of posts) {
       const titleLower = post.title.toLowerCase();
+      const subtitleLower = (post.subtitle || '').toLowerCase();
       const descLower = post.description.toLowerCase();
       const tagsLower = post.tags.toLowerCase();
       const contentStripped = stripMarkdown(post.content);
@@ -246,6 +252,7 @@ async function executeSearch(query, resultsContainer, statsContainer) {
       let isMatch = true;
       for (const kw of keywords) {
         if (!titleLower.includes(kw) && 
+            !subtitleLower.includes(kw) && 
             !descLower.includes(kw) && 
             !tagsLower.includes(kw) && 
             !contentLower.includes(kw)) {
@@ -262,6 +269,7 @@ async function executeSearch(query, resultsContainer, statsContainer) {
           if (titleLower.startsWith(kw)) score += 150;
           else if (titleLower.includes(kw)) score += 100;
           
+          if (subtitleLower.includes(kw)) score += 50;
           if (descLower.includes(kw)) score += 30;
           if (tagsLower.includes(kw)) score += 20;
           
@@ -272,6 +280,7 @@ async function executeSearch(query, resultsContainer, statsContainer) {
         
         // Exact full phrase bonus
         if (titleLower.includes(cleaned)) score += 300;
+        if (subtitleLower.includes(cleaned)) score += 200;
         if (descLower.includes(cleaned)) score += 150;
         if (contentLower.includes(cleaned)) score += 80;
         
@@ -353,6 +362,7 @@ async function executeSearch(query, resultsContainer, statsContainer) {
             <span class="post-tag">${post.tags ? post.tags.split(',')[0] : 'Tech'}</span>
           </div>
           <h3>${post.title}</h3>
+          ${post.subtitle ? `<h4 class="post-card-subtitle">${post.subtitle}</h4>` : ''}
           <p>${snippet}</p>
         </a>
       `;
@@ -425,6 +435,32 @@ async function renderPost(slug) {
         });
     }
     
+    // Create co-creation HTML if the post specifies AI collaboration
+    let authorHtml = '';
+    if (post.author === 'Cenz Wong & Gemini AI') {
+      authorHtml = `
+        <div class="meta-item author-block">
+          <div class="author-avatars">
+            <div class="avatar human" title="Cenz Wong">CW</div>
+            <div class="avatar ai" title="Gemini AI">🤖</div>
+          </div>
+          <span class="author-names">Cenz &amp; Gemini AI</span>
+          <span class="collaboration-badge" style="cursor: default;">
+            <svg class="collab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+            </svg>
+            Distilled Dialogue
+          </span>
+        </div>
+      `;
+    } else {
+      authorHtml = `
+        <div class="meta-item author-block">
+          <span class="author-names" style="color: var(--text-secondary);">By ${post.author || 'Cenz Wong'}</span>
+        </div>
+      `;
+    }
+
     mainView.innerHTML = `
       <article class="post-view">
         <div class="post-header">
@@ -432,9 +468,13 @@ async function renderPost(slug) {
             &larr; Back to articles
           </a>
           <h1 class="post-title">${post.title}</h1>
+          ${post.subtitle ? `<h2 class="post-view-subtitle">${post.subtitle}</h2>` : ''}
           <div class="post-header-meta">
-            <span><span class="date-label">Published on</span> ${post.date}</span>
-            <div class="post-tags">
+            <div class="meta-item">
+              <span><span class="date-label">Published on</span> ${post.date}</span>
+            </div>
+            ${authorHtml}
+            <div class="post-tags" style="margin-left: auto;">
               ${tagsList.map(tag => `<span class="post-tag-badge">${tag}</span>`).join('')}
             </div>
           </div>
@@ -497,6 +537,55 @@ function renderAbout() {
       
       <h2 class="section-title">Static Compilation Pipeline</h2>
       <p>At build-time, a Python compiler script runs, scanning all raw blog post Markdown files, parses the frontmatter metadata, structures the full-text body content, sorts posts chronologically, and compiles a single optimized <code>search_index.json</code> static asset. This file is deployed to GitHub Pages and served as a standard immutable asset, giving you rapid speeds and high search precision.</p>
+      
+      <h2 class="section-title" style="margin-top: 48px;">Distilled Knowledge from AI: The Dialogue Synthesis</h2>
+      <p>Every deep-dive article on Cenz.Blog is not simply a solo creation or a generic AI output. Instead, they are high-density, rigorous summaries born from intensive <strong>human-AI dialectics</strong>. We challenge assumptions, stress-test execution logic, verify JVM thresholds, and refine computational complexities iteratively before compiling.</p>
+      
+      <div class="synthesis-pipeline">
+        <div class="pipeline-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Human Dialectic Spark</h3>
+            <p>Identifying core distributed bottlenecks or algorithmic limits (e.g., Wide Join network limits, UDF JVM border serialization penalties).</p>
+          </div>
+        </div>
+        
+        <div class="pipeline-connector">
+          <div class="connector-line"></div>
+        </div>
+        
+        <div class="pipeline-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Intense Dialogue Loop</h3>
+            <p>Engaging in deep, recursive Q&A with Gemini to debug heap risks, GC footprints, AQE query adjustments, and mathematical Big-O bounds.</p>
+          </div>
+        </div>
+        
+        <div class="pipeline-connector">
+          <div class="connector-line"></div>
+        </div>
+        
+        <div class="pipeline-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Stress Testing & Proofs</h3>
+            <p>Formulating rigorous KaTeX formulas, comparing sort buffers, and ensuring accurate hardware behavior matching real-world systems.</p>
+          </div>
+        </div>
+        
+        <div class="pipeline-connector">
+          <div class="connector-line"></div>
+        </div>
+        
+        <div class="pipeline-step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h3>Static Distillation</h3>
+            <p>Structuring the messy raw dialogue into highly polished, Markdown-based documentation compiled directly into our client-side search index.</p>
+          </div>
+        </div>
+      </div>
     </div>
   `;
 }

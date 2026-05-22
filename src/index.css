@@ -418,6 +418,16 @@ body {
   color: var(--accent-primary);
 }
 
+.post-card-subtitle {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 12px;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+
 .post-card p {
   color: var(--text-secondary);
   font-size: 0.9rem;
@@ -473,6 +483,16 @@ body {
   line-height: 1.2;
   margin-bottom: 16px;
   letter-spacing: -0.03em;
+}
+
+.post-view-subtitle {
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 20px;
+  line-height: 1.4;
+  opacity: 0.9;
 }
 
 .post-header-meta {
@@ -846,6 +866,224 @@ body {
 }
 
 /* ==========================================================================
+   AI Co-Creation & Distilled Knowledge Indicators
+   ========================================================================== */
+
+/* Homepage Hero Badge */
+.symbiosis-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 24px auto 0;
+  padding: 8px 20px;
+  border-radius: 50px;
+  border: 1px solid var(--border-light);
+  background: hsla(var(--hue), 25%, 11%, 0.4);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.symbiosis-hero-badge:hover {
+  color: var(--text-primary);
+  border-color: var(--border-active);
+  background: hsla(var(--hue), 25%, 15%, 0.75);
+  box-shadow: 0 0 20px var(--accent-primary-glow);
+  transform: translateY(-2px);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent-primary);
+  display: inline-block;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Article Header Co-Author Block */
+.meta-item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.author-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-left: 1px solid var(--border-light);
+  padding-left: 16px;
+}
+
+.author-avatars {
+  display: flex;
+  align-items: center;
+  cursor: default;
+}
+
+.avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: 2px solid var(--bg-dark);
+  margin-right: -8px;
+  transition: var(--transition-smooth);
+  user-select: none;
+}
+
+.avatar.human {
+  background: linear-gradient(135deg, hsl(220, 20%, 35%) 0%, hsl(220, 20%, 15%) 100%);
+  color: var(--text-primary);
+}
+
+.avatar.ai {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, hsl(190, 95%, 25%) 100%);
+  color: var(--bg-dark);
+  margin-right: 0; /* Clear overlap for the trailing avatar */
+}
+
+.author-avatars:hover .avatar.human {
+  transform: translateX(-4px);
+}
+
+.author-avatars:hover .avatar.ai {
+  transform: translateX(4px);
+}
+
+.author-names {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-right: 8px;
+}
+
+/* Collaboration Badge & Glassmorphic Tooltip */
+.collaboration-indicator-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.collaboration-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary-glow);
+  background: var(--accent-primary-glow);
+  cursor: help;
+  transition: var(--transition-smooth);
+}
+
+.collaboration-badge:hover {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 12px var(--accent-primary-glow);
+}
+
+.collab-icon {
+  width: 12px;
+  height: 12px;
+  color: var(--accent-primary);
+}
+
+/* Synthesis Pipeline (About Page Timeline) */
+.synthesis-pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 40px 0 60px;
+}
+
+.pipeline-step {
+  display: flex;
+  gap: 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  transition: var(--transition-smooth);
+  position: relative;
+  z-index: 2;
+}
+
+.pipeline-step:hover {
+  border-color: var(--border-active);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25), 0 0 15px var(--accent-primary-glow);
+  background: var(--bg-surface-hover);
+}
+
+.step-num {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  background: var(--bg-deep);
+  border: 2px solid var(--accent-primary);
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: var(--transition-smooth);
+}
+
+.pipeline-step:hover .step-num {
+  background: var(--accent-primary);
+  color: var(--bg-dark);
+  box-shadow: 0 0 20px var(--accent-primary);
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.step-content p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 0 !important;
+}
+
+.pipeline-connector {
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 43px; /* Align line with center of step-num */
+  height: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.connector-line {
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--accent-primary), var(--accent-secondary));
+  opacity: 0.4;
+}
+
+/* ==========================================================================
    Responsive Breakpoints
    ========================================================================== */
 @media (max-width: 768px) {
@@ -880,6 +1118,28 @@ body {
   
   .post-title {
     font-size: 2rem;
+  }
+  
+  .post-view-subtitle {
+    font-size: 1.15rem;
+    margin-bottom: 16px;
+  }
+  
+  /* Mobile responsive overrides for AI co-creation */
+  .author-block {
+    border-left: none;
+    padding-left: 0;
+    margin-top: 8px;
+    width: 100%;
+  }
+  .pipeline-step {
+    flex-direction: column;
+    gap: 16px;
+    padding: 18px;
+  }
+
+  .pipeline-connector {
+    padding-left: 19px; /* Re-align line to center of mobile-adjusted step numbers */
   }
   
   .footer-content {

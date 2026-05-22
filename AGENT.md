@@ -61,11 +61,13 @@ description: "A highly descriptive, engaging subtitle or short description."
 date: "YYYY-MM-DD"
 tags: "Spark, Big-O, Python, WebAssembly"
 slug: "your-article-slug"
+author: "Cenz Wong & Gemini AI"  # Optional. Set to "Cenz Wong & Gemini AI" to automatically trigger human-AI co-authorship badge and avatars. Defaults to "Cenz Wong".
 ---
 ```
 
 > [!IMPORTANT]
-> The publication date (`date` field) determines the chronological order of the blog feed. Ensure dates use the `YYYY-MM-DD` format. If a tag is omitted, it will default to `Tech` inside the frontend cards.
+> The publication date (`date` field) determines the chronological order of the blog feed. Ensure dates use the `YYYY-MM-DD` format.
+> To trigger the co-authorship layout (showing you and the AI as partners), simply include `author: Cenz Wong & Gemini AI` in the frontmatter. If a tag is omitted, it will default to `Tech` inside the frontend cards.
 
 ---
 
@@ -109,6 +111,12 @@ The browser index query engine in [main.js](file:///Users/cenz.wong/Project/blog
 - **Markdown Parsing**: Renders body markup via `marked` client-side.
 - **Math/KaTeX**: Supports inline equations (`$ ... $`) and block equations (`$$ ... $$`). The script automatically maps common math tags (like `\times`, `\frac`, etc.) to clean unicode fallbacks if KaTeX fails to load.
 - **Syntax Highlighting**: Precode structures are decorated dynamically using Highlight.js (`window.hljs`).
+
+### 4. Human-AI Co-Authorship ("Distilled Knowledge")
+To support Cenz's co-creation paradigm with Gemini without requiring manual writing overhead, the blog supports automated collaborative displays:
+- **Homepage Symbiosis Badge**: A glassmorphic header pill badge (`.symbiosis-hero-badge`) with a pulsing neon cyan dot automatically renders below the welcome message, linking readers directly to the co-authorship pipeline overview on the About page.
+- **Overlapping Avatars & Static Capsule Badge**: In `src/main.js`, if the parsed post has `author: Cenz Wong & Gemini AI`, the client-side router automatically renders overlapping profile bubbles (`CW` in Slate-Grey & `🤖` in Glowing Cyan) and a static capsule badge styled as `Distilled Dialogue` in the article details header.
+- **Dialogue Synthesis Flowchart**: The About page renders a CSS-animated, interactive 4-stage vertical timeline (`.synthesis-pipeline`) representing the workflow (Spark, Q&A Loop, Stress Testing, and Static Compilation).
 
 ---
 

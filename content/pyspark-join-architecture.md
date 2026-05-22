@@ -1,10 +1,13 @@
 ---
-title: PySpark Join Architecture: Internal Mechanisms & Complexity
-description: An in-depth architectural analysis of distributed join strategies in Apache Spark, examining complexity, hardware bounds, and AQE optimization.
+title: "PySpark Join Architecture"
+subtitle: "Internal Mechanisms & Complexity"
+description: "An in-depth architectural analysis of distributed join strategies in Apache Spark, examining complexity, hardware bounds, and AQE optimization."
 date: 2026-05-22
 tags: PySpark, BigData, Architecture, Performance
 slug: pyspark-join-architecture
+author: Cenz Wong & Gemini AI
 ---
+
 
 ## Architectural Baseline & Working Assumptions
 

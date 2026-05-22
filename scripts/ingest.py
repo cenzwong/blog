@@ -62,20 +62,24 @@ def main():
             metadata, body = parse_content_file(filepath)
             
             title = metadata.get('title', 'Untitled Post')
+            subtitle = metadata.get('subtitle', '')
             description = metadata.get('description', '')
             date = metadata.get('date', '')
             tags = metadata.get('tags', '')
             slug = metadata.get('slug', os.path.splitext(filename)[0])
+            author = metadata.get('author', 'Cenz Wong')
             
-            print(f"Processing post: '{title}' (slug: {slug}, format: {file_format})")
+            print(f"Processing post: '{title}' (subtitle: '{subtitle}', slug: {slug}, format: {file_format})")
             posts.append({
                 "title": title,
+                "subtitle": subtitle,
                 "description": description,
                 "date": date,
                 "tags": tags,
                 "slug": slug,
                 "format": file_format,
-                "content": body
+                "content": body,
+                "author": author
             })
             
     # Sort posts by date descending so the output index matches the query expectations
