@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  base: '/cenz-s-blog/',
   optimizeDeps: {
     exclude: ['@sqlite.org/sqlite-wasm', 'sqlite-wasm-http']
   },
