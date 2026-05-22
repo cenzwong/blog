@@ -1,0 +1,4 @@
+fix: properly extract error strings and fix sqlite-wasm-http cache misconfiguration
+
+- Ensure that errors thrown by sqlite-wasm-http are fully extracted from `.result.message` or `.toString()` so that `undefined` is not shown.
+- Align `cacheSize` parameter with `maxPageSize` (1024) in `createHttpBackend` options. Without a properly aligned `cacheSize`, the chunking behavior in `sqlite-wasm-http` can interpret incorrect HTTP range fragments and cause `SQLITE_CORRUPT: database disk image is malformed` errors when deployed to GitHub Pages.

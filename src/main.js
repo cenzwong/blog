@@ -1,6 +1,14 @@
 import { createSQLiteThread, createHttpBackend } from 'sqlite-wasm-http';
 import { Marked } from 'marked';
 
+function getErrorMessage(error) {
+  if (!error) return 'Unknown error';
+  if (error.result && error.result.message) return error.result.message;
+  if (error.message) return error.message;
+  return error.toString();
+}
+
+
 // Initialize Markdown parser
 const marked = new Marked();
 
@@ -51,6 +59,7 @@ async function initDatabase() {
     // 1. Create the HTTP VFS backend (handles byte range fetches on demand)
     const httpBackend = createHttpBackend({
       maxPageSize: 1024, // Optimized for our 1KB SQLite page size
+      cacheSize: 1024, // Must align and be configured properly for some HTTP range backends
       timeout: 10000     // 10 seconds request timeout
     });
     
@@ -75,7 +84,7 @@ async function initDatabase() {
     handleRouting(); // Render the active page
     
   } catch (error) {
-    console.error("Failed to initialize SQLite Wasm database:", error);
+    console.error("Failed to initialize SQLite Wasm database:", getErrorMessage(error));
     updateStatus('error', 'SQLite Offline');
     mainView.innerHTML = `
       <div class="error-view">
@@ -179,8 +188,8 @@ async function renderHome() {
     `;
     
   } catch (error) {
-    console.error("Error loading home posts:", error);
-    mainView.innerHTML = `<div class="error-view"><h2>Error Loading Posts</h2><p>${error.message}</p></div>`;
+    console.error("Error loading home posts:", getErrorMessage(error));
+    mainView.innerHTML = `<div class="error-view"><h2>Error Loading Posts</h2><p>${getErrorMessage(error)}</p></div>`;
   }
 }
 
@@ -292,12 +301,12 @@ async function executeSearch(query, resultsContainer, statsContainer) {
     }).join('');
     
   } catch (error) {
-    console.error("Search execution failed:", error);
+    console.error("Search execution failed:", getErrorMessage(error));
     statsContainer.textContent = 'Error executing query';
     resultsContainer.innerHTML = `
       <div class="search-empty-state">
         <h3 style="color: hsl(0, 85%, 60%);">Search Error</h3>
-        <p>${error.message}</p>
+        <p>${getErrorMessage(error)}</p>
       </div>
     `;
   }
@@ -353,8 +362,8 @@ async function renderPost(slug) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
   } catch (error) {
-    console.error("Error fetching article:", error);
-    mainView.innerHTML = `<div class="error-view"><h2>Failed to Render Article</h2><p>${error.message}</p></div>`;
+    console.error("Error fetching article:", getErrorMessage(error));
+    mainView.innerHTML = `<div class="error-view"><h2>Failed to Render Article</h2><p>${getErrorMessage(error)}</p></div>`;
   }
 }
 
