@@ -58,8 +58,8 @@ async function initDatabase() {
     db = await createSQLiteThread({ http: httpBackend });
     
     // 3. Open the static search_index.db using range requests
-    // Resolve absolute URL to search_index.db to guarantee it works on subpaths
-    const dbUrl = new URL('/search_index.db', window.location.origin).toString();
+    // Resolve absolute URL using Vite's BASE_URL to guarantee it works on subpaths
+    const dbUrl = new URL(import.meta.env.BASE_URL + 'search_index.db', window.location.origin).toString();
     
     console.log(`Connecting to remote database via range requests: ${dbUrl}`);
     await db('open', {
