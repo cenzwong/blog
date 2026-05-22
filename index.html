@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cenz Blog | Wasm-SQLite Powered Static Site</title>
+  <meta name="description" content="A state-of-the-art static blog with zero-overhead serverless client-side SQLite search powered by WebAssembly and HTTP Range Requests.">
+  
+  <!-- Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="/src/index.css">
+</head>
+<body>
+
+  <!-- Background Decorative Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    
+    <!-- Top Premium Navigation -->
+    <header class="main-header glass">
+      <div class="header-content">
+        <a href="#/" class="logo-link">
+          <span class="logo-accent">&lt;</span>
+          <span class="logo-text">Cenz.Blog</span>
+          <span class="logo-accent">/&gt;</span>
+        </a>
+        
+        <nav class="main-nav">
+          <a href="#/" class="nav-link active" id="nav-home">Home</a>
+          <a href="#/search" class="nav-link" id="nav-search">Search</a>
+          <a href="#/about" class="nav-link" id="nav-about">About</a>
+        </nav>
+        
+        <!-- SQLite Engine Status Indicator -->
+        <div class="engine-badge status-loading" id="sqlite-status">
+          <span class="status-dot"></span>
+          <span class="status-label" id="sqlite-status-text">SQLite Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main View Section -->
+    <main class="main-content" id="main-view">
+      <!-- Loading State View (Default until main.js loads) -->
+      <div class="loading-view">
+        <div class="spinner"></div>
+        <h2>Initializing Blog Engine</h2>
+        <p>Loading WebAssembly runtimes and setting up SQL engine...</p>
+      </div>
+    </main>
+
+    <!-- Premium Footer -->
+    <footer class="main-footer">
+      <div class="footer-divider"></div>
+      <div class="footer-content">
+        <p>&copy; 2026 Cenz Wong. Powered by <strong>SQLite WebAssembly</strong> &amp; HTTP VFS.</p>
+        <p class="footer-links">
+          <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+          <a href="#/search">Site Search</a>
+          <a href="#/about">About</a>
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Application Logic -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

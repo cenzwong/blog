@@ -1,0 +1,26 @@
+<!--
+title: Premium Interactive HTML Page
+description: A proof-of-concept showing how easily you can write pure custom HTML pages inside your SQLite-powered static blog!
+date: 2026-05-22
+tags: HTML, Custom, Demo
+slug: premium-html-custom-page
+-->
+<div style="background: linear-gradient(135deg, rgba(13, 148, 136, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); padding: 32px; border-radius: 12px; border: 1px solid var(--border-medium); margin: 24px 0;">
+  <h2 style="margin-top: 0; color: var(--accent-primary);">Hi Developer! 👋</h2>
+  <p>This page is written in <strong>pure HTML</strong>! That means you can inject standard scripts, interactive widgets, embed 3D canvas objects, or draw customized layouts that bypass standard markdown parsing restrictions completely.</p>
+  
+  <div style="display: flex; gap: 16px; margin: 24px 0; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 200px; background: rgba(255, 255, 255, 0.02); padding: 16px; border-radius: 8px; border: 1px solid var(--border-light);">
+      <h3 style="margin-top: 0; font-size: 1.1rem; color: var(--text-primary);">Flexibility 🛠️</h3>
+      <p style="font-size: 0.85rem; margin-bottom: 0;">Embed complex CSS inline grid structures, CSS variables, or visual canvas objects directly in the post content.</p>
+    </div>
+    <div style="flex: 1; min-width: 200px; background: rgba(255, 255, 255, 0.02); padding: 16px; border-radius: 8px; border: 1px solid var(--border-light);">
+      <h3 style="margin-top: 0; font-size: 1.1rem; color: var(--accent-secondary);">SQLite Search 🔍</h3>
+      <p style="font-size: 0.85rem; margin-bottom: 0;">This HTML text is indexed in SQLite FTS5 too! Try searching for 'interactive' or 'JavaScript' in the search page and watch it match.</p>
+    </div>
+  </div>
+
+  <button onclick="alert('Pure HTML executes JavaScript beautifully!')" style="cursor: pointer; padding: 10px 20px; font-weight: bold; background: var(--accent-primary-glow); border: 1px solid var(--accent-primary); border-radius: 6px; color: var(--text-primary); transition: all 0.2s;">
+    Click to Test JS execution!
+  </button>
+</div>

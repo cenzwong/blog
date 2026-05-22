@@ -1,0 +1,20 @@
+{
+  "name": "cenz-blog",
+  "version": "1.0.0",
+  "description": "Static blog with client-side SQLite Wasm HTTP range search",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run ingest && vite build",
+    "preview": "vite preview",
+    "ingest": "python3 scripts/ingest.py"
+  },
+  "dependencies": {
+    "marked": "^12.0.1",
+    "sqlite-wasm-http": "^1.2.0"
+  },
+  "devDependencies": {
+    "vite": "^5.1.6"
+  }
+}
