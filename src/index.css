@@ -573,9 +573,33 @@ body {
 
 .post-body pre code {
   color: var(--text-primary);
-  background: transparent;
-  padding: 0;
+  background: transparent !important;
+  padding: 0 !important;
   border-radius: 0;
+}
+
+/* Elegant Mathematical Notation styling */
+.math-inline {
+  font-family: "Latin Modern Math", "Computer Modern Math", Cambria, "Hoefler Text", "Times New Roman", Times, Georgia, serif;
+  font-style: italic;
+  font-size: 1.15em;
+  padding: 0 4px;
+  color: var(--accent-primary);
+}
+
+.math-block {
+  font-family: "Latin Modern Math", "Computer Modern Math", Cambria, "Hoefler Text", "Times New Roman", Times, Georgia, serif;
+  font-style: italic;
+  font-size: 1.25rem;
+  text-align: center;
+  margin: 28px auto;
+  padding: 20px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .post-body hr {

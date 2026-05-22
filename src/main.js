@@ -1,24 +1,15 @@
-import { createSQLiteThread, createHttpBackend } from 'sqlite-wasm-http';
 import { Marked } from 'marked';
-
-function getErrorMessage(error) {
-  if (!error) return 'Unknown error';
-  if (error.result && error.result.message) return error.result.message;
-  if (error.message) return error.message;
-  return error.toString();
-}
-
 
 // Initialize Markdown parser
 const marked = new Marked();
 
-let db = null;
+let posts = []; // Local in-memory store for all blog posts
 const statusBadge = document.getElementById('sqlite-status');
 const statusText = document.getElementById('sqlite-status-text');
 const mainView = document.getElementById('main-view');
 
 /**
- * Update SQLite Wasm status indicator in the header
+ * Update search engine status indicator in the header
  */
 function updateStatus(status, text) {
   statusBadge.className = `engine-badge status-${status}`;
@@ -26,71 +17,54 @@ function updateStatus(status, text) {
 }
 
 /**
- * Execute SQL against the client-side database
+ * Strip Markdown headers, formatting, lists, and equations to extract clean text
  */
-async function runQuery(sql, params = []) {
-  if (!db) {
-    throw new Error("SQLite Wasm database is not initialized yet.");
-  }
-  const rows = [];
-  await db('exec', {
-    sql: sql,
-    bind: params,
-    callback: (msg) => {
-      if (msg.row) {
-        const rowObj = {};
-        msg.columnNames.forEach((col, idx) => {
-          rowObj[col] = msg.row[idx];
-        });
-        rows.push(rowObj);
-      }
-    }
-  });
-  return rows;
+function stripMarkdown(md) {
+  if (!md) return '';
+  return md
+    .replace(/\$\$[\s\S]*?\$\$/g, '') // strip display math
+    .replace(/\$[^\$]+\$/g, '')    // strip inline math
+    .replace(/```[\s\S]*?```/g, '') // strip code blocks
+    .replace(/`([^`]+)`/g, '$1')   // strip inline code formatting
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // strip links, keep text
+    .replace(/[*_#\-+>]/g, ' ')    // strip headers, lists, italics, bold chars
+    .replace(/\s+/g, ' ')          // collapse whitespace
+    .trim();
 }
 
 /**
- * Initialize SQLite Wasm HTTP Range VFS Database
+ * Initialize search index by fetching precompiled JSON
  */
 async function initDatabase() {
   try {
-    updateStatus('loading', 'SQLite Booting...');
+    updateStatus('loading', 'Index Booting...');
     
-    // 1. Create the HTTP VFS backend (handles byte range fetches on demand)
-    const httpBackend = createHttpBackend({
-      maxPageSize: 1024, // Optimized for our 1KB SQLite page size
-      cacheSize: 1024, // Must align and be configured properly for some HTTP range backends
-      timeout: 10000     // 10 seconds request timeout
-    });
-    
-    // 2. Spawn SQLite Wasm thread using the HTTP backend
-    db = await createSQLiteThread({ http: httpBackend });
-    
-    // 3. Open the static search_index.db using range requests
     // Resolve absolute URL using Vite's BASE_URL to guarantee it works on subpaths
-    const dbUrl = new URL(import.meta.env.BASE_URL + 'search_index.db', window.location.origin).toString();
+    const jsonUrl = new URL(import.meta.env.BASE_URL + 'search_index.json', window.location.origin).toString();
     
-    console.log(`Connecting to remote database via range requests: ${dbUrl}`);
-    await db('open', {
-      filename: 'file:' + encodeURI(dbUrl),
-      vfs: 'http'
-    });
+    console.log(`Connecting to remote search index: ${jsonUrl}`);
+    const response = await fetch(jsonUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch search index: ${response.status} ${response.statusText}`);
+    }
     
-    updateStatus('connected', 'SQLite Active');
-    console.log("SQLite Wasm HTTP VFS connected and ready.");
+    posts = await response.json();
+    console.log(`Search index successfully loaded with ${posts.length} posts.`);
     
-    // Set up routing since DB is ready
+    updateStatus('connected', 'Index Active');
+    
+    // Set up routing since index is ready
     window.addEventListener('hashchange', handleRouting);
     handleRouting(); // Render the active page
     
   } catch (error) {
-    console.error("Failed to initialize SQLite Wasm database:", getErrorMessage(error));
-    updateStatus('error', 'SQLite Offline');
+    console.error("Failed to initialize search index:", error);
+    updateStatus('error', 'Index Offline');
     mainView.innerHTML = `
       <div class="error-view">
         <div class="status-dot" style="background-color: hsl(0, 85%, 60%); width: 32px; height: 32px;"></div>
-        <h2>Database Connection Failed</h2>
-        <p>Could not connect to the remote database using HTTP Range requests. Make sure your server supports ranges or check console log.</p>
+        <h2>Index Loading Failed</h2>
+        <p>Could not fetch the pre-compiled search index JSON file. Please run the ingestion compiler script first or check browser console.</p>
         <button onclick="window.location.reload()" class="post-tag-badge" style="cursor: pointer; margin-top: 16px; padding: 10px 20px;">Retry Booting</button>
       </div>
     `;
@@ -135,18 +109,16 @@ async function renderHome() {
   mainView.innerHTML = `
     <div class="loading-view">
       <div class="spinner"></div>
-      <p>Fetching posts from SQLite index...</p>
+      <p>Fetching posts from JSON index...</p>
     </div>
   `;
   
   try {
-    const posts = await runQuery('SELECT id, title, description, date, tags, slug FROM posts ORDER BY date DESC');
-    
     if (posts.length === 0) {
       mainView.innerHTML = `
         <div class="hero-section">
           <h1>Welcome to Cenz.Blog</h1>
-          <p>A statically-compiled website using client-side Wasm SQLite indexing.</p>
+          <p>A statically-compiled website using a client-side JSON index search.</p>
         </div>
         <div class="search-empty-state">
           <h3>No Posts Found</h3>
@@ -178,7 +150,7 @@ async function renderHome() {
     mainView.innerHTML = `
       <div class="hero-section">
         <h1>Welcome to Cenz.Blog</h1>
-        <p>A statically-compiled website powered entirely by client-side Wasm SQLite indexing.</p>
+        <p>A statically-compiled website powered entirely by a client-side JSON search index.</p>
       </div>
       
       <h2 class="section-title">Latest Articles</h2>
@@ -188,20 +160,20 @@ async function renderHome() {
     `;
     
   } catch (error) {
-    console.error("Error loading home posts:", getErrorMessage(error));
-    mainView.innerHTML = `<div class="error-view"><h2>Error Loading Posts</h2><p>${getErrorMessage(error)}</p></div>`;
+    console.error("Error loading home posts:", error);
+    mainView.innerHTML = `<div class="error-view"><h2>Error Loading Posts</h2><p>${error.message}</p></div>`;
   }
 }
 
 /**
- * Search View: Sleek Full-Text Search using FTS5 match snippets
+ * Search View: Sleek Full-Text Search with real-time keyword highlights
  */
 async function renderSearch() {
   mainView.innerHTML = `
     <div class="search-page">
       <div class="search-header">
         <h1>Static Site Search</h1>
-        <p>Query the pre-compiled SQLite index using FTS5 full-text matching.</p>
+        <p>Query the pre-compiled in-memory index using direct client-side search.</p>
       </div>
       
       <div class="search-box-container">
@@ -209,14 +181,14 @@ async function renderSearch() {
         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <input type="text" id="search-box" class="search-input" placeholder="Type keywords (e.g. SQLite, Wasm, CSS)..." autocomplete="off">
+        <input type="text" id="search-box" class="search-input" placeholder="Type keywords (e.g. PySpark, Complexity, AQE)..." autocomplete="off">
       </div>
       
       <div id="search-stats" class="search-meta-results"></div>
       <div id="search-results" class="search-results-list">
         <div class="search-empty-state">
           <h3>Ready to Search</h3>
-          <p>Start typing above to trigger real-time client-side FTS5 SQL queries.</p>
+          <p>Start typing above to trigger real-time client-side keyword search.</p>
         </div>
       </div>
     </div>
@@ -240,73 +212,159 @@ async function renderSearch() {
 }
 
 /**
- * Execute SQLite FTS5 Match Query
+ * Execute Client-Side Search
  */
 async function executeSearch(query, resultsContainer, statsContainer) {
-  const cleaned = query.trim().replace(/[^\w\s]/g, '');
+  const cleaned = query.trim().toLowerCase();
   
   if (!cleaned) {
     statsContainer.textContent = '';
     resultsContainer.innerHTML = `
       <div class="search-empty-state">
         <h3>Ready to Search</h3>
-        <p>Start typing above to trigger real-time client-side FTS5 SQL queries.</p>
+        <p>Start typing above to trigger real-time client-side keyword search.</p>
       </div>
     `;
     return;
   }
   
-  // Format query to match word prefixes using FTS5 rules (e.g., "sqlite range" -> "sqlite* AND range*")
-  const ftsQuery = cleaned.split(/\s+/).map(word => `${word}*`).join(' AND ');
+  const keywords = cleaned.split(/\s+/).filter(k => k.length > 0);
+  if (keywords.length === 0) return;
   
   try {
     const startTime = performance.now();
+    const scoredResults = [];
     
-    // Run FTS5 query with match highlighting using SQLite's snippet() function
-    const results = await runQuery(`
-      SELECT p.title, p.slug, p.date, p.tags,
-             snippet(posts_fts, 2, '<b>', '</b>', '...', 15) as match_snippet
-      FROM posts p
-      JOIN posts_fts f ON p.id = f.rowid
-      WHERE posts_fts MATCH ?
-      ORDER BY bm25(posts_fts) LIMIT 10
-    `, [ftsQuery]);
+    for (const post of posts) {
+      const titleLower = post.title.toLowerCase();
+      const descLower = post.description.toLowerCase();
+      const tagsLower = post.tags.toLowerCase();
+      const contentStripped = stripMarkdown(post.content);
+      const contentLower = contentStripped.toLowerCase();
+      
+      // Verify all keywords match the post (AND search logic)
+      let isMatch = true;
+      for (const kw of keywords) {
+        if (!titleLower.includes(kw) && 
+            !descLower.includes(kw) && 
+            !tagsLower.includes(kw) && 
+            !contentLower.includes(kw)) {
+          isMatch = false;
+          break;
+        }
+      }
+      
+      if (isMatch) {
+        // Calculate relevance score
+        let score = 0;
+        keywords.forEach(kw => {
+          // Exact prefix matches on titles get highest weight
+          if (titleLower.startsWith(kw)) score += 150;
+          else if (titleLower.includes(kw)) score += 100;
+          
+          if (descLower.includes(kw)) score += 30;
+          if (tagsLower.includes(kw)) score += 20;
+          
+          // Add score per match in main body
+          const bodyOccurrences = contentLower.split(kw).length - 1;
+          score += bodyOccurrences * 5;
+        });
+        
+        // Exact full phrase bonus
+        if (titleLower.includes(cleaned)) score += 300;
+        if (descLower.includes(cleaned)) score += 150;
+        if (contentLower.includes(cleaned)) score += 80;
+        
+        scoredResults.push({
+          post,
+          contentStripped,
+          score
+        });
+      }
+    }
+    
+    // Sort results by relevancy score descending
+    scoredResults.sort((a, b) => b.score - a.score);
     
     const duration = (performance.now() - startTime).toFixed(1);
     
-    if (results.length === 0) {
+    if (scoredResults.length === 0) {
       statsContainer.textContent = `0 results found in ${duration}ms`;
       resultsContainer.innerHTML = `
         <div class="search-empty-state">
           <h3>No Results Found</h3>
-          <p>We couldn't find any matches for "${query}". Try searching for other terms like 'Wasm' or 'CSS'.</p>
+          <p>We couldn't find any matches for "${query}". Try searching for other terms like 'PySpark' or 'Join'.</p>
         </div>
       `;
       return;
     }
     
-    statsContainer.textContent = `${results.length} result${results.length > 1 ? 's' : ''} found in ${duration}ms`;
+    statsContainer.textContent = `${scoredResults.length} result${scoredResults.length > 1 ? 's' : ''} found in ${duration}ms`;
     
-    resultsContainer.innerHTML = results.map(res => {
+    resultsContainer.innerHTML = scoredResults.map(({ post, contentStripped }) => {
+      // Find the character index of first matched keyword for snippet extraction
+      const contentLower = contentStripped.toLowerCase();
+      let matchIdx = -1;
+      
+      for (const kw of keywords) {
+        const idx = contentLower.indexOf(kw);
+        if (idx !== -1) {
+          matchIdx = idx;
+          break;
+        }
+      }
+      
+      let snippet = '';
+      if (matchIdx !== -1) {
+        // Extract 50 characters before and 110 after match index
+        let startIdx = Math.max(0, matchIdx - 50);
+        if (startIdx > 0) {
+          const nextSpace = contentStripped.indexOf(' ', startIdx);
+          if (nextSpace !== -1 && nextSpace < matchIdx) {
+            startIdx = nextSpace + 1;
+          }
+        }
+        
+        let endIdx = Math.min(contentStripped.length, matchIdx + 110);
+        if (endIdx < contentStripped.length) {
+          const lastSpace = contentStripped.lastIndexOf(' ', endIdx);
+          if (lastSpace !== -1 && lastSpace > matchIdx) {
+            endIdx = lastSpace;
+          }
+        }
+        
+        snippet = contentStripped.substring(startIdx, endIdx);
+        if (startIdx > 0) snippet = '...' + snippet;
+        if (endIdx < contentStripped.length) snippet = snippet + '...';
+      } else {
+        // Default snippet fallback to post description or start of body content
+        snippet = post.description || (contentStripped.substring(0, 140) + '...');
+      }
+      
+      // Wrap all occurrences of search terms in <b> tags case-insensitively
+      const escapedKeywords = keywords.map(kw => kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      const highlightRegex = new RegExp(`(${escapedKeywords.join('|')})`, 'gi');
+      snippet = snippet.replace(highlightRegex, '<b>$1</b>');
+      
       return `
-        <a href="#/post/${res.slug}" class="search-result-card">
+        <a href="#/post/${post.slug}" class="search-result-card">
           <div class="post-meta" style="margin-bottom: 8px;">
-            <span class="post-date">${res.date}</span>
-            <span class="post-tag">${res.tags ? res.tags.split(',')[0] : 'Tech'}</span>
+            <span class="post-date">${post.date}</span>
+            <span class="post-tag">${post.tags ? post.tags.split(',')[0] : 'Tech'}</span>
           </div>
-          <h3>${res.title}</h3>
-          <p>${res.match_snippet}</p>
+          <h3>${post.title}</h3>
+          <p>${snippet}</p>
         </a>
       `;
     }).join('');
     
   } catch (error) {
-    console.error("Search execution failed:", getErrorMessage(error));
-    statsContainer.textContent = 'Error executing query';
+    console.error("Search execution failed:", error);
+    statsContainer.textContent = 'Error executing search';
     resultsContainer.innerHTML = `
       <div class="search-empty-state">
         <h3 style="color: hsl(0, 85%, 60%);">Search Error</h3>
-        <p>${getErrorMessage(error)}</p>
+        <p>${error.message}</p>
       </div>
     `;
   }
@@ -319,23 +377,53 @@ async function renderPost(slug) {
   mainView.innerHTML = `
     <div class="loading-view">
       <div class="spinner"></div>
-      <p>Fetching article content from SQLite...</p>
+      <p>Fetching article content...</p>
     </div>
   `;
   
   try {
-    const posts = await runQuery('SELECT title, description, date, tags, format, content FROM posts WHERE slug = ?', [slug]);
+    const post = posts.find(p => p.slug === slug);
     
-    if (posts.length === 0) {
+    if (!post) {
       render404();
       return;
     }
     
-    const post = posts[0];
     const tagsList = post.tags ? post.tags.split(',').map(t => t.trim()) : [];
     
     // Render either as raw HTML or parsed Markdown depending on format
-    const htmlContent = post.format === 'html' ? post.content : marked.parse(post.content);
+    let htmlContent = post.format === 'html' ? post.content : marked.parse(post.content);
+    
+    // Format mathematical expressions elegantly
+    if (post.format !== 'html') {
+      htmlContent = htmlContent
+        .replace(/\$\$(.*?)\$\$/gs, (_, match) => {
+          if (window.katex) {
+            try {
+              return window.katex.renderToString(match.trim(), { displayMode: true, throwOnError: false });
+            } catch (e) {
+              console.warn("KaTeX error:", e);
+            }
+          }
+          return `<div class="math-block">${match.trim()}</div>`;
+        })
+        .replace(/\$(.*?)\$/g, (_, match) => {
+          if (window.katex) {
+            try {
+              return window.katex.renderToString(match.trim(), { displayMode: false, throwOnError: false });
+            } catch (e) {
+              console.warn("KaTeX error:", e);
+            }
+          }
+          // Dynamic cleanup for local mathematical formulas in fallback mode
+          let clean = match.trim()
+            .replace(/\\times/g, '×')
+            .replace(/\\text\{([^}]+)\}/g, '$1')
+            .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1/$2)')
+            .replace(/\\log/g, 'log');
+          return `<span class="math-inline">${clean}</span>`;
+        });
+    }
     
     mainView.innerHTML = `
       <article class="post-view">
@@ -358,12 +446,19 @@ async function renderPost(slug) {
       </article>
     `;
     
+    // Dynamic programming block syntax highlighting
+    if (window.hljs) {
+      mainView.querySelectorAll('pre code').forEach((el) => {
+        window.hljs.highlightElement(el);
+      });
+    }
+    
     // Smooth scroll to top of page
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
   } catch (error) {
-    console.error("Error fetching article:", getErrorMessage(error));
-    mainView.innerHTML = `<div class="error-view"><h2>Failed to Render Article</h2><p>${getErrorMessage(error)}</p></div>`;
+    console.error("Error fetching article:", error);
+    mainView.innerHTML = `<div class="error-view"><h2>Failed to Render Article</h2><p>${error.message}</p></div>`;
   }
 }
 
@@ -374,34 +469,34 @@ function renderAbout() {
   mainView.innerHTML = `
     <div class="about-page">
       <h1>About Cenz.Blog</h1>
-      <p>Cenz.Blog is a high-performance demonstration of serverless, client-side indexing. In traditional static websites, searching is either offloaded to external paid APIs (e.g. Algolia) or handled in-memory by heavy JavaScript indices that require downloading megabytes of data.</p>
+      <p>Cenz.Blog is a high-performance demonstration of zero-overhead serverless client-side search. In traditional static websites, searching is either offloaded to external paid APIs (e.g. Algolia) or handled by heavy JavaScript libraries that require downloading megabytes of bloated indices.</p>
       
-      <p>This site solves that challenge by compiled standard SQLite to WebAssembly, running it directly inside your browser. To make this extremely bandwidth-efficient, it uses an <strong>HTTP Virtual File System (VFS)</strong> backend that intercepts SQLite file system reads and translates them into targeted HTTP <strong>Range requests</strong>.</p>
+      <p>This site solves that challenge by compiling a pre-rendered metadata and full-text index into a compact static JSON file at build time. During the initial application boot, this lightweight index is fetched and stored in-memory, enabling instant search queries directly in the user's browser.</p>
       
-      <p>Instead of downloading the entire 31KB (or larger) database file, the browser only fetches the specific 1024-byte database pages required to resolve a query. This means a full-text search query can be resolved in milliseconds by downloading only a few kilobytes of index data.</p>
+      <p>Because there is no heavy database compilation or runtime required in the client browser, the application loads instantaneously, runs with absolute zero server latency, and remains perfectly compatible with strict static hosting environments like <strong>GitHub Pages</strong>.</p>
       
       <h2 class="section-title">The Architecture Stack</h2>
       <div class="tech-grid">
         <div class="tech-card">
-          <h3>SQLite Wasm</h3>
-          <p>Core query execution compiled to WebAssembly, running client-side.</p>
+          <h3>JSON Indexing</h3>
+          <p>Pre-rendered index generated during the build pipeline and loaded in-memory.</p>
         </div>
         <div class="tech-card">
-          <h3>HTTP VFS Range</h3>
-          <p>Fetches database pages on-demand using standard HTTP Range headers.</p>
+          <h3>Weighted Search</h3>
+          <p>Instant client-side prefix matching with weighted scoring across titles, tags, and content.</p>
         </div>
         <div class="tech-card">
-          <h3>FTS5 BM25</h3>
-          <p>Native SQLite full-text search with match ranking and highlighted snippets.</p>
+          <h3>HTML Snippets</h3>
+          <p>Real-time snippet extraction and bold highlights styled with premium CSS colors.</p>
         </div>
         <div class="tech-card">
           <h3>Vite & CSS</h3>
-          <p>Ultra-light static asset bundling with premium custom dark mode styling.</p>
+          <p>Vibrant styling with neon gradients, ambient glowing orbs, and glassmorphism elements.</p>
         </div>
       </div>
       
-      <h2 class="section-title">Database Index Statistics</h2>
-      <p>At build-time, a Python compiler script runs, scanning all raw blog post Markdown files, parses the frontmatter metadata, initializes a local optimized SQLite instance, sets a 1KB page size, builds the FTS5 search indexes, and runs <code>VACUUM</code> and <code>ANALYZE</code> to build a clean <code>search_index.db</code> static asset. This file is deployed to GitHub Pages and served as a standard immutable asset.</p>
+      <h2 class="section-title">Static Compilation Pipeline</h2>
+      <p>At build-time, a Python compiler script runs, scanning all raw blog post Markdown files, parses the frontmatter metadata, structures the full-text body content, sorts posts chronologically, and compiles a single optimized <code>search_index.json</code> static asset. This file is deployed to GitHub Pages and served as a standard immutable asset, giving you rapid speeds and high search precision.</p>
     </div>
   `;
 }
