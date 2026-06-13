@@ -1,0 +1,324 @@
+<!--
+title: "Python Core Data Structures & Iteration Complexities"
+description: "A comprehensive, technical reference guide focusing on memory layouts, computational complexities, and structural trade-offs for high-performance Python development."
+date: "2026-06-09"
+tags: "Python, Performance, Memory, Advanced"
+slug: "python-performance-guide"
+author: "Cenz Wong"
+-->
+
+<div class="post-content">
+  <p>Here is a comprehensive, technical reference guide designed for your future self. It bypasses the surface-level definitions to focus strictly on memory layouts, computational complexities, and structural trade-offs for high-performance Python development.</p>
+
+  <hr>
+
+  <h2>1. Core Data Structures: Memory Layouts & Complexity</h2>
+  <p>To choose the right tool for interviews or production scale, you must understand how CPython manages these structures under the hood.</p>
+
+  <h3>Lists (<code>list</code>)</h3>
+  <ul>
+    <li><strong>Internal Mechanism:</strong> A CPython list is an array of pointers to other Python objects. It allocates a contiguous block of memory for these pointers. To avoid constant reallocation, it uses an over-allocation growth pattern (typically 4, 8, 16, 25, 25, ... when appending).</li>
+    <li><strong>Memory Footprint:</strong> High. You pay for the array of pointers plus the overhead of each individual object being pointed to (a standard float or int object in CPython is 24–28 bytes).</li>
+    <li><strong>Time Complexity:</strong>
+      <ul>
+        <li>Append: $O(1)$ amortized.</li>
+        <li>Pop from end: $O(1)$.</li>
+        <li>Insert/Delete at arbitrary index: $O(n)$ due to memory shifting.</li>
+        <li>Lookup by index: $O(1)$.</li>
+        <li>Lookup by value (<code>x in lst</code>): $O(n)$ linear scan.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>Sets (<code>set</code>)</h3>
+  <ul>
+    <li><strong>Internal Mechanism:</strong> Implemented as a highly optimized hash table using open addressing for collision resolution. It stores keys (and their pre-computed hashes) in a contiguous array.</li>
+    <li><strong>Memory Footprint:</strong> Exceptionally high. To minimize hash collisions, the underlying table must keep at least one-third of its buckets empty.</li>
+    <li><strong>Time Complexity:</strong>
+      <ul>
+        <li>Insert/Delete/Lookup: $O(1)$ average case; $O(n)$ worst case (hash collisions collapse the table into a linked list equivalent).</li>
+        <li><em>Note:</em> Objects must be hashable (<code>__hash__</code> and <code>__eq__</code> implemented) to be stored in a set.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>Iterables & Generators</h3>
+  <ul>
+    <li><strong>Internal Mechanism:</strong> A generator is a stateful object containing a frame object (<code>PyFrameObject</code>), which stores execution state, local variables, and the instruction pointer. It leverages lazy evaluation via the iterator protocol (<code>__next__</code>).</li>
+    <li><strong>Memory Footprint:</strong> $O(1)$ constant memory. The footprint does not scale with the dataset size because values are yielded one at a time and discarded from the generator's internal state immediately after.</li>
+    <li><strong>Time Complexity:</strong>
+      <ul>
+        <li>Generation of next item: $O(1)$ suspension and resumption overhead.</li>
+        <li>Arbitrary access / Indexing: Not supported. To find the $n$-th item, you must step through $n-1$ elements, making it an $O(n)$ sequential operation.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <hr>
+
+  <h2>2. Advanced Iteration & Streaming Patterns</h2>
+  <p>When processing data pipelines, pulling items into a <code>list</code> destroys the memory benefits of generators. Use these <code>itertools</code> and <code>collections</code> primitives to maintain stream integrity.</p>
+
+  <h3>Slicing Streams: <code>islice</code></h3>
+  <ul>
+    <li><strong>The Problem:</strong> Standard slicing (<code>iterable[:10]</code>) requires a sequence type like a list, which forces eager evaluation.</li>
+    <li><strong>The Solution:</strong> <code>itertools.islice(iterable, start, stop, step)</code> cuts an iterable lazily.</li>
+    <li><strong>Complexity:</strong> Time $O(\text{stop})$, Memory $O(1)$. It steps through and discards elements up to <code>start</code>, then yields up to <code>stop</code>.</li>
+  </ul>
+
+  <div class="py-runner-container">
+    <div class="py-runner-header">
+      <span class="py-runner-title">Python Snippet - islice</span>
+      <button class="py-runner-btn" data-target="code-islice" data-output="out-islice">Run</button>
+    </div>
+    <div class="py-runner-code-wrap">
+      <pre><code id="code-islice" class="language-python">from itertools import islice
+
+# Stream the first 5 elements of an infinite or large generator
+stream = (x**2 for x in range(10_000_000))
+first_five = list(islice(stream, 5))
+
+print(f"First five elements: {first_five}")
+</code></pre>
+    </div>
+    <div id="out-islice" class="py-runner-output">Output will appear here...</div>
+  </div>
+
+  <h3>State Accumulation: <code>accumulate</code> & <code>Counter</code></h3>
+  <ul>
+    <li><strong><code>itertools.accumulate(iterable, func=operator.add)</code>:</strong> Yields running totals or running aggregations.
+      <ul><li><em>Complexity:</em> Time $O(n)$, Memory $O(1)$ if consumed lazily.</li></ul>
+    </li>
+    <li><strong><code>collections.Counter(iterable)</code>:</strong> A <code>dict</code> subclass for counting hashable items.
+      <ul><li><em>Complexity:</em> Time $O(n)$ to ingest, Memory $O(k)$ where $k$ is the number of <em>distinct</em> elements.</li></ul>
+    </li>
+  </ul>
+
+  <div class="py-runner-container">
+    <div class="py-runner-header">
+      <span class="py-runner-title">Python Snippet - accumulate & Counter</span>
+      <button class="py-runner-btn" data-target="code-accum" data-output="out-accum">Run</button>
+    </div>
+    <div class="py-runner-code-wrap">
+      <pre><code id="code-accum" class="language-python">import operator
+from itertools import accumulate
+from collections import Counter
+
+data = [1, 3, 2, 4, 0]
+
+# Task: cumulative sum
+cum_sum = list(accumulate(data, operator.add)) # List forced for display
+
+# Task: max of cumulative sum
+max_cum_sum = max(accumulate(data, operator.add))
+
+# Task: frequency counting
+counts = Counter(['a', 'b', 'a', 'c', 'b', 'a'])
+
+print(f"Cumulative Sum: {cum_sum}")
+print(f"Max Cumulative Sum: {max_cum_sum}")
+print(f"Frequency Counts: {dict(counts)}")
+</code></pre>
+    </div>
+    <div id="out-accum" class="py-runner-output">Output will appear here...</div>
+  </div>
+
+  <h3>Multi-Iterable Combinatorics: <code>product</code>, <code>zip</code>, <code>chain</code></h3>
+  <ul>
+    <li><strong><code>zip(*iterables, strict=False)</code>:</strong> Aggregates elements from each of the iterables horizontally.
+      <ul><li><em>Complexity:</em> Time $O(\min(n_1, n_2, ...))$, Memory $O(1)$ yields tuples lazily.</li></ul>
+    </li>
+    <li><strong><code>itertools.chain(*iterables)</code>:</strong> flattens a series of iterables sequentially (vertical concatenation).
+      <ul><li><em>Complexity:</em> Time $O(\sum n_i)$, Memory $O(1)$.</li></ul>
+    </li>
+    <li><strong><code>itertools.product(*iterables, repeat=1)</code>:</strong> Cartesian product. Equivalent to nested for-loops.
+      <ul><li><em>Complexity:</em> Time $O(\prod n_i)$, Memory $O(\sum n_i)$ internally. It yields each Cartesian tuple lazily and only stores the input iterables as pools, avoiding materialization of all output tuples unless explicitly collected.</li></ul>
+    </li>
+  </ul>
+
+  <div class="py-runner-container">
+    <div class="py-runner-header">
+      <span class="py-runner-title">Python Snippet - combinatorics</span>
+      <button class="py-runner-btn" data-target="code-combo" data-output="out-combo">Run</button>
+    </div>
+    <div class="py-runner-code-wrap">
+      <pre><code id="code-combo" class="language-python">from itertools import chain, product
+
+print("Chain:")
+for idx, val in enumerate(chain([1, 2], [3, 4])):
+    print(f"  [{idx}]: {val}")
+
+print("Zip:")
+for item1, item2 in zip([1, 2, 3], ['a', 'b', 'c']):
+    print(f"  {item1} -> {item2}")
+
+print("Product:")
+for x, y in product(range(2), range(2)):
+    print(f"  ({x}, {y})")
+</code></pre>
+    </div>
+    <div id="out-combo" class="py-runner-output">Output will appear here...</div>
+  </div>
+
+  <h3>Windowing & Chunking: <code>pairwise</code> & <code>batched</code></h3>
+  <ul>
+    <li><strong><code>itertools.pairwise(iterable)</code>:</strong> Overlapping pairs. Yields $(I_0, I_1), (I_1, I_2), (I_2, I_3)...$
+      <ul><li><em>Complexity:</em> Time $O(n)$, Memory $O(1)$. Uses a tiny 1-element internal buffer to look ahead.</li></ul>
+    </li>
+    <li><strong><code>itertools.batched(iterable, n)</code>:</strong> Non-overlapping chunks of size $n$. (Available in Python 3.12+).
+      <ul><li><em>Complexity:</em> Time $O(n)$, Memory $O(n)$ where $n$ is the batch size. It eagerly creates a tuple of size $n$ before yielding it, protecting system memory from unbounded streams while optimizing I/O or network calls.</li></ul>
+    </li>
+  </ul>
+
+  <div class="py-runner-container">
+    <div class="py-runner-header">
+      <span class="py-runner-title">Python Snippet - pairwise & batched</span>
+      <button class="py-runner-btn" data-target="code-windowing" data-output="out-windowing">Run</button>
+    </div>
+    <div class="py-runner-code-wrap">
+      <pre><code id="code-windowing" class="language-python">from itertools import pairwise
+try:
+    from itertools import batched
+except ImportError:
+    # Pyodide py3.11 might not have it yet, polyfill it
+    def batched(iterable, n):
+        from itertools import islice
+        it = iter(iterable)
+        while batch := tuple(islice(it, n)):
+            yield batch
+
+# Task: Consecutive delta checks
+deltas = []
+for current_el, next_el in pairwise([10, 20, 25, 30]):
+    deltas.append(next_el - current_el)
+print(f"Deltas: {deltas}")
+
+# Task: Memory-safe batch processing
+batches = list(batched(range(5), 2))
+print(f"Batches: {batches}")
+</code></pre>
+    </div>
+    <div id="out-windowing" class="py-runner-output">Output will appear here...</div>
+  </div>
+
+  <hr>
+
+  <h2>3. Practical Trade-Off Matrix</h2>
+  <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
+    <thead>
+      <tr style="text-align:left; border-bottom: 1px solid var(--border-medium);">
+        <th style="padding: 8px;">Operation / Tool</th>
+        <th style="padding: 8px;">Eager / Lazy</th>
+        <th style="padding: 8px;">Time Complexity</th>
+        <th style="padding: 8px;">Memory Complexity</th>
+        <th style="padding: 8px;">Best Used For</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>list</code> instantiation</td>
+        <td style="padding: 8px;">Eager</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">Fast index-based lookups, small datasets, sorting.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>set</code> instantiation</td>
+        <td style="padding: 8px;">Eager</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">De-duplication, $O(1)$ membership testing.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;">Generator Expression</td>
+        <td style="padding: 8px;">Lazy</td>
+        <td style="padding: 8px;">$O(1)$ init</td>
+        <td style="padding: 8px;">$O(1)$</td>
+        <td style="padding: 8px;">Large/Infinite data pipelines, transformations.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>islice</code></td>
+        <td style="padding: 8px;">Lazy</td>
+        <td style="padding: 8px;">$O(\text{stop})$</td>
+        <td style="padding: 8px;">$O(1)$</td>
+        <td style="padding: 8px;">Slicing data streams without loading entire arrays.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>Counter</code></td>
+        <td style="padding: 8px;">Eager</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">$O(k)$ unique keys</td>
+        <td style="padding: 8px;">Frequency distribution counts.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>accumulate</code></td>
+        <td style="padding: 8px;">Lazy</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">$O(1)$</td>
+        <td style="padding: 8px;">Running metrics, prefixes, path-finding rollups.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>product</code></td>
+        <td style="padding: 8px;">Hybrid</td>
+        <td style="padding: 8px;">$O(\prod n_i)$</td>
+        <td style="padding: 8px;">$O(\sum n_i)$ internal</td>
+        <td style="padding: 8px;">Replacing deeply nested matrix/coordinate loops.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>pairwise</code></td>
+        <td style="padding: 8px;">Lazy</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">$O(1)$</td>
+        <td style="padding: 8px;">Trend analysis between adjacent records.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>batched</code></td>
+        <td style="padding: 8px;">Lazy-Chunk</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">$O(\text{batch size})$</td>
+        <td style="padding: 8px;">Rate-limiting, database pagination, vectorizing API calls.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h2>4. Interview Strategy & System Design Takeaways</h2>
+  <ol>
+    <li><strong>Don't Break the Chain:</strong> The most common mistake in interviews is passing a generator into a function or built-in that forces full evaluation unless you explicitly need to. For example, <code>max(accumulate(list, operator.add))</code> is highly memory efficient ($O(1)$ overhead). But doing <code>list(accumulate(...))</code> beforehand defeats the purpose.</li>
+    <li><strong>The <code>set</code> Trap:</strong> While <code>x in set_obj</code> is $O(1)$, building the set takes $O(n)$ time and substantial memory. If you only search the collection once, a linear scan $O(n)$ over a list or generator avoids the high memory allocation and hashing overhead of building a set. Reserve sets for scenarios where you execute <em>multiple</em> lookups against the same collection.</li>
+    <li><strong>Generator Reuse Exhaustion:</strong> Remember that generators are single-pass iterators. Once a generator is consumed (e.g., by running <code>max()</code> over it), it is exhausted. If you need to evaluate it again, you must recreate it.</li>
+  </ol>
+
+  <hr>
+
+  <h2>5. Efficient Filtering: Elements vs. Collections</h2>
+  <p>When filtering a <code>list</code> against a set of target queries (<code>queries_set</code>), the optimal approach depends on whether you need an immediate collection or a memory-safe stream.</p>
+
+  <div class="py-runner-container">
+    <div class="py-runner-header">
+      <span class="py-runner-title">Python Snippet - Filter Complexities</span>
+      <button class="py-runner-btn" data-target="code-filter" data-output="out-filter">Run</button>
+    </div>
+    <div class="py-runner-code-wrap">
+      <pre><code id="code-filter" class="language-python"># Setup
+data_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+queries_set = {2, 4, 6, 8, 12, 14} # O(1) membership testing
+
+# Pattern A: Eager Filtering via List Comprehension
+filtered_list = [item for item in data_list if item in queries_set]
+print(f"Eager List: {filtered_list}")
+
+# Pattern B: Lazy Filtering via Generator Expression
+filtered_generator = (item for item in data_list if item in queries_set)
+print(f"Lazy Generator consumed: {list(filtered_generator)}")
+
+# Pattern C: Lazy Filtering via filter()
+filtered_iterator = filter(queries_set.__contains__, data_list)
+print(f"Lazy Filter consumed: {list(filtered_iterator)}")
+</code></pre>
+    </div>
+    <div id="out-filter" class="py-runner-output">Output will appear here...</div>
+  </div>
+
+</div>

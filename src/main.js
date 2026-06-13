@@ -4,6 +4,7 @@ import { Marked } from 'marked';
 const marked = new Marked();
 
 let posts = []; // Local in-memory store for all blog posts
+let pyodideInstance = null; // Singleton instance for Pyodide
 const statusBadge = document.getElementById('sqlite-status');
 const statusText = document.getElementById('sqlite-status-text');
 const mainView = document.getElementById('main-view');
@@ -68,6 +69,76 @@ async function initDatabase() {
         <button onclick="window.location.reload()" class="post-tag-badge" style="cursor: pointer; margin-top: 16px; padding: 10px 20px;">Retry Booting</button>
       </div>
     `;
+  }
+}
+
+/**
+ * Initialize Pyodide for Python code execution
+ */
+async function initPyodide() {
+  if (pyodideInstance) return pyodideInstance;
+
+  if (!window.loadPyodide) {
+    console.error("Pyodide script not loaded.");
+    return null;
+  }
+
+  try {
+    updateStatus('loading', 'Loading Pyodide...');
+    pyodideInstance = await window.loadPyodide({
+      indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/"
+    });
+
+    // Redirect stdout to capture print statements
+    pyodideInstance.runPython(`
+      import sys
+      import io
+      sys.stdout = io.StringIO()
+    `);
+
+    updateStatus('connected', 'Pyodide Active');
+    return pyodideInstance;
+  } catch (error) {
+    console.error("Failed to initialize Pyodide:", error);
+    updateStatus('error', 'Pyodide Failed');
+    return null;
+  }
+}
+
+/**
+ * Executes python code using pyodide and captures stdout
+ */
+async function executePythonCode(code, outputElement) {
+  outputElement.textContent = "Loading Pyodide environment and executing...";
+  outputElement.style.color = "var(--text-secondary)";
+
+  const pyodide = await initPyodide();
+  if (!pyodide) {
+    outputElement.textContent = "Error: Pyodide could not be loaded.";
+    outputElement.style.color = "var(--danger, #ef4444)";
+    return;
+  }
+
+  try {
+    // Reset stdout buffer
+    pyodide.runPython("sys.stdout = io.StringIO()");
+
+    // Execute code
+    await pyodide.runPythonAsync(code);
+
+    // Fetch stdout output
+    const stdout = pyodide.runPython("sys.stdout.getvalue()");
+
+    if (stdout.trim() === "") {
+      outputElement.textContent = "[Execution completed with no output]";
+      outputElement.style.color = "var(--text-muted)";
+    } else {
+      outputElement.textContent = stdout;
+      outputElement.style.color = "var(--success, #10b981)";
+    }
+  } catch (error) {
+    outputElement.textContent = error.toString();
+    outputElement.style.color = "var(--danger, #ef4444)";
   }
 }
 
@@ -404,36 +475,34 @@ async function renderPost(slug) {
     // Render either as raw HTML or parsed Markdown depending on format
     let htmlContent = post.format === 'html' ? post.content : marked.parse(post.content);
     
-    // Format mathematical expressions elegantly
-    if (post.format !== 'html') {
-      htmlContent = htmlContent
-        .replace(/\$\$(.*?)\$\$/gs, (_, match) => {
-          if (window.katex) {
-            try {
-              return window.katex.renderToString(match.trim(), { displayMode: true, throwOnError: false });
-            } catch (e) {
-              console.warn("KaTeX error:", e);
-            }
+    // Format mathematical expressions elegantly (applies to both MD and HTML formats)
+    htmlContent = htmlContent
+      .replace(/\$\$(.*?)\$\$/gs, (_, match) => {
+        if (window.katex) {
+          try {
+            return window.katex.renderToString(match.trim(), { displayMode: true, throwOnError: false });
+          } catch (e) {
+            console.warn("KaTeX error:", e);
           }
-          return `<div class="math-block">${match.trim()}</div>`;
-        })
-        .replace(/\$(.*?)\$/g, (_, match) => {
-          if (window.katex) {
-            try {
-              return window.katex.renderToString(match.trim(), { displayMode: false, throwOnError: false });
-            } catch (e) {
-              console.warn("KaTeX error:", e);
-            }
+        }
+        return `<div class="math-block">${match.trim()}</div>`;
+      })
+      .replace(/\$(.*?)\$/g, (_, match) => {
+        if (window.katex) {
+          try {
+            return window.katex.renderToString(match.trim(), { displayMode: false, throwOnError: false });
+          } catch (e) {
+            console.warn("KaTeX error:", e);
           }
-          // Dynamic cleanup for local mathematical formulas in fallback mode
-          let clean = match.trim()
-            .replace(/\\times/g, '×')
-            .replace(/\\text\{([^}]+)\}/g, '$1')
-            .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1/$2)')
-            .replace(/\\log/g, 'log');
-          return `<span class="math-inline">${clean}</span>`;
-        });
-    }
+        }
+        // Dynamic cleanup for local mathematical formulas in fallback mode
+        let clean = match.trim()
+          .replace(/\\times/g, '×')
+          .replace(/\\text\{([^}]+)\}/g, '$1')
+          .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1/$2)')
+          .replace(/\\log/g, 'log');
+        return `<span class="math-inline">${clean}</span>`;
+      });
     
     // Create co-creation HTML if the post specifies AI collaboration
     let authorHtml = '';
@@ -493,6 +562,23 @@ async function renderPost(slug) {
       });
     }
     
+    // Attach Pyodide runners to any elements with class 'py-runner-btn'
+    mainView.querySelectorAll('.py-runner-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const outputId = btn.getAttribute('data-output');
+
+        const codeElement = document.getElementById(targetId);
+        const outputElement = document.getElementById(outputId);
+
+        if (codeElement && outputElement) {
+          // Extract text content cleanly (accounting for syntax highlighting HTML)
+          const code = codeElement.innerText || codeElement.textContent;
+          executePythonCode(code, outputElement);
+        }
+      });
+    });
+
     // Smooth scroll to top of page
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
