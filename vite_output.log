@@ -7,3 +7,6 @@
 
   ➜  Local:   http://localhost:5173/blog/
   ➜  Network: use --host to expose
+7:50:56 PM [vite] (client) page reload src/main.js
+7:51:12 PM [vite] (client) page reload content/python-performance-guide.html
+7:54:24 PM [vite] (client) page reload content/python-performance-guide.html

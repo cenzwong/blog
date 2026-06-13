@@ -132,7 +132,7 @@ print(f"Frequency Counts: {dict(counts)}")
       <ul><li><em>Complexity:</em> Time $O(\sum n_i)$, Memory $O(1)$.</li></ul>
     </li>
     <li><strong><code>itertools.product(*iterables, repeat=1)</code>:</strong> Cartesian product. Equivalent to nested for-loops.
-      <ul><li><em>Complexity:</em> Time $O(\prod n_i)$, Memory $O(\prod n_i)$ internally.</li></ul>
+      <ul><li><em>Complexity:</em> Time $O(\prod n_i)$, Memory $O(\sum n_i)$ internally. It yields each Cartesian tuple lazily and only stores the input iterables as pools, avoiding materialization of all output tuples unless explicitly collected.</li></ul>
     </li>
   </ul>
 
@@ -158,6 +158,47 @@ for x, y in product(range(2), range(2)):
 </code></pre>
     </div>
     <div id="out-combo" class="py-runner-output">Output will appear here...</div>
+  </div>
+
+  <h3>Windowing & Chunking: <code>pairwise</code> & <code>batched</code></h3>
+  <ul>
+    <li><strong><code>itertools.pairwise(iterable)</code>:</strong> Overlapping pairs. Yields $(I_0, I_1), (I_1, I_2), (I_2, I_3)...$
+      <ul><li><em>Complexity:</em> Time $O(n)$, Memory $O(1)$. Uses a tiny 1-element internal buffer to look ahead.</li></ul>
+    </li>
+    <li><strong><code>itertools.batched(iterable, n)</code>:</strong> Non-overlapping chunks of size $n$. (Available in Python 3.12+).
+      <ul><li><em>Complexity:</em> Time $O(n)$, Memory $O(n)$ where $n$ is the batch size. It eagerly creates a tuple of size $n$ before yielding it, protecting system memory from unbounded streams while optimizing I/O or network calls.</li></ul>
+    </li>
+  </ul>
+
+  <div class="py-runner-container">
+    <div class="py-runner-header">
+      <span class="py-runner-title">Python Snippet - pairwise & batched</span>
+      <button class="py-runner-btn" data-target="code-windowing" data-output="out-windowing">Run</button>
+    </div>
+    <div class="py-runner-code-wrap">
+      <pre><code id="code-windowing" class="language-python">from itertools import pairwise
+try:
+    from itertools import batched
+except ImportError:
+    # Pyodide py3.11 might not have it yet, polyfill it
+    def batched(iterable, n):
+        from itertools import islice
+        it = iter(iterable)
+        while batch := tuple(islice(it, n)):
+            yield batch
+
+# Task: Consecutive delta checks
+deltas = []
+for current_el, next_el in pairwise([10, 20, 25, 30]):
+    deltas.append(next_el - current_el)
+print(f"Deltas: {deltas}")
+
+# Task: Memory-safe batch processing
+batches = list(batched(range(5), 2))
+print(f"Batches: {batches}")
+</code></pre>
+    </div>
+    <div id="out-windowing" class="py-runner-output">Output will appear here...</div>
   </div>
 
   <hr>
@@ -202,12 +243,56 @@ for x, y in product(range(2), range(2)):
         <td style="padding: 8px;">$O(1)$</td>
         <td style="padding: 8px;">Slicing data streams without loading entire arrays.</td>
       </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>Counter</code></td>
+        <td style="padding: 8px;">Eager</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">$O(k)$ unique keys</td>
+        <td style="padding: 8px;">Frequency distribution counts.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>accumulate</code></td>
+        <td style="padding: 8px;">Lazy</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">$O(1)$</td>
+        <td style="padding: 8px;">Running metrics, prefixes, path-finding rollups.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>product</code></td>
+        <td style="padding: 8px;">Hybrid</td>
+        <td style="padding: 8px;">$O(\prod n_i)$</td>
+        <td style="padding: 8px;">$O(\sum n_i)$ internal</td>
+        <td style="padding: 8px;">Replacing deeply nested matrix/coordinate loops.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>pairwise</code></td>
+        <td style="padding: 8px;">Lazy</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">$O(1)$</td>
+        <td style="padding: 8px;">Trend analysis between adjacent records.</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 8px;"><code>batched</code></td>
+        <td style="padding: 8px;">Lazy-Chunk</td>
+        <td style="padding: 8px;">$O(n)$</td>
+        <td style="padding: 8px;">$O(\text{batch size})$</td>
+        <td style="padding: 8px;">Rate-limiting, database pagination, vectorizing API calls.</td>
+      </tr>
     </tbody>
   </table>
 
   <hr>
 
-  <h2>4. Efficient Filtering: Elements vs. Collections</h2>
+  <h2>4. Interview Strategy & System Design Takeaways</h2>
+  <ol>
+    <li><strong>Don't Break the Chain:</strong> The most common mistake in interviews is passing a generator into a function or built-in that forces full evaluation unless you explicitly need to. For example, <code>max(accumulate(list, operator.add))</code> is highly memory efficient ($O(1)$ overhead). But doing <code>list(accumulate(...))</code> beforehand defeats the purpose.</li>
+    <li><strong>The <code>set</code> Trap:</strong> While <code>x in set_obj</code> is $O(1)$, building the set takes $O(n)$ time and substantial memory. If you only search the collection once, a linear scan $O(n)$ over a list or generator avoids the high memory allocation and hashing overhead of building a set. Reserve sets for scenarios where you execute <em>multiple</em> lookups against the same collection.</li>
+    <li><strong>Generator Reuse Exhaustion:</strong> Remember that generators are single-pass iterators. Once a generator is consumed (e.g., by running <code>max()</code> over it), it is exhausted. If you need to evaluate it again, you must recreate it.</li>
+  </ol>
+
+  <hr>
+
+  <h2>5. Efficient Filtering: Elements vs. Collections</h2>
   <p>When filtering a <code>list</code> against a set of target queries (<code>queries_set</code>), the optimal approach depends on whether you need an immediate collection or a memory-safe stream.</p>
 
   <div class="py-runner-container">

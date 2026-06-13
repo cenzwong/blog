@@ -475,36 +475,34 @@ async function renderPost(slug) {
     // Render either as raw HTML or parsed Markdown depending on format
     let htmlContent = post.format === 'html' ? post.content : marked.parse(post.content);
     
-    // Format mathematical expressions elegantly
-    if (post.format !== 'html') {
-      htmlContent = htmlContent
-        .replace(/\$\$(.*?)\$\$/gs, (_, match) => {
-          if (window.katex) {
-            try {
-              return window.katex.renderToString(match.trim(), { displayMode: true, throwOnError: false });
-            } catch (e) {
-              console.warn("KaTeX error:", e);
-            }
+    // Format mathematical expressions elegantly (applies to both MD and HTML formats)
+    htmlContent = htmlContent
+      .replace(/\$\$(.*?)\$\$/gs, (_, match) => {
+        if (window.katex) {
+          try {
+            return window.katex.renderToString(match.trim(), { displayMode: true, throwOnError: false });
+          } catch (e) {
+            console.warn("KaTeX error:", e);
           }
-          return `<div class="math-block">${match.trim()}</div>`;
-        })
-        .replace(/\$(.*?)\$/g, (_, match) => {
-          if (window.katex) {
-            try {
-              return window.katex.renderToString(match.trim(), { displayMode: false, throwOnError: false });
-            } catch (e) {
-              console.warn("KaTeX error:", e);
-            }
+        }
+        return `<div class="math-block">${match.trim()}</div>`;
+      })
+      .replace(/\$(.*?)\$/g, (_, match) => {
+        if (window.katex) {
+          try {
+            return window.katex.renderToString(match.trim(), { displayMode: false, throwOnError: false });
+          } catch (e) {
+            console.warn("KaTeX error:", e);
           }
-          // Dynamic cleanup for local mathematical formulas in fallback mode
-          let clean = match.trim()
-            .replace(/\\times/g, '×')
-            .replace(/\\text\{([^}]+)\}/g, '$1')
-            .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1/$2)')
-            .replace(/\\log/g, 'log');
-          return `<span class="math-inline">${clean}</span>`;
-        });
-    }
+        }
+        // Dynamic cleanup for local mathematical formulas in fallback mode
+        let clean = match.trim()
+          .replace(/\\times/g, '×')
+          .replace(/\\text\{([^}]+)\}/g, '$1')
+          .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1/$2)')
+          .replace(/\\log/g, 'log');
+        return `<span class="math-inline">${clean}</span>`;
+      });
     
     // Create co-creation HTML if the post specifies AI collaboration
     let authorHtml = '';
