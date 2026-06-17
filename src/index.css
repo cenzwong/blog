@@ -1147,3 +1147,68 @@ body {
     text-align: center;
   }
 }
+
+/* ==========================================================================
+   Pyodide Python Runner
+   ========================================================================== */
+.py-runner-container {
+  margin: 20px 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.py-runner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--bg-deep);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.py-runner-title {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.py-runner-btn {
+  background: var(--accent-primary);
+  color: var(--bg-dark);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 16px;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.py-runner-btn:hover {
+  background: hsl(171, 100%, 45%);
+  box-shadow: 0 0 10px var(--accent-primary-glow);
+}
+
+.py-runner-code-wrap {
+  position: relative;
+}
+
+.py-runner-code-wrap pre {
+  margin: 0;
+  border-radius: 0;
+  border: none;
+}
+
+.py-runner-output {
+  padding: 16px;
+  background: var(--bg-dark);
+  border-top: 1px solid var(--border-light);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  min-height: 48px;
+  white-space: pre-wrap;
+}
