@@ -18,7 +18,7 @@ Understanding the fundamental bitwise operators is the first step in mastering b
 | Operator | Meaning | Usage |
 | :--- | :--- | :--- |
 | `&` | AND | Masking, checking specific bits. |
-| `|` | OR | Setting specific bits to 1. |
+| `\|` | OR | Setting specific bits to 1. |
 | `^` | XOR | Flipping bits, finding differences, canceling out duplicate values. |
 | `~` | NOT | Bit inversion (Note: Be aware of Python's two's complement representation for negative numbers). |
 | `<<` | Left Shift | Multiply a number by $2^n$ (shifting bits to the left). |
