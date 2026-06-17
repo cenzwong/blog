@@ -129,7 +129,7 @@ spark.stop()
 ### Profiling Metrics
 
 Post-execution, examining the Spark Web UI should reflect healthy baseline metrics:
-* **Garbage Collection (GC) Time**: $< 1\%$ of total task time.
+* **Garbage Collection (GC) Time**: < 1% of total task time.
 * **Executor Memory Utilization**: Stable at $\sim 75\%$ fraction.
 * **Disk Spillage**: Zero bytes spilled during shuffle stages.
 

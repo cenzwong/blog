@@ -6,323 +6,279 @@ tags: Data Engineering, Apache Iceberg, PySpark, Bloom Filter, Storage
 slug: iceberg-pyspark-bloom-filter-deep-dive
 author: Cenz Wong & Gemini AI
 -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apache Iceberg & PySpark Bloom Filter Deep Dive</title>
-  <style>
-    :root {
-      --bg-primary: #0b0f19;
-      --bg-secondary: #111827;
-      --bg-tertiary: #1f2937;
-      --text-primary: #f3f4f6;
-      --text-secondary: #9ca3af;
-      --accent-primary: #0d9488;
-      --accent-primary-glow: rgba(13, 148, 136, 0.2);
-      --accent-secondary: #8b5cf6;
-      --accent-secondary-glow: rgba(139, 92, 246, 0.2);
-      --border-light: rgba(255, 255, 255, 0.05);
-      --border-medium: rgba(255, 255, 255, 0.1);
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-    }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+  .bloom-filter-post-wrapper {
+    --bg-primary: var(--bg-dark);
+    --bg-secondary: var(--bg-surface);
+    --bg-tertiary: var(--bg-surface-hover);
+    --text-primary: var(--text-primary);
+    --text-secondary: var(--text-secondary);
+    --accent-primary: var(--accent-primary);
+    --accent-primary-glow: var(--accent-primary-glow);
+    --accent-secondary: var(--accent-secondary);
+    --accent-secondary-glow: var(--accent-secondary-glow);
+    --border-light: var(--border-light);
+    --border-medium: var(--border-medium);
+    --success: var(--accent-success);
+    --warning: var(--accent-warning);
+    --danger: #ef4444;
+  }
 
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      line-height: 1.6;
-      padding: 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+  .bloom-filter-post-wrapper h2 {
+    font-size: 1.6rem;
+    color: var(--accent-primary);
+    margin-top: 32px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-    /* Core container */
-    .container {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-medium);
-      border-radius: 16px;
-      padding: 40px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
+  .bloom-filter-post-wrapper h3 {
+    font-size: 1.2rem;
+    color: var(--accent-secondary);
+    margin-top: 20px;
+    margin-bottom: 12px;
+  }
 
-    /* Typography */
-    h1 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #2dd4bf 0%, #a78bfa 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
-      border-bottom: 1px solid var(--border-medium);
-      padding-bottom: 16px;
-    }
+  .bloom-filter-post-wrapper p, 
+  .bloom-filter-post-wrapper li {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 16px;
+  }
 
-    h2 {
-      font-size: 1.6rem;
-      color: #2dd4bf;
-      margin-top: 32px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+  .bloom-filter-post-wrapper strong {
+    color: var(--text-primary);
+  }
 
-    h3 {
-      font-size: 1.2rem;
-      color: #c084fc;
-      margin-top: 20px;
-      margin-bottom: 12px;
-    }
+  .bloom-filter-post-wrapper code {
+    font-family: var(--font-mono);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #f472b6;
+  }
 
-    p, li {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      margin-bottom: 16px;
-    }
+  .bloom-filter-post-wrapper pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
 
-    strong {
-      color: var(--text-primary);
-    }
+  .bloom-filter-post-wrapper .math-block {
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 4px solid var(--accent-secondary);
+    padding: 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    font-family: "Cambria Math", "Nimbus Roman No9 L", "Times New Roman", Times, serif;
+    font-size: 1.1rem;
+    overflow-x: auto;
+  }
 
-    code {
-      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-      background: rgba(255, 255, 255, 0.08);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.9em;
-      color: #f472b6;
-    }
+  /* Grid Layout for Split Sections */
+  .bloom-filter-post-wrapper .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 24px 0;
+  }
 
-    pre code {
-      background: none;
-      padding: 0;
-      color: inherit;
+  @media (max-width: 768px) {
+    .bloom-filter-post-wrapper .grid-2 {
+      grid-template-columns: 1fr;
     }
+  }
 
-    .math-block {
-      background: rgba(255, 255, 255, 0.02);
-      border-left: 4px solid var(--accent-secondary);
-      padding: 16px;
-      border-radius: 0 8px 8px 0;
-      margin: 20px 0;
-      font-family: "Cambria Math", "Nimbus Roman No9 L", "Times New Roman", Times, serif;
-      font-size: 1.1rem;
-      overflow-x: auto;
-    }
+  /* Custom Cards */
+  .bloom-filter-post-wrapper .card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
 
-    /* Grid Layout for Split Sections */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin: 24px 0;
-    }
+  .bloom-filter-post-wrapper .card:hover {
+    border-color: var(--accent-primary);
+    box-shadow: 0 4px 20px var(--accent-primary-glow);
+  }
 
-    @media (max-width: 768px) {
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-      .container {
-        padding: 20px;
-      }
-    }
+  /* Interactive Calculator Section */
+  .bloom-filter-post-wrapper .calculator-wrapper {
+    background: linear-gradient(135deg, rgba(13, 148, 136, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border: 1px solid var(--accent-primary);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 32px 0;
+  }
 
-    /* Custom Cards */
-    .card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border-light);
-      border-radius: 12px;
-      padding: 24px;
-      transition: all 0.3s ease;
-    }
+  .bloom-filter-post-wrapper .form-group {
+    margin-bottom: 20px;
+  }
 
-    .card:hover {
-      border-color: var(--accent-primary);
-      box-shadow: 0 4px 20px var(--accent-primary-glow);
-    }
+  .bloom-filter-post-wrapper label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
 
-    /* Interactive Calculator Section */
-    .calculator-wrapper {
-      background: linear-gradient(135deg, rgba(13, 148, 136, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
-      border: 1px solid var(--accent-primary);
-      border-radius: 12px;
-      padding: 28px;
-      margin: 32px 0;
-    }
+  .bloom-filter-post-wrapper input[type="number"], 
+  .bloom-filter-post-wrapper select {
+    width: 100%;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-medium);
+    color: var(--text-primary);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+  }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+  .bloom-filter-post-wrapper input[type="number"]:focus, 
+  .bloom-filter-post-wrapper select:focus {
+    border-color: var(--accent-primary);
+    outline: none;
+  }
 
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--text-primary);
-    }
+  .bloom-filter-post-wrapper .slider-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
 
-    input[type="number"], select {
-      width: 100%;
-      background: var(--bg-primary);
-      border: 1px solid var(--border-medium);
-      color: var(--text-primary);
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.2s;
-    }
+  .bloom-filter-post-wrapper input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent-primary);
+  }
 
-    input[type="number"]:focus, select:focus {
-      border-color: var(--accent-primary);
-      outline: none;
-    }
+  /* Outputs Display */
+  .bloom-filter-post-wrapper .calc-results {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 24px;
+  }
 
-    .slider-container {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+  .bloom-filter-post-wrapper .result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
 
-    input[type="range"] {
-      flex: 1;
-      accent-color: var(--accent-primary);
-    }
+  .bloom-filter-post-wrapper .result-row:last-child {
+    border-bottom: none;
+  }
 
-    /* Outputs Display */
-    .calc-results {
-      background: var(--bg-primary);
-      border: 1px solid var(--border-medium);
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 24px;
-    }
+  .bloom-filter-post-wrapper .result-val {
+    font-weight: bold;
+    color: var(--accent-primary);
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+  }
 
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border-light);
-    }
+  /* Code Block with Copy Button */
+  .bloom-filter-post-wrapper .code-container {
+    position: relative;
+    margin: 20px 0;
+  }
 
-    .result-row:last-child {
-      border-bottom: none;
-    }
+  .bloom-filter-post-wrapper .copy-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-medium);
+    color: var(--text-primary);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
 
-    .result-val {
-      font-weight: bold;
-      color: #2dd4bf;
-      font-family: monospace;
-      font-size: 1.1rem;
-    }
+  .bloom-filter-post-wrapper .copy-btn:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+  }
 
-    /* Code Block with Copy Button */
-    .code-container {
-      position: relative;
-      margin: 20px 0;
-    }
+  .bloom-filter-post-wrapper pre {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-medium);
+    border-radius: 12px;
+    padding: 20px;
+    overflow-x: auto;
+    font-size: 0.9rem;
+  }
 
-    .copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-medium);
-      color: var(--text-primary);
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
+  /* Matrix Table */
+  .bloom-filter-post-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
 
-    .copy-btn:hover {
-      background: var(--accent-primary);
-      border-color: var(--accent-primary);
-    }
+  .bloom-filter-post-wrapper th, 
+  .bloom-filter-post-wrapper td {
+    border: 1px solid var(--border-medium);
+    padding: 12px 16px;
+    text-align: left;
+  }
 
-    pre {
-      background: #080c14;
-      border: 1px solid var(--border-medium);
-      border-radius: 12px;
-      padding: 20px;
-      overflow-x: auto;
-      font-size: 0.9rem;
-    }
+  .bloom-filter-post-wrapper th {
+    background-color: var(--bg-tertiary);
+    color: var(--accent-primary);
+  }
 
-    /* Custom Toast Notification */
-    #custom-toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--success);
-      color: white;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: bold;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      opacity: 0;
-      transform: translateY(100px);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      z-index: 999;
-    }
+  .bloom-filter-post-wrapper tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.01);
+  }
 
-    #custom-toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* Warnings */
+  .bloom-filter-post-wrapper .callout {
+    background: rgba(245, 158, 11, 0.05);
+    border-left: 4px solid var(--warning);
+    padding: 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+  }
 
-    /* Matrix Table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
+  .bloom-filter-post-wrapper .callout-title {
+    font-weight: bold;
+    color: var(--warning);
+    margin-bottom: 6px;
+  }
 
-    th, td {
-      border: 1px solid var(--border-medium);
-      padding: 12px 16px;
-      text-align: left;
-    }
+  /* Custom Toast Notification */
+  .bloom-filter-post-wrapper #custom-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--success);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: translateY(100px);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 999;
+  }
 
-    th {
-      background-color: var(--bg-tertiary);
-      color: #2dd4bf;
-    }
+  .bloom-filter-post-wrapper #custom-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
 
-    tr:nth-child(even) {
-      background-color: rgba(255, 255, 255, 0.01);
-    }
-
-    /* Warnings */
-    .callout {
-      background: rgba(245, 158, 11, 0.05);
-      border-left: 4px solid var(--warning);
-      padding: 16px;
-      border-radius: 0 8px 8px 0;
-      margin: 20px 0;
-    }
-
-    .callout-title {
-      font-weight: bold;
-      color: var(--warning);
-      margin-bottom: 6px;
-    }
-  </style>
-</head>
-<body>
-
-<div class="container">
-  <h1>Apache Iceberg & PySpark Bloom Filter Deep Dive 🧠</h1>
+<div class="bloom-filter-post-wrapper">
   <p style="font-size: 1.15rem; margin-bottom: 30px;">
     An architect's guide detailing the internal mechanics, mathematical boundary conditions, physical storage trade-offs, and production tuning of <strong>Bloom Filters</strong> inside <strong>Apache Iceberg</strong> and <strong>PySpark</strong> storage configurations.
   </p>
@@ -516,23 +472,25 @@ df_to_write.write \
       </ul>
     </div>
   </div>
+
+  <!-- Custom Toast Notification -->
+  <div id="custom-toast">Copied to clipboard! 📋</div>
 </div>
 
-<!-- Custom Toast Notification -->
-<div id="custom-toast">Copied to clipboard! 📋</div>
-
 <script>
-  // Elements
-  const ndvInput = document.getElementById('input-ndv');
-  const fppSlider = document.getElementById('slider-fpp');
-  const fppInput = document.getElementById('input-fpp');
+  // Scoped elements selection under the wrapper to prevent global collisions
+  const wrapper = document.querySelector('.bloom-filter-post-wrapper');
   
-  const resBits = document.getElementById('res-bits');
-  const resKb = document.getElementById('res-kb');
-  const resBpe = document.getElementById('res-bpe');
-  const resHash = document.getElementById('res-hash');
-  const resBytesConfig = document.getElementById('res-bytes-config');
-  const calcWarning = document.getElementById('calc-warning');
+  const ndvInput = wrapper.querySelector('#input-ndv');
+  const fppSlider = wrapper.querySelector('#slider-fpp');
+  const fppInput = wrapper.querySelector('#input-fpp');
+  
+  const resBits = wrapper.querySelector('#res-bits');
+  const resKb = wrapper.querySelector('#res-kb');
+  const resBpe = wrapper.querySelector('#res-bpe');
+  const resHash = wrapper.querySelector('#res-hash');
+  const resBytesConfig = wrapper.querySelector('#res-bytes-config');
+  const calcWarning = wrapper.querySelector('#calc-warning');
 
   // Math Functions for Bloom Filter
   function calculateBloom() {
@@ -582,15 +540,14 @@ df_to_write.write \
   });
 
   // Safe Clipboard Copy (Fallback execution)
-  function copyCode(elementId) {
-    const codeElement = document.getElementById(elementId);
+  window.copyCode = function(elementId) {
+    const codeElement = wrapper.querySelector('#' + elementId);
     const range = document.createRange();
     range.selectNode(codeElement);
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);
     
     try {
-      // Preferred fallback mechanism due to iframe restriction potential
       const successful = document.execCommand('copy');
       if (successful) {
         showToast();
@@ -602,7 +559,7 @@ df_to_write.write \
   }
 
   function showToast() {
-    const toast = document.getElementById('custom-toast');
+    const toast = wrapper.querySelector('#custom-toast');
     toast.classList.add('show');
     setTimeout(() => {
       toast.classList.remove('show');
@@ -610,10 +567,5 @@ df_to_write.write \
   }
 
   // Initial Execution
-  window.onload = function() {
-    calculateBloom();
-  };
+  calculateBloom();
 </script>
-
-</body>
-</html>

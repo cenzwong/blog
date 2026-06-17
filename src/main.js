@@ -410,7 +410,14 @@ async function renderPost(slug) {
         .replace(/\$\$(.*?)\$\$/gs, (_, match) => {
           if (window.katex) {
             try {
-              return window.katex.renderToString(match.trim(), { displayMode: true, throwOnError: false });
+              const decoded = match.trim()
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&amp;/g, '&')
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'")
+                .replace(/(?<!\\)%/g, '\\%');
+              return window.katex.renderToString(decoded, { displayMode: true, throwOnError: false });
             } catch (e) {
               console.warn("KaTeX error:", e);
             }
@@ -420,13 +427,26 @@ async function renderPost(slug) {
         .replace(/\$(.*?)\$/g, (_, match) => {
           if (window.katex) {
             try {
-              return window.katex.renderToString(match.trim(), { displayMode: false, throwOnError: false });
+              const decoded = match.trim()
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&amp;/g, '&')
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'")
+                .replace(/(?<!\\)%/g, '\\%');
+              return window.katex.renderToString(decoded, { displayMode: false, throwOnError: false });
             } catch (e) {
               console.warn("KaTeX error:", e);
             }
           }
           // Dynamic cleanup for local mathematical formulas in fallback mode
           let clean = match.trim()
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&')
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/(?<!\\)%/g, '\\%')
             .replace(/\\times/g, '×')
             .replace(/\\text\{([^}]+)\}/g, '$1')
             .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1/$2)')
@@ -492,6 +512,14 @@ async function renderPost(slug) {
         window.hljs.highlightElement(el);
       });
     }
+
+    // Execute dynamic script tags inside HTML posts
+    mainView.querySelectorAll('.post-body script').forEach(oldScript => {
+      const newScript = document.createElement('script');
+      Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+      newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+      oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
     
     // Smooth scroll to top of page
     window.scrollTo({ top: 0, behavior: 'smooth' });
