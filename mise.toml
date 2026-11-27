@@ -1,30 +1,27 @@
 [tools]
-node = "22.16.0"
-python = "3.12.16"
-
-[settings]
-python.venv_stdlib = true
-
-[env]
-_.python.venv = { path = ".venv", create = true }
+node = "26.13.1"
+pnpm = "10.15.0"
 
 [tasks.setup]
-description = "Install JavaScript and Python dependencies"
-run = ["npm ci", "python -m pip install -r requirements.txt"]
+description = "Install dependencies and browser tools"
+run = ["pnpm install --frozen-lockfile", "pnpm run setup:browser", "pnpm run setup:playwright"]
 
 [tasks.dev]
 description = "Build, serve, and watch article sources"
-run = "npm run dev"
+run = "pnpm run dev"
 
 [tasks.build]
 description = "Build and validate the static site and search index"
-run = "npm run build"
+run = "pnpm run build"
 
 [tasks.test]
 description = "Build the site and run the automated tests"
-depends = ["build"]
-run = "npm test"
+run = "pnpm test"
 
 [tasks.preview]
 description = "Serve the last production build"
-run = "npm run preview"
+run = "pnpm run preview"
+
+[tasks.check]
+description = "Check Astro and TypeScript diagnostics"
+run = "pnpm run check"

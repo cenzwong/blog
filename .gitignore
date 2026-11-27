@@ -37,3 +37,10 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Astro generated types and cache
+.astro/
+
+# Browser test artifacts
+test-results/
+playwright-report/

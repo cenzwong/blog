@@ -15,14 +15,16 @@ test('catalogue excludes article bodies and static articles contain content', as
     const html = await readFile(path.join(root, 'posts', post.slug, 'index.html'), 'utf8');
     assert.ok(html.includes(post.title.replaceAll('&', '&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')));
     assert.ok(html.includes('rel="canonical"'));
+    assert.match(html, /property="og:image"/);
+    assert.match(html, /name="twitter:image"/);
   }
 });
 
 test('crawler and static route artifacts exist', async () => {
   for (const file of ['index.html','about/index.html','search/index.html','404.html','rss.xml','sitemap.xml','robots.txt']) await access(path.resolve('dist', file));
   const about = await readFile(path.resolve('dist', 'about/index.html'), 'utf8');
-  assert.match(about, /class="synthesis-pipeline"/);
-  assert.match(about, /Pagefind Search/);
+  assert.match(about, /knowledge through collaboration/i);
+  assert.match(about, /Pagefind/);
 });
 
 test('interactive HTML is isolated and has a searchable static copy', async () => {

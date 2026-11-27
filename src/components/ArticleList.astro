@@ -1,0 +1,5 @@
+---
+import { postRoute } from '../lib/routes';
+const { articles } = Astro.props;
+---
+<div class="article-list">{articles.map((post: any) => <article class="article-row"><p class="eyebrow"><time datetime={post.data.date}>{post.data.date}</time> · {post.data.tags[0]}</p><h3><a href={postRoute(post.id)}>{post.data.title}</a></h3><p>{post.data.description}</p></article>)}</div>

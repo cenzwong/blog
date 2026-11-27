@@ -1,0 +1,8 @@
+---
+import Base from '../../layouts/Base.astro';
+import { publishedArticles } from '../../lib/articles';
+import { tagRoute } from '../../lib/routes';
+const posts = await publishedArticles();
+const tags = [...new Set(posts.flatMap(p => p.data.tags))].sort((a,b) => a.localeCompare(b));
+---
+<Base title="Topics" description="Browse articles by topic." canonicalPath="tags/"><header class="page-header"><p class="eyebrow">Explore the collection</p><h1>Topics</h1></header><ul class="topic-index">{tags.map(tag => <li><a href={tagRoute(tag)}>{tag}</a> <span>{posts.filter(p => p.data.tags.includes(tag)).length}</span></li>)}</ul></Base>

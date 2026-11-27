@@ -1,6 +1,7 @@
-import { readFile, access, readdir } from 'node:fs/promises';
+import { readFile, access } from 'node:fs/promises';
+import { validateLinks } from './validate-links.mjs';
 import path from 'node:path';
-const dist = path.resolve('dist');
+const dist = path.resolve(process.argv[2] || 'dist');
 const base = `${(process.env.VITE_BASE || '/blog/').replace(/\/+$/, '')}/`;
 const meta = JSON.parse(await readFile(path.join(dist, 'metadata.json'), 'utf8'));
 if (meta.schema_version !== 1) throw new Error('Unexpected metadata schema version');
@@ -38,21 +39,5 @@ if ((rss.match(/<item>/g) || []).length !== meta.posts.length) throw new Error('
 for (const canonical of seenCanonicals) if (!sitemap.includes(canonical.replaceAll('&amp;','&'))) throw new Error(`Article canonical missing from sitemap: ${canonical}`);
 try { await access(path.join(dist,'search_index.json')); throw new Error('Legacy full-corpus index must not ship in the static distribution'); }
 catch (error) { if (error.message.includes('must not ship')) throw error; if (error.code !== 'ENOENT') throw error; }
-async function walk(dir) {
-  const entries = await readdir(dir, {withFileTypes:true});
-  return (await Promise.all(entries.map(entry => entry.isDirectory() ? walk(path.join(dir,entry.name)) : entry.name.endsWith('.html') ? [path.join(dir,entry.name)] : []))).flat();
-}
-for (const source of await walk(dist)) {
-  const html = await readFile(source,'utf8');
-  for (const [,raw] of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
-    const value = raw.replaceAll('&amp;','&');
-    if (/^(?:#|https?:|mailto:|tel:|data:|javascript:)/i.test(value)) continue;
-    const parsed = new URL(value, `https://static.invalid${base}`);
-    if (!parsed.pathname.startsWith(base)) throw new Error(`Internal URL escapes configured base in ${path.relative(dist,source)}: ${value}`);
-    let target = path.join(dist, decodeURIComponent(parsed.pathname.slice(base.length)));
-    if (parsed.pathname.endsWith('/')) target = path.join(target,'index.html');
-    try { await access(target); }
-    catch { throw new Error(`Broken internal URL in ${path.relative(dist,source)}: ${value}`); }
-  }
-}
+await validateLinks(dist, base);
 console.log(`Validated static distribution: ${meta.posts.length} article documents and catalogue without bodies.`);

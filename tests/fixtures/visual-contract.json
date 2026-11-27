@@ -1,0 +1,6 @@
+{
+  "light": {"background":"rgb(250, 251, 251)","text":"rgb(24, 40, 43)","accent":"rgb(0, 123, 136)"},
+  "dark": {"background":"rgb(17, 27, 30)","text":"rgb(228, 238, 237)","accent":"rgb(94, 215, 223)"},
+  "desktop": {"articleLayout":"grid","mobileToc":"none","desktopToc":"block"},
+  "mobile": {"articleLayout":"flex","mobileToc":"block","desktopToc":"none"}
+}

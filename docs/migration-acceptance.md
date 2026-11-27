@@ -1,0 +1,14 @@
+# Migration acceptance and evidence
+
+This is a working acceptance map for the [migration handoff](astro-migration-handoff.md), not a claim that the release is complete. Task directories on the [engineering board](../board/README.md) remain the status source.
+
+| Area | Current evidence | Remaining boundary |
+| --- | --- | --- |
+| Framework and content | Astro static output, a Zod collection and Unified compiler build all eight original article routes. The [compatibility manifest](migration-compatibility.md) records source moves and original hashes. Vitest and isolated production fixtures cover dates, slugs, tags, drafts, aliases, links, assets and sandboxed HTML. | GitHub-hosted CI and deployment have not run for this migration. |
+| Reader experience | Desktop/mobile Chromium tests cover Markdown, HTML, interactive articles, search, themes, navigation, overflow and no-JavaScript reading. Isolation tests verify that the interactive iframe cannot access its parent, storage or network. macOS pixel-diff baselines cover real pages, technical content and both viewports, plus a dark article. | Linux CI does not yet have pixel-diff baselines; physical-device, Safari/Firefox and manual screen-reader checks remain open. |
+| Technical content | Shiki, KaTeX and Mermaid render at build time. Real Pyodide execution, cancellation and reset were exercised in Chromium. The [example audit](python-example-audit.md) records which existing examples are explicitly runnable. | Browser/network variation and broader manual accessibility checks are not proven by local tests. |
+| Discovery and search | Pagefind indexes published pages; tests cover topic filters, URL state, browser Back, keyboard quick search, focus restoration, archives and related navigation. | Live deployed search and crawler behavior remain unverified. |
+| SEO and production | The build validates local links and fragments, metadata, RSS, sitemap and the script-only iframe. A shared social card and optional cover images are emitted. Local Lighthouse lab results are in the [performance baseline](performance-baseline.md). | Lab scores are not field INP or production metrics. The Pages workflow, public canonicals and sitemap need a successful migration deployment and live verification. |
+| Documentation and rollback | Current guides, ADRs and [release notes](migration-release-notes.md) describe the architecture and rollback path. Superseded custom generation and Python build tooling were removed after local compatibility checks. | Release acceptance and production verification remain tracked in TASK-012 and TASK-013. |
+
+The modified workflow is configured to install pinned dependencies, run checks and tests, measure representative pages, and upload browser/Lighthouse artifacts before deployment. Configuration alone is not evidence that GitHub Actions or deployment succeeded.

@@ -1,0 +1,9 @@
+---
+import Base from '../layouts/Base.astro';
+import Search from '../components/Search.astro';
+import { publishedArticles } from '../lib/articles';
+import { route } from '../lib/routes';
+const posts = await publishedArticles();
+const tags = [...new Set(posts.flatMap(p => p.data.tags))].sort((a,b) => a.localeCompare(b));
+---
+<Base title="Search" description="Search the article collection." canonicalPath="search/" noindex><header class="page-header"><p class="eyebrow">Explore the collection</p><h1>Search articles</h1><p>Search the full text, then narrow by topic.</p></header><noscript><p>Search requires JavaScript. You can <a href={route('archive/')}>browse the archive</a> instead.</p></noscript><Search tags={tags}/></Base>

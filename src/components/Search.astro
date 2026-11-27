@@ -1,0 +1,8 @@
+---
+const { tags = [], quick = false } = Astro.props;
+---
+<div data-search hidden data-quick={quick ? 'true' : 'false'}>
+  <form data-search-form role="search"><label for={quick ? 'quick-query' : 'search-query'}>Search articles</label><div class="search-controls"><input id={quick ? 'quick-query' : 'search-query'} type="search" name="q" autocomplete="off" placeholder="Search articles…"/><button type="submit">Search</button></div>{!quick && <><label for="search-tag">Topic</label><select id="search-tag" name="tag"><option value="">All topics</option>{tags.map((tag: string) => <option value={tag}>{tag}</option>)}</select></>}</form>
+  <p data-search-status role="status" aria-live="polite"></p><ol data-search-results class="search-results"></ol>
+</div>
+<script>import '../runtime/search';</script>

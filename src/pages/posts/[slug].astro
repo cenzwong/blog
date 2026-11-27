@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { publishedArticles } from '../../lib/articles';
+import { postRoute, route, tagRoute } from '../../lib/routes';
+import { compileArticle } from '../../compiler/index.mjs';
+export async function getStaticPaths() {
+  const posts = await publishedArticles();
+  return posts.flatMap(post => [{params: {slug: post.id}, props: {post, posts, alias:false}}, ...post.data.aliases.map(alias => ({params: {slug:alias}, props: {post, posts, alias:true}}))]);
+}
+const { post, posts, alias } = Astro.props;
+const { data } = post;
+const diagramDimensions = await readFile(path.join(process.cwd(), '.generated/diagram-dimensions.json'), 'utf8').then(JSON.parse).catch((error: NodeJS.ErrnoException) => {if (error.code === 'ENOENT') return {}; throw error;});
+const compiled = await compileArticle(post.body ?? '', data, {base: import.meta.env.BASE_URL, diagramDimensions, articles: posts.map((p: any) => ({slug: p.id, sourcePath: p.data.sourcePath}))});
+for (const warning of compiled.warnings) console.warn(`${data.sourcePath}: ${warning}`);
+const related = posts.filter((p: any) => p.id !== post.id).map((p: any) => ({post: p, score: p.data.tags.filter((tag: string) => data.tags.some((t: string) => t.toLowerCase() === tag.toLowerCase())).length + (data.category && data.category === p.data.category ? 1 : 0) + (data.series && data.series.name === p.data.series?.name ? 2 : 0)})).filter((item: any) => item.score > 0).sort((a: any, b: any) => b.score - a.score || b.post.data.date.localeCompare(a.post.data.date)).slice(0, 3);
+const seriesName = data.series?.name;
+const series = seriesName ? posts.filter((p: any) => p.data.series?.name === seriesName).sort((a: any, b: any) => a.data.series.order - b.data.series.order) : [];
+const canonical = new URL(postRoute(post.id), Astro.site);
+const structured = JSON.stringify({'@context':'https://schema.org','@type':'BlogPosting',headline:data.title,description:data.description,datePublished:data.date,...(data.updated ? {dateModified:data.updated}:{}),author:{'@type':'Person',name:data.author},mainEntityOfPage:canonical.href}).replaceAll('<','\\u003c');
+---
+{alias ? <html lang="en"><head><meta charset="utf-8"/><meta name="robots" content="noindex"/><link rel="canonical" href={canonical}/><meta http-equiv="refresh" content={`0; url=${postRoute(post.id)}`}/><title>Article moved | Cenz.Blog</title></head><body><p>This article has moved. <a href={postRoute(post.id)}>Continue to {data.title}</a>.</p></body></html> : <Base title={data.title} description={data.description} canonicalPath={`posts/${post.id}/`} type="article" image={compiled.cover} imageAlt={compiled.cover ? `Illustration for ${data.title}` : undefined} published={data.date} updated={data.updated} author={data.author}>
+  <script type="application/ld+json" set:html={structured}/>
+  <article data-pagefind-body itemscope itemtype="https://schema.org/Article">
+    <header class="article-header">
+      <p class="eyebrow"><a href={route()}>Articles</a>{data.category && <> / {data.category}</>}</p>
+      <h1 itemprop="headline" data-pagefind-meta="title">{data.title}</h1>
+      {data.subtitle && <p class="subtitle">{data.subtitle}</p>}
+      <p class="dek" data-pagefind-meta="description">{data.description}</p>
+      <p class="meta"><time datetime={data.date} itemprop="datePublished" data-pagefind-meta="date">{data.date}</time> · <span itemprop="author">{data.author}</span> · {compiled.readingTimeMinutes} min read{data.updated && <> · Updated <time datetime={data.updated}>{data.updated}</time></>}</p>
+      <div class="tag-list">{data.tags.map((tag: string) => <a href={tagRoute(tag)} data-pagefind-filter="tag">{tag}</a>)}</div>
+    </header>
+    {compiled.cover && <img class="article-cover" src={compiled.cover} alt=""/>}
+    <div class="article-layout">
+      <div class="prose" itemprop="articleBody" set:html={compiled.html}/>
+      <aside class="toc" aria-label="On this page" data-pagefind-ignore>
+        {compiled.headings.length > 0 && <>
+          <div class="toc-desktop"><h2>On this page</h2><ol>{compiled.headings.filter((h: any) => h.depth <= 3).map((h: any) => <li class:list={{nested: h.depth === 3}}><a href={`#${h.id}`}>{h.text}</a></li>)}</ol></div>
+          <details class="toc-mobile"><summary>On this page</summary><ol>{compiled.headings.filter((h: any) => h.depth <= 3).map((h: any) => <li class:list={{nested: h.depth === 3}}><a href={`#${h.id}`}>{h.text}</a></li>)}</ol></details>
+        </>}
+        <p><a href={`https://github.com/cenzwong/blog/blob/main/${data.sourcePath}`}>View source</a></p>
+        <p><a href={`mailto:?subject=${encodeURIComponent(data.title)}&body=${encodeURIComponent(canonical.href)}`}>Share by email</a></p>
+      </aside>
+    </div>
+    {data.interactive && <section class="demo" data-pagefind-ignore><h2>Interactive demonstration</h2><p>The demonstration runs in an isolated frame. The article text above remains available without it.</p><iframe title={`${data.title} interactive demonstration`} sandbox="allow-scripts" loading="lazy" src={route(`demos/${post.id}.html`)}></iframe></section>}
+    {series.length > 1 && <nav class="related" aria-label={`${seriesName} series`} data-pagefind-ignore><h2>Series: {seriesName}</h2><ol>{series.map((p: any) => <li><a href={postRoute(p.id)} aria-current={p.id === post.id ? 'page' : undefined}>{p.data.title}</a></li>)}</ol></nav>}
+    {related.length > 0 && <aside class="related" data-pagefind-ignore><h2>Related articles</h2><ul>{related.map(({post: p}: any) => <li><a href={postRoute(p.id)}>{p.data.title}</a></li>)}</ul></aside>}
+  </article>
+  <script>import '../../runtime/article';</script>
+</Base>}

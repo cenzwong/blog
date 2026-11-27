@@ -1,5 +1,7 @@
 # ADR-001: Retain vanilla JavaScript and Vite
 
+> Superseded by [ADR-010](010-astro-unified-and-static-diagrams.md). This record preserves the original decision.
+
 ## Context
 The existing site uses Vite, native CSS and JavaScript.
 

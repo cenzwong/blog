@@ -1,49 +1,25 @@
 # Article authoring guide
 
-Write articles directly under `content/` as Markdown (`.md`) or HTML (`.html` or `.htm`). The build publishes articles at `/blog/posts/<slug>/` and indexes their generated HTML with Pagefind.
-
-## Markdown frontmatter
+Write Markdown (`.md`) or HTML (`.html` or `.htm`) under `content/YYYY/MM/`, using the publication year and month. Discovery is recursive; keep non-article files in `assets/`. Published articles retain the canonical URL `/blog/posts/<slug>/` regardless of source location.
 
 ```yaml
 ---
 title: Example article
-subtitle: Optional subtitle
 description: A short article summary.
 date: 2026-11-26
 author: Cenz Wong
-tags:
-  - Python
-  - Data Engineering
+tags: [Python, Data Engineering]
 slug: example-article
 draft: false
 ---
-
-# Article body
 ```
 
-Required fields are `title`, `description`, `date`, and `tags`. Titles must be unique regardless of case. Dates use `YYYY-MM-DD`. Tags can be a non-empty YAML list or a comma-separated string. A slug must be unique and use lowercase letters and digits, with single hyphens between segments. The filename stem supplies the slug when omitted. Keep published slugs stable so existing links continue to work.
+`title`, `description`, `date` and `tags` are required. Dates are valid calendar dates in `YYYY-MM-DD` form. Tags may be a YAML list or comma-separated string. Slugs use lowercase letters and digits separated by single hyphens and must be unique. The filename stem supplies a missing slug; keep published slugs stable. Optional metadata includes `subtitle`, `updated`, `category`, `featured`, `series`, `cover`, `interactive`, and `aliases`. `aliases` is a list of old article slugs; each creates a static redirect at `/posts/<alias>/`. `updated` must not precede publication. A `cover` may be an HTTPS image URL or a path relative to the source; it appears on the article and in sharing metadata. The site uses a shared social image when no cover is provided.
 
-Set `draft: true` to omit an article from the generated site, feeds, and search. Keep secrets and private material outside the public repository.
+Set `draft: true` to exclude an article from public pages and indexes. Repository content, including drafts, is public. Relative assets and article links resolve from the source file and must remain inside `content/`.
 
-## HTML articles
+Markdown supports GFM, math, fenced code, Mermaid and `:::note`, `:::tip` or `:::warning` callout blocks. An image title becomes a caption when the image is alone in its paragraph. Math, highlighting and diagrams are rendered at build time. Raw HTML in Markdown is not executed. Ordinary Python fences are display-only; explicitly opt in to browser execution with a `python run` fence. Only use examples compatible with Pyodide; it loads on demand from a CDN and runs in a worker.
 
-Use a YAML metadata comment before the document:
+HTML articles use a leading YAML metadata comment. Use `interactive: true` only for reviewed HTML that needs scripts. Its interactive document runs in a script-only sandboxed iframe with restricted resources, and the article retains a sanitised static copy. Local image, JavaScript and stylesheet references are embedded into the isolated document after content-root checks. CSS `@import`, image `srcset`, remote assets and network requests are not supported; the build reports unsupported local references. Interactive content must not depend on parent DOM access or external resources.
 
-```html
-<!--
-title: Interactive article
-description: A short description.
-date: 2026-11-26
-tags: HTML, Web
-slug: interactive-article
-interactive: true
--->
-<!doctype html>
-<html lang="en"><body><h1>Interactive article</h1></body></html>
-```
-
-Use `interactive: true` for reviewed HTML that needs scripts. The published article runs the interactive document in a script-only sandboxed iframe and includes a static text version. Raw HTML in Markdown is escaped.
-
-## Build and preview
-
-After [setting up the project](local-development.md), run `mise run dev` and open the URL it prints. Refresh after the content rebuild finishes. Run `mise run test` before submitting an article.
+Run `mise run dev` to preview and `mise run test` before submitting. See [local development](local-development.md) for browser setup and build commands.

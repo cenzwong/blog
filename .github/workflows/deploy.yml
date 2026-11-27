@@ -18,7 +18,22 @@ jobs:
       - uses: actions/checkout@v7
       - uses: jdx/mise-action@v5.0.0
       - run: mise run setup
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: mise run check
       - run: mise run test
+      - run: pnpm run perf
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-evidence-pr
+          path: test-results/
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-pr
+          path: .generated/lighthouse/
+          if-no-files-found: ignore
 
   build-and-deploy:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
@@ -43,8 +58,33 @@ jobs:
       - name: Install Dependencies
         run: mise run setup
 
+      - name: Install browser for end-to-end tests
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Check Astro and TypeScript
+        run: mise run check
+
       - name: Build and Test Static Website
         run: mise run test
+
+      - name: Measure representative pages
+        run: pnpm run perf
+
+      - name: Save browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-evidence-production
+          path: test-results/
+          if-no-files-found: ignore
+
+      - name: Save Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-production
+          path: .generated/lighthouse/
+          if-no-files-found: ignore
 
       - name: Setup GitHub Pages Configuration
         uses: actions/configure-pages@v6

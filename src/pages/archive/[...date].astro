@@ -1,0 +1,12 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleList from '../../components/ArticleList.astro';
+import { publishedArticles } from '../../lib/articles';
+export async function getStaticPaths() {
+  const posts = await publishedArticles();
+  const dates = [...new Set(posts.flatMap(p => [p.data.date.slice(0,4), p.data.date.slice(0,7).replace('-', '/')] ))];
+  return dates.map(date => ({params: {date}, props: {date, posts: posts.filter(p => p.data.date.startsWith(date.replace('/', '-')))}}));
+}
+const {date, posts} = Astro.props;
+---
+<Base title={`Archive ${date}`} description={`Articles published in ${date}.`} canonicalPath={`archive/${date}/`}><header class="page-header"><p class="eyebrow">Archive</p><h1>{date}</h1></header><ArticleList articles={posts}/></Base>

@@ -1,0 +1,9 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleList from '../../components/ArticleList.astro';
+import { publishedArticles } from '../../lib/articles';
+import { route } from '../../lib/routes';
+const posts = await publishedArticles();
+const years = [...new Set(posts.map(p => p.data.date.slice(0,4)))];
+---
+<Base title="Archive" description="Browse the Cenz.Blog article archive." canonicalPath="archive/"><header class="page-header"><p class="eyebrow">The collection</p><h1>Archive</h1><p>All articles, ordered by publication date.</p></header>{years.map(year => <section><h2><a href={route(`archive/${year}/`)}>{year}</a></h2><ArticleList articles={posts.filter(p => p.data.date.startsWith(year))}/></section>)}</Base>

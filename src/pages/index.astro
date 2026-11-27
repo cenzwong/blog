@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import ArticleList from '../components/ArticleList.astro';
+import { publishedArticles } from '../lib/articles';
+import { route, tagRoute } from '../lib/routes';
+const posts = await publishedArticles();
+const featured = posts.filter(post => post.data.featured);
+const topics = [...new Set(posts.flatMap(post => post.data.tags))].slice(0, 12);
+---
+<Base title="Engineering Notes" description="Notes on software, data engineering and computational thinking.">
+  <section class="intro"><p class="eyebrow">Cenz.Blog / Engineering journal</p><h1>Engineering notes.</h1><p>Data engineering, software architecture and computational thinking, explored in depth.</p><p><a href="https://github.com/cenzwong/blog">GitHub</a> <span aria-hidden="true">·</span> <a href={route('rss.xml')}>RSS</a></p></section>
+  <section class="topics"><h2>Explore topics</h2><div class="tag-list">{topics.map(tag => <a href={tagRoute(tag)}>{tag}</a>)}</div></section>
+  {featured.length > 0 && <section><h2>Featured articles</h2><ArticleList articles={featured}/></section>}
+  <section><div class="section-heading"><h2>Latest articles</h2><a href={route('archive/')}>View archive →</a></div><ArticleList articles={posts}/></section>
+</Base>
