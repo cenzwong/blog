@@ -25,9 +25,9 @@ No Lighthouse Performance, SEO, or accessibility score has been collected. The h
 
 ## Migration verification still required
 
-- Deploy the V2 build to GitHub Pages, then verify direct article URLs and legacy hash URLs under `/blog/`.
+- Verify legacy hash URLs under `/blog/` on the production host.
 - Verify no-result behavior and Pagefind loading in the deployed production browser.
-- Verify interactive HTML controls, runtime assets and trust boundaries on the production host.
+- Verify additional interactive HTML controls, runtime assets and trust boundaries on the production host.
 - Review mobile visual layout and responsive control behavior across representative pages and assistive technologies.
 - Record repeatable Lighthouse runs with device, browser, network profile, page samples and methodology.
 - Verify RSS, sitemap, canonical URLs and custom-domain/base `/` configuration on the deployed static host.
@@ -53,6 +53,6 @@ The Bloom Filter sizing calculator was also exercised in its sandboxed iframe: c
 
 ## Current production state
 
-The public homepage was checked read-only on 2026-11-27 and still showed the V1 hash-routed shell and client-side JSON search status. Requesting `/blog/posts/iceberg-pyspark-bloom-filter-deep-dive/` returned GitHub Pages' 404 page. The local V2 artifacts have not been deployed, so production acceptance remains incomplete.
+GitHub Actions deployment run [#18](https://github.com/cenzwong/blog/actions/runs/45966101773) completed successfully on 2026-11-27 for commit `4e8d6177cc7a05f77f6f5b8c1e864f21c61ca5fb`. A live browser check confirmed that the homepage lists the new static routes and that `/blog/posts/iceberg-pyspark-bloom-filter-deep-dive/` loads its article title, metadata, full content, tags, related links and interactive calculator without falling back to the V1 hash-routed shell. This verifies deployment and one direct article route only; it does not verify live search, legacy redirects, feeds, canonical metadata, Lighthouse or accessibility.
 
 After adding the interactive HTML searchable text copy and preserving Mermaid source, the final Pagefind run indexed 2,640 words. The browser also verified four rendered Mermaid diagrams with source disclosures in both emulated color schemes. Blocking the Mermaid CDN kept all four source blocks visible and showed readable fallback notices; blocking Pagefind produced the visible search-unavailable message. The Bloom Filter article's static text copy was searchable, and its iframe remained `sandbox="allow-scripts"` without same-origin access.

@@ -1,7 +1,7 @@
 ---
 id: TASK-005
 title: CI, documentation and production evidence
-status: blocked
+status: in_progress
 dependencies: [TASK-003, TASK-004]
 priority: 5
 ---
@@ -27,10 +27,10 @@ CI validation/test/build/deploy, ADRs, developer docs, artifact checks, link/bro
 - A 390 px browser check found and fixed crowded search controls. Home, search, long article, interactive article and About now have no document-width overflow; search controls, matching/no-result states and iframe width were inspected. This is not a full accessibility or cross-device review.
 - One local mobile browser run recorded LCP/CLS and transfer sizes under the documented throttle. Search CLS fell from 0.61 to 0.0219 after moving results into an overlay; Mermaid feature transfer was about 1.36 MB. No Lighthouse score is claimed.
 - Direct browser interaction verified the Bloom Filter calculator's NDV/FPP outputs and its oversized-filter warning.
-- Read-only production check on 2026-11-27 confirms V1 is still live: the homepage shows the hash-routed shell and client-side JSON search; a V2 static article URL returns GitHub Pages 404.
+- GitHub Actions deployment run [#18](https://github.com/cenzwong/blog/actions/runs/45966101773) succeeded on 2026-11-27 for commit `4e8d6177cc7a05f77f6f5b8c1e864f21c61ca5fb`. Live browser checks confirmed the V2 homepage and direct Bloom Filter article URL, with article content and calculator controls present.
 
 ## Blocker
-The V2 deployment workflow failed during toolchain setup because Python 3.12.11 was unavailable on the Ubuntu 26.04 runner; CI and mise pins have been advanced to Python 3.12.16, which is present in the current actions/python-versions manifest. The Lighthouse/accessibility audit, full cross-device visual/control review, and Python 3.12.16 local run remain outstanding. Publishing is authorized and the corrected deployment run is pending. Approval to restore tracked `node_modules`/`dist` files remains pending; the earlier broad recursive cleanup was rejected by automatic review because those paths are tracked and could contain user data. A fresh local preview could not start in this sandbox (`listen EPERM`), so no new accessibility scan was captured this turn.
+The initial V2 deployment attempt failed because Python 3.12.11 was unavailable on the Ubuntu 26.04 runner. CI and mise now pin Python 3.12.16; the production workflow uses current Node 24 compatible Actions releases. Deployment run #18 passed and the homepage and direct article route are live. The Lighthouse/accessibility audit, full cross-device visual/control review, Python 3.12.16 local run, and live search/legacy-link checks remain outstanding. Approval to restore tracked `node_modules`/`dist` files remains pending; the earlier broad recursive cleanup was rejected by automatic review because those paths are tracked and may contain user data. A fresh local preview could not start in this sandbox (`listen EPERM`), so no new accessibility scan was captured this turn.
 
 ## Unblock action
-After authorization, publish the V2 build and verify the production Pages URL. Capture Lighthouse/accessibility evidence, complete mobile visual/control review and exercise the HTML calculator controls. Get explicit approval before restoring tracked dependency files or `dist` outputs.
+Verify production search and legacy links. Capture Lighthouse/accessibility evidence, complete mobile visual/control review and exercise remaining HTML calculator controls. Get explicit approval before restoring tracked dependency files or `dist` outputs.
