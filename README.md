@@ -5,6 +5,10 @@ Cenz.Blog is a static technical blog hosted on GitHub Pages. The V2 migration ge
 ## Repository map
 
 - `content/`: Markdown and HTML articles.
+- `archive/unpublished/`: unpublished article drafts.
+- `SKILLS.md`: article authoring guide.
+- `AGENT.md`: repository guide for agents.
+- `board/`: migration tasks and outstanding verification.
 - `scripts/ingest.py`: metadata validation and temporary build inputs in `.generated/`.
 - `scripts/generate.mjs`: static pages, feeds, metadata, and crawler artifacts.
 - `src/`: shared site styles bundled by Vite.
