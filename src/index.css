@@ -55,6 +55,10 @@
   padding: 0;
 }
 
+html {
+  overflow-x: clip;
+}
+
 body {
   background-color: var(--bg-dark);
   color: var(--text-primary);
@@ -207,63 +211,6 @@ body {
 .nav-link.active {
   color: var(--accent-primary);
   background: var(--accent-primary-glow);
-}
-
-/* ==========================================================================
-   SQLite Engine Status Badge
-   ========================================================================== */
-.engine-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border-radius: 50px;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
-  border: 1px solid var(--border-light);
-  transition: var(--transition-smooth);
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-/* Status States */
-.status-loading {
-  background: hsla(35, 90%, 55%, 0.05);
-  border-color: hsla(35, 90%, 55%, 0.15);
-  color: var(--accent-warning);
-}
-.status-loading .status-dot {
-  background-color: var(--accent-warning);
-  animation: pulse 1.5s infinite ease-in-out;
-}
-
-.status-connected {
-  background: var(--accent-success-glow);
-  border-color: hsla(145, 80%, 45%, 0.15);
-  color: var(--accent-success);
-}
-.status-connected .status-dot {
-  background-color: var(--accent-success);
-}
-
-.status-error {
-  background: hsla(0, 85%, 55%, 0.05);
-  border-color: hsla(0, 85%, 55%, 0.15);
-  color: hsl(0, 85%, 60%);
-}
-.status-error .status-dot {
-  background-color: hsl(0, 85%, 60%);
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.4; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.1); }
 }
 
 /* ==========================================================================
@@ -633,6 +580,7 @@ body {
    Advanced Search Page Styling
    ========================================================================== */
 .search-page {
+  position: relative;
   max-width: 750px;
   margin: 0 auto;
 }
@@ -654,12 +602,26 @@ body {
 
 .search-box-container {
   position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
   margin-bottom: 32px;
   border-radius: var(--radius-lg);
   background: var(--bg-surface);
   border: 1px solid var(--border-light);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
   transition: var(--transition-smooth);
+}
+
+.search-box-container .search-input {
+  grid-column: 1 / -1;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  background: var(--bg-deep);
 }
 
 .search-box-container:focus-within {
@@ -1104,10 +1066,6 @@ body {
     font-size: 0.85rem;
   }
   
-  .engine-badge {
-    display: none; /* Hide SQLite status badge on mobile header to save space */
-  }
-  
   .main-content {
     padding: 24px 16px;
   }
@@ -1211,4 +1169,29 @@ body {
   color: var(--text-secondary);
   min-height: 48px;
   white-space: pre-wrap;
+}
+
+/* Static article enhancements */
+.mermaid-diagram { overflow-x: auto; max-width: 100%; padding: 1rem; }
+.mermaid-diagram svg { display: block; max-width: 100%; height: auto; margin-inline: auto; }
+.python-output { white-space: pre-wrap; overflow-wrap: anywhere; padding: 1rem; border-radius: .75rem; background: var(--bg-surface, #111827); }
+.python-output:empty { display: none; }
+#pagefind-tag { max-width: 14rem; padding: .75rem; border-radius: .75rem; color: var(--text-primary); background: var(--bg-surface); border: 1px solid var(--border-medium); }
+.search-box-container button[type="submit"] { min-height: 44px; padding: .75rem 1rem; border: 1px solid var(--border-medium); border-radius: .75rem; color: var(--text-primary); background: var(--bg-surface); font: inherit; cursor: pointer; }
+#pagefind-tag { min-height: 44px; }
+#pagefind-status { min-height: 1.5em; margin: .75rem 0; }
+#pagefind-results { position: absolute; top: 100%; inset-inline: 0; z-index: 20; display: grid; grid-template-columns: 1fr; gap: 0; max-height: 70vh; overflow: auto; overscroll-behavior: contain; list-style: none; padding: 0; background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: var(--radius-md); box-shadow: 0 16px 40px rgba(0,0,0,.4); }
+#pagefind-results:empty { display: none; }
+#pagefind-results > li { padding: 1rem; }
+#pagefind-results mark { color: inherit; background: color-mix(in srgb, var(--accent-primary) 30%, transparent); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.mermaid-source { margin-top: .75rem; }
+.mermaid-source summary, .interactive-static-copy summary { cursor: pointer; color: var(--accent-primary); }
+.interactive-static-copy { margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--border-light); border-radius: .75rem; }
+
+@media (max-width: 520px) {
+  .search-box-container { grid-template-columns: auto minmax(0, 1fr); }
+  .search-box-container label[for="pagefind-tag"] { grid-column: 1; }
+  #pagefind-tag { width: 100%; max-width: none; }
+  .search-box-container button[type="submit"] { grid-column: 1 / -1; width: 100%; }
 }

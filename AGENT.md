@@ -1,132 +1,32 @@
-# Agent Operations Manual: Cenz.Blog 🤖🚀
+# Cenz.Blog agent guide
 
-Welcome, Agent! This repository is a state-of-the-art developer blog called **Cenz.Blog**. It is engineered as an ultra-fast, premium developer blog hosted on GitHub Pages, featuring an immersive space-dark style and a client-side search engine.
+## Architecture
 
-This manual documents the architecture, database pipelines, frontend rendering logic, and development standards to help you maintain, expand, or debug this project efficiently.
+Cenz.Blog is a vanilla JavaScript and Vite static site. Python validates Markdown/HTML frontmatter and emits build inputs. The build generates article-specific HTML, catalogue metadata, RSS, sitemap, tag pages and a 404 page, then Pagefind indexes the generated HTML. GitHub Pages serves only static files; there is no application server or remote search service.
 
----
+- `content/`: published article source (`.md`, `.html`, `.htm`).
+- `scripts/ingest.py`: metadata parsing, validation and draft filtering.
+- `scripts/generate.mjs`: static route, metadata and feed generation.
+- `scripts/validate-build.mjs`: validates generated routes, links and crawler artifacts.
+- `public/runtime.js` and `public/python.worker.js`: optional browser features and Python execution.
+- `src/index.css`: shared visual design.
+- `docs/engineering-handoff-v2.md`: preserved V2 requirements; `docs/architecture.md` and `docs/adr/` describe implemented decisions.
 
-## 🏗️ Repository Architecture & Design System
+## Development commands
 
-The blog operates entirely as a serverless static site. To avoid external search APIs or heavy runtime databases that conflict with the static-only environment of GitHub Pages, this codebase utilizes a high-performance **client-side in-memory JSON search index**.
+Use Node.js 22.16.0 and Python 3.12.11 as pinned in optional `mise.toml`. Contributors can also install compatible runtimes directly. Install dependencies with `npm ci` and Python build requirements with `python3 -m pip install -r requirements.txt`.
 
-### Data & Compilation Flow
-```mermaid
-graph TD
-    A[content/ Markdown Files] -->|python3 scripts/ingest.py| B[public/search_index.json]
-    B -->|Fetch on Boot| C[In-Memory Store in Browser]
-    C -->|SPA Search Handler| D[Instant Highlighted Results]
+```sh
+npm run dev       # build and serve generated static routes; rebuild after content edits
+npm run build     # ingest, Vite, static generation, Pagefind, artifact validation
+npm test          # ingestion and generated-artifact tests
+npm run preview   # serve the last generated dist/ directory
 ```
 
-### Key Components
+`npm run dev` watches article files and debounces rebuilds. The authored content directory contains public repository material; draft exclusion controls publication only and does not make source private.
 
-*   **Content Store**: [content](file:///Users/cenz.wong/Project/blog/content)
-    Raw blog posts written in Markdown with simple YAML frontmatter.
-*   **Compilation Pipeline**: [ingest.py](file:///Users/cenz.wong/Project/blog/scripts/ingest.py)
-    A Python builder script that processes the frontmatter metadata, structures post content, and generates the consolidated search database.
-*   **Design System & UI**: [index.css](file:///Users/cenz.wong/Project/blog/src/index.css)
-    A premium space-dark aesthetic utilizing harmonic neon colors (`hsl`), glowing ambient backdrops, subtle card borders, responsive layouts, and rich micro-interactions.
-*   **Client Router & Engine**: [main.js](file:///Users/cenz.wong/Project/blog/src/main.js)
-    A single-page application (SPA) router handling hash routing (`#/`, `#/search`, `#/about`, `#/post/:slug`), marked-based Markdown parsing, KaTeX math typesetting, and custom keyword-relevance weighted search matching.
-*   **Automated Deployments**: [deploy.yml](file:///Users/cenz.wong/Project/blog/.github/workflows/deploy.yml)
-    GitHub Actions pipeline that compiles the content index and publishes the production static assets to GitHub Pages.
+## Content rules
 
----
+Every published article needs a unique safe slug, title, description, valid ISO date and non-empty tags. YAML frontmatter and legacy HTML comment metadata are supported. Tags may be a YAML list or comma-separated string. Set `draft: true` to exclude an article from generated public artifacts. HTML that requires scripts must explicitly declare `interactive: true`; ordinary Markdown HTML is escaped. Review executable content as code and preserve its iframe sandbox boundary.
 
-## ⚡ Developer Commands
-
-To run commands, use the workspace directory `/Users/cenz.wong/Project/blog` as the working directory.
-
-| Command | Action | Frequency / When to Run |
-| :--- | :--- | :--- |
-| `npm install` | Installs pure JS dependencies (Vite, marked) | Setup phase or package changes. |
-| `npm run ingest` | Runs the Python ingestion script | Every time content is added, edited, or deleted. |
-| `npm run dev` | Boots local Vite dev server on `http://localhost:5173/` | During styling changes or live article drafting. |
-| `npm run build` | Regenerates JSON index and runs Vite compilation | Before production check or manual deployment. |
-| `npm run preview` | Previews the compiled bundle locally | Verifying production build integrity. |
-
----
-
-## ✍️ Content Creation Guidelines
-
-All articles are saved in [content](file:///Users/cenz.wong/Project/blog/content). Drafts or hidden posts reside in [content.hiden](file:///Users/cenz.wong/Project/blog/content.hiden).
-
-### Frontmatter Schema
-Each post must start with a YAML-like header. The ingestion parser parses this header line-by-line using regular expressions:
-
-```markdown
----
-title: "Your Premium Article Title"
-description: "A highly descriptive, engaging subtitle or short description."
-date: "YYYY-MM-DD"
-tags: "Spark, Big-O, Python, WebAssembly"
-slug: "your-article-slug"
-author: "Cenz Wong & Gemini AI"  # Optional. Set to "Cenz Wong & Gemini AI" to automatically trigger human-AI co-authorship badge and avatars. Defaults to "Cenz Wong".
----
-```
-
-> [!IMPORTANT]
-> The publication date (`date` field) determines the chronological order of the blog feed. Ensure dates use the `YYYY-MM-DD` format.
-> To trigger the co-authorship layout (showing you and the AI as partners), simply include `author: Cenz Wong & Gemini AI` in the frontmatter. If a tag is omitted, it will default to `Tech` inside the frontend cards.
-
----
-
-## 🛠️ Ingestion & Database Compiler Specs
-
-The build-time pipeline is located at [ingest.py](file:///Users/cenz.wong/Project/blog/scripts/ingest.py). 
-
-- **File Types**: Scans for `.md`, `.html`, and `.htm` within [content](file:///Users/cenz.wong/Project/blog/content).
-- **Frontmatter Extraction**: Uses regex pattern `FRONTMATTER_RE = re.compile(r'^(?:---|<!--)\s*\n(.*?)\n(?:---|-->)\s*\n(.*)', re.DOTALL)` to safely capture both standard frontmatter and commented formats.
-- **Cleanup Routine**: Automatically checks for and deletes any deprecated `public/search_index.db` SQLite files to keep the workspace clean and lean.
-- **Compilation Output**: Aggregates metadata along with full post content and saves it sorted in descending date order to `public/search_index.json`.
-
-> [!WARNING]
-> Remember that the database is strictly a client-side memory dump. If you modify any markdown files, you **MUST** run `npm run ingest` to build the new JSON index, otherwise your changes will not show up in the web app.
-
----
-
-## 🎨 Frontend & Search Engine Rules
-
-### 1. Style Guide (Vanilla CSS Philosophy)
-- Do not install utility-based CSS frameworks (e.g. Tailwind) or external library styles unless explicitly requested by the user.
-- Keep all global variables, dark-mode gradients, animation definitions, and media-queries organized within [index.css](file:///Users/cenz.wong/Project/blog/src/index.css).
-- Standard styles include:
-  - Custom neon glassmorphism borders (`border: 1px solid rgba(255, 255, 255, 0.08)`).
-  - Background space glows (`background: radial-gradient(...)`).
-  - Fluid micro-interactions (e.g., custom transform scaling and ease-in-out transitions on hover).
-
-### 2. Search Mechanics & Relevancy Engine
-The browser index query engine in [main.js](file:///Users/cenz.wong/Project/blog/src/main.js) uses direct client-side scan scoring:
-- **AND Logic**: Results must match **all** keywords entered by the user.
-- **Scoring Weights**:
-  - Title matches prefix: `+150` pts
-  - Title contains keyword: `+100` pts
-  - Title contains exact full query phrase: `+300` pts
-  - Description matches: `+30` pts
-  - Tag matches: `+20` pts
-  - Main body match frequency: `+5` pts per keyword instance
-- **Highlights & Snippets**: Extracts a dynamic context window (approx. 160 characters) surrounding the first matched search term, sanitizes markdown, and wraps search keywords in standard bold `<b>` highlights.
-
-### 3. Rendering Pipeline
-- **Markdown Parsing**: Renders body markup via `marked` client-side.
-- **Math/KaTeX**: Supports inline equations (`$ ... $`) and block equations (`$$ ... $$`). The script automatically maps common math tags (like `\times`, `\frac`, etc.) to clean unicode fallbacks if KaTeX fails to load.
-- **Syntax Highlighting**: Precode structures are decorated dynamically using Highlight.js (`window.hljs`).
-
-### 4. Human-AI Co-Authorship ("Distilled Knowledge")
-To support Cenz's co-creation paradigm with Gemini without requiring manual writing overhead, the blog supports automated collaborative displays:
-- **Homepage Symbiosis Badge**: A glassmorphic header pill badge (`.symbiosis-hero-badge`) with a pulsing neon cyan dot automatically renders below the welcome message, linking readers directly to the co-authorship pipeline overview on the About page.
-- **Overlapping Avatars & Static Capsule Badge**: In `src/main.js`, if the parsed post has `author: Cenz Wong & Gemini AI`, the client-side router automatically renders overlapping profile bubbles (`CW` in Slate-Grey & `🤖` in Glowing Cyan) and a static capsule badge styled as `Distilled Dialogue` in the article details header.
-- **Dialogue Synthesis Flowchart**: The About page renders a CSS-animated, interactive 4-stage vertical timeline (`.synthesis-pipeline`) representing the workflow (Spark, Q&A Loop, Stress Testing, and Static Compilation).
-
----
-
-## 📜 Checklist for Future Agent Task Execution
-
-When you receive a development goal or a task in this workspace, make sure to:
-
-- [ ] Check if the task involves writing content (Markdown) or code (HTML/JS/CSS).
-- [ ] If writing content, place the markdown file in [content](file:///Users/cenz.wong/Project/blog/content) and verify frontmatter has a unique slug and clean date.
-- [ ] Run `npm run ingest` to build the compiled `public/search_index.json`.
-- [ ] Run `npm run build` to build Vite client distribution files and verify no compile-time warnings/errors.
-- [ ] Use `npm run preview` or a dev server instance to manually inspect and verify styling and responsiveness.
-- [ ] Avoid editing file extensions to `.ipynb` or introducing unwanted heavy dependencies.
+Run `npm run build` after changing source or runtime behavior. Do not commit secrets, dependencies, or generated caches. Keep the standard npm workflow usable without mise.

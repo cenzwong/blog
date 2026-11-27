@@ -1,13 +1,9 @@
 # Dependencies
 node_modules/
+.generated/
 
 # Production build output
 dist/
-
-# Local Compiled Search Index Database
-# (The database is automatically compiled during deployment and local ingestion scripts,
-# so ignoring the binary avoids heavy Git commit histories on every article edit).
-public/search_index.db
 
 # Python caches
 __pycache__/

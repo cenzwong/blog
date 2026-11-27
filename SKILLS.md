@@ -1,81 +1,55 @@
-# How to Add a New Blog Post
+# Article authoring guide
 
-This guide explains how to add new blog posts to the Cenz.Blog static site. The site supports writing posts in either **Markdown (`.md`)** or **HTML (`.html`)**.
+Write published articles under `content/` as Markdown (`.md`) or HTML (`.html` / `.htm`). The build publishes static article pages at `/blog/posts/<slug>/` and indexes generated HTML with Pagefind.
 
-## File Location
+## Markdown frontmatter
 
-All new blog posts must be placed in the `content/` directory.
-
-## Frontmatter Metadata
-
-Every blog post **must** include a metadata section at the very top of the file, known as "frontmatter". This metadata tells the blog engine the title, date, URL slug, and tags for your article.
-
-The format of the frontmatter depends on the type of file you are creating.
-
-### For Markdown (`.md`) Files
-
-Use standard YAML-style frontmatter enclosed by `---`.
-
-```markdown
+```yaml
 ---
-title: "Your Post Title"
-subtitle: "An optional subtitle"
-description: "A short description of the post."
-date: "YYYY-MM-DD"
-tags: "Python, Data Engineering, PySpark"
-slug: "your-post-url-slug"
-author: "Cenz Wong"
+title: Example article
+subtitle: Optional subtitle
+description: A short article summary.
+date: 2026-11-26
+author: Cenz Wong
+tags:
+  - Python
+  - Data Engineering
+slug: example-article
+draft: false
 ---
 
-# Your Markdown Content
-Write your post here...
+# Article body
 ```
 
-### For HTML (`.html`) Files
+Legacy comma-separated tags and HTML-comment metadata remain supported. Required fields are `title`, `description`, `date`, and a non-empty `tags` value. Dates must be valid ISO dates. Slugs must use lowercase letters, digits and single hyphens, and be unique. When omitted, the slug is derived from the filename.
 
-Use an HTML comment block `<!-- -->` for the frontmatter so that it remains valid HTML.
+Set `draft: true` to omit an article from the public site, feeds and search. The repository remains public, so drafts must not contain secrets or private material.
+
+## HTML articles
+
+Use a YAML metadata comment before the document:
 
 ```html
 <!--
-title: "Your HTML Post Title"
-subtitle: "An optional subtitle"
-description: "A short description of the HTML post."
-date: "YYYY-MM-DD"
-tags: "HTML, Web, Advanced"
-slug: "your-html-post-slug"
-author: "Cenz Wong"
+title: Interactive article
+description: A short description.
+date: 2026-11-26
+tags: HTML, Web
+slug: interactive-article
+interactive: true
 -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Optional custom head elements -->
-</head>
-<body>
-  <h1>Your HTML Post Title</h1>
-  <p>Write your custom HTML content here.</p>
-</body>
-</html>
+<!doctype html>
+<html lang="en"><body><h1>Interactive article</h1></body></html>
 ```
 
-## Supported Frontmatter Fields
+Only explicitly declared interactive HTML is placed in a sandboxed iframe. It receives script permission without same-origin permission. Standard Markdown HTML is escaped and does not execute scripts.
 
-| Field | Required | Description |
-| :--- | :--- | :--- |
-| `title` | **Yes** | The title of the article. |
-| `description` | No | A short summary shown in search results and post cards. |
-| `date` | No | The publication date (format: `YYYY-MM-DD`). Determines sorting order. |
-| `tags` | No | Comma-separated list of tags (e.g., `Python, Spark`). Defaults to `Tech` if empty. |
-| `slug` | No | The URL path for the article. If omitted, the filename without extension is used. |
-| `subtitle` | No | A smaller subtitle shown below the title. |
-| `author` | No | The author name. Defaults to `Cenz Wong`. Use `Cenz Wong & Gemini AI` to trigger the co-author badge. |
+## Build and preview
 
-## Compilation Step
+```sh
+npm ci
+python3 -m pip install -r requirements.txt
+npm run dev
+```
 
-After creating or modifying a file in the `content/` directory, you must run the ingestion script to update the client-side search index.
-
-1. Open your terminal in the root directory.
-2. Run the following command:
-   ```bash
-   npm run ingest
-   ```
-3. This generates or updates the `public/search_index.json` file.
+The development command builds and serves the generated static website, then watches content changes with a debounce. Use `npm run build` for the production build, `npm test` for automated checks, and `npm run preview` to serve the last generated `dist/` directory.

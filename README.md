@@ -1,47 +1,36 @@
-# Cenz.Blog 🚀
+# Cenz.Blog
 
-Welcome to your brand new, ultra-fast, premium developer blog! 
+Cenz.Blog is a static technical blog hosted on GitHub Pages. The V2 migration generates standalone article pages and a lightweight metadata catalogue at build time, with no dedicated backend.
 
-This website is a state-of-the-art static site hosted entirely for free on **GitHub Pages**, featuring a fully serverless, client-side search engine. It loads a **pre-compiled JSON search index** in the browser, enabling instant full-text searches with zero server overhead or third-party API dependencies.
+## Repository map
 
----
+- `content/`: Markdown and HTML articles.
+- `scripts/ingest.py`: metadata validation and temporary build inputs in `.generated/`.
+- `scripts/generate.mjs`: static pages, feeds, metadata, and crawler artifacts.
+- `src/`: shared site styles bundled by Vite.
+- `package.json`: canonical JavaScript dependency manifest.
+- `mise.toml`: optional pinned development runtimes.
+- `.github/workflows/deploy.yml`: pull request validation and GitHub Pages deployment.
 
-## 📖 What is in this Blog?
+## Development
 
-If you are new to the world of web development, Node.js, and NPM, here is a quick map of what we built for you:
+```sh
+npm ci
+python3 -m pip install -r requirements.txt
+npm run dev
+```
 
-1. **`content/`**: A folder containing raw articles written in **Markdown** format with simple header metadata (called YAML frontmatter).
-2. **`scripts/ingest.py`**: A helper Python compiler script. It reads your Markdown articles, compiles them into a highly compact static JSON index, and saves it in `public/search_index.json`.
-3. **`src/`**: The frontend design! `src/index.css` is a stunning premium space-dark stylesheet. `src/main.js` handles routing pages and runs real-time client-side search queries.
-4. **`package.json`**: A master list of all project configurations, dependencies (like Vite for compiling, and SQLite libraries), and commands.
-5. **`.github/workflows/deploy.yml`**: A robots script (CI/CD pipeline) that compiles your database and publishes your site automatically every time you push code to GitHub.
+Production build and preview:
 
----
+```sh
+npm run build
+npm run preview
+```
 
-## 🛠️ Step-by-Step Guides (For Beginners)
+`VITE_BASE` controls the deployed path prefix (default `/blog/`). `SITE_URL` controls canonical URLs and feed links. Mise is optional; contributors can use standard Node.js and Python installations.
 
-We have created highly detailed, step-by-step instructions to teach you exactly how to work with this codebase. Click a link below to read:
+## V2 status and evidence
 
-*   ### [💻 Local Development Guide](./docs/local-development.md)
-    *Learn how Node and NPM work, how to install packages, how to write new articles, how to generate your search database, and how to test your site locally.*
+The current build validates metadata and generates standalone article pages, homepage, about/search pages, a body-free metadata catalogue, RSS, sitemap, robots and 404 artifacts. Pagefind and feature-gated article runtimes are part of the current static build. Local browser checks cover direct/legacy routes, no-JavaScript article content, on-demand search, math, syntax highlighting, diagrams and Python worker behavior. These checks do not prove accessibility scores, Lighthouse performance or live deployment.
 
-*   ### [🌐 GitHub Pages Deployment Guide](./docs/github-pages-deployment.md)
-    *Learn how to create a GitHub repository, upload your files, configure your settings, and deploy your live blog to the internet for free.*
-
----
-
-## ⚡ Quick Start Command Cheat-Sheet
-
-Here is a summary of the terminal commands you will run to manage your website:
-
-| Command | What it does | When to run it |
-| :--- | :--- | :--- |
-| `npm install` | Installs all required pure JavaScript packages. | First time you download/clone the project. |
-| `npm run ingest` | Compiles your Markdown files into the JSON search index. | Every time you add, edit, or delete an article. |
-| `npm run dev` | Starts a fast local development server with hot-reload. | While writing articles or editing frontend styling. |
-| `npm run build` | Builds your production-ready static assets in `dist/`. | Before deploying manually (GitHub does this automatically!). |
-| `npm run preview` | Previews the compiled production bundle locally. | To double-check everything works perfectly before pushing live. |
-
----
-
-Enjoy writing and building! If you ever have any questions about custom features, styles, or queries, just ask! 💻✨
+See [the preserved engineering handoff](docs/engineering-handoff-v2.md), [migration plan and risks](docs/v2-migration-plan.md), and [architecture notes](docs/architecture.md), and [performance/migration evidence](docs/performance-migration-report.md).
