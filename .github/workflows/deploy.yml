@@ -42,6 +42,7 @@ jobs:
   build-and-deploy:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     permissions:
+      actions: read
       contents: read
       pages: write
       id-token: write
@@ -98,6 +99,19 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: './dist'
+
+      - name: Wait for Pages artifact metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in {1..24}; do
+            if gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" --paginate --jq '.artifacts[] | select(.name == "github-pages" and .expired == false) | .id' | grep -q .; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo 'Pages artifact metadata did not become available within two minutes.' >&2
+          exit 1
 
       - name: Deploy static assets to GitHub Pages
         id: deployment
