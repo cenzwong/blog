@@ -1,4 +1,7 @@
 ---
+series:
+  name: "HPE Dev"
+  order: 3
 title: '[HPE Dev] Getting Started with DataTaps in Kubernetes Pods'
 description: '[HPE Dev] Getting Started with DataTaps in Kubernetes Pods'
 date: '2021-08-06'

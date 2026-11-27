@@ -1,4 +1,7 @@
 ---
+series:
+  name: "Beyond Python"
+  order: 5
 title: "Rolling Toolbox, Pinned Workspace"
 description: "A native-first macOS development environment for humans and AI coding agents, using Homebrew, Mise, uv, pnpm and Podman."
 date: "2026-11-25"

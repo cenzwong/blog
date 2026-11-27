@@ -1,4 +1,7 @@
 ---
+series:
+  name: "NLP & LLMs"
+  order: 4
 title: Feeding Custom Knowledge into Large Language Models
 description: Feeding Custom Knowledge into Large Language Models
 date: '2023-05-09'

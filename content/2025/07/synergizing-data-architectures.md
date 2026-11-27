@@ -1,4 +1,7 @@
 ---
+series:
+  name: "Vector Database"
+  order: 2
 title: Synergizing Data Architectures
 description: An Analysis of Lance and Apache Iceberg Compatibility and Integration
 date: '2025-07-13'

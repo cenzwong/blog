@@ -1,4 +1,7 @@
 ---
+series:
+  name: "PySpark"
+  order: 2
 title: Crafting PySpark Custom Functions
 description: >-
   Learn how to write modular, reusable functions with PySpark for efficient big

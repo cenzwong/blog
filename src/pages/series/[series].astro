@@ -1,0 +1,13 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleList from '../../components/ArticleList.astro';
+import { publishedArticles } from '../../lib/articles';
+import { seriesSlug } from '../../lib/series';
+export async function getStaticPaths() {
+  const posts = await publishedArticles();
+  const names = [...new Set(posts.flatMap(post => post.data.series ? [post.data.series.name] : []))];
+  return names.map(name => ({params: {series: seriesSlug(name)}, props: {name, posts: posts.filter(post => post.data.series?.name === name).sort((a, b) => a.data.series!.order - b.data.series!.order)}}));
+}
+const { name, posts } = Astro.props;
+---
+<Base title={name} description={`Articles in the ${name} series.`} canonicalPath={`series/${seriesSlug(name)}/`}><header class="page-header"><p class="eyebrow">Series</p><h1>{name}</h1><p>{posts.length} {posts.length === 1 ? 'article' : 'articles'}</p></header><ArticleList articles={posts}/></Base>

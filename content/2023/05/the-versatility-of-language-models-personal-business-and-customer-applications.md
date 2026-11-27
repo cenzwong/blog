@@ -1,4 +1,7 @@
 ---
+series:
+  name: "NLP & LLMs"
+  order: 3
 title: >-
   The Versatility of Language Models: Personal, Business, and Customer
   Applications

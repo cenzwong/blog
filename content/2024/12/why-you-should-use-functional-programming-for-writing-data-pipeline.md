@@ -1,4 +1,7 @@
 ---
+series:
+  name: "PySpark"
+  order: 1
 title: Why you should use functional programming for writing data pipeline
 description: >-
   Adopting functional programming principles, especially in conjunction with

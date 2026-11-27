@@ -1,4 +1,7 @@
 ---
+series:
+  name: "Beyond Python"
+  order: 1
 title: 'Beyond Python: Exploring Modern Languages for Machine Learning and AI'
 description: 'Beyond Python: Exploring Modern Languages for Machine Learning and AI'
 date: '2023-05-04'

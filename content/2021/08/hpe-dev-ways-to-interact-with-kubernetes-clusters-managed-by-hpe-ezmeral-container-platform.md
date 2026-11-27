@@ -1,4 +1,7 @@
 ---
+series:
+  name: "HPE Dev"
+  order: 4
 title: >-
   [HPE Dev] Ways to interact with Kubernetes Clusters managed by HPE Ezmeral
   Container Platform

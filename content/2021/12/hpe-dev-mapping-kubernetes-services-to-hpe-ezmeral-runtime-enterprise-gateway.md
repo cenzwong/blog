@@ -1,4 +1,7 @@
 ---
+series:
+  name: "HPE Dev"
+  order: 1
 title: >-
   [HPE Dev] Mapping Kubernetes Services to HPE Ezmeral Runtime Enterprise
   Gateway

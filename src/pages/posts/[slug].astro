@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { publishedArticles } from '../../lib/articles';
 import { postRoute, route, tagRoute } from '../../lib/routes';
+import { seriesRoute } from '../../lib/series';
 import { compileArticle } from '../../compiler/index.mjs';
 export async function getStaticPaths() {
   const posts = await publishedArticles();
@@ -44,7 +45,7 @@ const structured = JSON.stringify({'@context':'https://schema.org','@type':'Blog
       </aside>
     </div>
     {data.interactive && <section class="demo" data-pagefind-ignore><h2>Interactive demonstration</h2><p>The demonstration runs in an isolated frame. The article text above remains available without it.</p><iframe title={`${data.title} interactive demonstration`} sandbox="allow-scripts" loading="lazy" src={route(`demos/${post.id}.html`)}></iframe></section>}
-    {series.length > 1 && <nav class="related" aria-label={`${seriesName} series`} data-pagefind-ignore><h2>Series: {seriesName}</h2><ol>{series.map((p: any) => <li><a href={postRoute(p.id)} aria-current={p.id === post.id ? 'page' : undefined}>{p.data.title}</a></li>)}</ol></nav>}
+    {seriesName && series.length > 1 && <nav class="related" aria-label={`${seriesName} series`} data-pagefind-ignore><h2>Series: <a href={seriesRoute(seriesName)}>{seriesName}</a></h2><ol>{series.map((p: any) => <li><a href={postRoute(p.id)} aria-current={p.id === post.id ? 'page' : undefined}>{p.data.title}</a></li>)}</ol></nav>}
     {related.length > 0 && <aside class="related" data-pagefind-ignore><h2>Related articles</h2><ul>{related.map(({post: p}: any) => <li><a href={postRoute(p.id)}>{p.data.title}</a></li>)}</ul></aside>}
   </article>
   <script>import '../../runtime/article';</script>

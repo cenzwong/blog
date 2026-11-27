@@ -1,4 +1,7 @@
 ---
+series:
+  name: "Beyond Python"
+  order: 4
 title: "\U0001F40D Untangling Python’s Tooling, Part 2: Meeting uv, the One-Stop Tool"
 description: >-
   `uv` replaces Python's traditional stack with a fast, consistent interface for

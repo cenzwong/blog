@@ -1,4 +1,7 @@
 ---
+series:
+  name: "NLP & LLMs"
+  order: 1
 title: 'Pre-trained Language Model: Survey 2022'
 description: >-
   This survey covers popular pre-trained language models like BERT, GPT, T5,

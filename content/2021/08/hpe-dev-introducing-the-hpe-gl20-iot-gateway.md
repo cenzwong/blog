@@ -1,4 +1,7 @@
 ---
+series:
+  name: "HPE Dev"
+  order: 5
 title: '[HPE Dev] Introducing the HPE GL20 IoT Gateway'
 description: '[HPE Dev] Introducing the HPE GL20 IoT Gateway'
 date: '2021-08-06'

@@ -1,4 +1,7 @@
 ---
+series:
+  name: "PySpark"
+  order: 3
 title: Type Casting Like a Data Sorcerer in PySpark
 description: Tame messy data in PySpark! Master data type casting & ensure data integrity.
 date: '2024-04-07'

@@ -1,4 +1,7 @@
 ---
+series:
+  name: "Beyond Python"
+  order: 3
 title: "\U0001F40D Untangling Python’s pip, pipx, pyenv, and venv"
 description: >-
   borrow a familiar friend from the JavaScript world: Node.js. If you already

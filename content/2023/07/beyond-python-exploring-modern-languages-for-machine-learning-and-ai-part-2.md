@@ -1,4 +1,7 @@
 ---
+series:
+  name: "Beyond Python"
+  order: 2
 title: 'Beyond Python: Exploring Modern Languages for Machine Learning and AI (Part 2)'
 description: Top Programming Languages for AI/ML in 2023
 date: '2023-07-10'

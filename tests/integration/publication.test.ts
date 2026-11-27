@@ -28,7 +28,10 @@ test('isolated production build publishes only allowed fixtures and preserves ro
     const out = path.join(root,'out');
     const page = await readFile(path.join(out,'posts/fixture-published/index.html'),'utf8');
     expect(page).toContain('/blog/posts/fixture-demo/');
-    expect(page).toContain('Series: Fixture Series');
+    expect(page).toContain('Series: <a href="/blog/series/fixture-series/">Fixture Series</a>');
+    const series = await readFile(path.join(out,'series/fixture-series/index.html'),'utf8');
+    expect(series.indexOf('Fixture Published')).toBeLessThan(series.indexOf('Fixture Demo'));
+    expect(await readFile(path.join(out,'series/index.html'),'utf8')).toContain('/blog/series/fixture-series/');
     expect(await readFile(path.join(out,'index.html'),'utf8')).toContain('Featured articles');
     expect(page).toContain('/blog/content-assets/2026/11/assets/cover.png');
     expect(page).toMatch(/property="og:image" content="https:\/\/example\.com\/blog\/content-assets/);

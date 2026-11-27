@@ -1,0 +1,8 @@
+---
+import Base from '../../layouts/Base.astro';
+import { publishedArticles } from '../../lib/articles';
+import { seriesRoute } from '../../lib/series';
+const posts = await publishedArticles();
+const names = [...new Set(posts.flatMap(post => post.data.series ? [post.data.series.name] : []))].sort((a, b) => a.localeCompare(b));
+---
+<Base title="Series" description="Browse article series." canonicalPath="series/"><header class="page-header"><p class="eyebrow">Explore the collection</p><h1>Series</h1><p>Articles collected into series.</p></header><ul class="topic-index">{names.map(name => <li><a href={seriesRoute(name)}>{name}</a> <span>{posts.filter(post => post.data.series?.name === name).length}</span></li>)}</ul></Base>

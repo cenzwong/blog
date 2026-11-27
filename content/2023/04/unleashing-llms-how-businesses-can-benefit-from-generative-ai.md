@@ -1,4 +1,7 @@
 ---
+series:
+  name: "NLP & LLMs"
+  order: 2
 title: 'Unleashing LLMs: How Businesses Can Benefit From Generative AI'
 description: >-
   Discover how Language Models are revolutionizing Natural Language Processing,

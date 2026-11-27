@@ -1,4 +1,7 @@
 ---
+series:
+  name: "Vector Database"
+  order: 1
 title: Introduction to Vector Database
 description: >-
   Learn what a vector database is, how it powers similarity search using AI, and

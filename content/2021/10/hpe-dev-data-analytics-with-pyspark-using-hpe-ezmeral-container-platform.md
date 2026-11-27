@@ -1,4 +1,7 @@
 ---
+series:
+  name: "HPE Dev"
+  order: 2
 title: '[HPE Dev] Data Analytics with PySpark using HPE Ezmeral Container Platform'
 description: '[HPE Dev] Data Analytics with PySpark using HPE Ezmeral Container Platform'
 date: '2021-10-06'
