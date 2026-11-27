@@ -35,3 +35,8 @@ test('interactive HTML is isolated and has a searchable static copy', async () =
   assert.match(html, /data-pagefind-body/);
   assert.match(html, /Bloom Filter/i);
 });
+
+test('migrated linked diagram renders as an image', async () => {
+  const html = await readFile(path.join('dist', 'posts', 'why-you-should-use-functional-programming-for-writing-data-pipeline', 'index.html'), 'utf8');
+  assert.match(html, /<img[^>]+src="https:\/\/www\.researchgate\.net\/profile\/Oscar-Pereira-2\/publication\/270448794\/figure\/fig6\/AS:295098651824130@1447368409317\/Word-count-program-flow-executed-with-MapReduce-5\.png"/);
+});

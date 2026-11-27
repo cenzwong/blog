@@ -1,7 +1,7 @@
 ---
 title: "Rolling Toolbox, Pinned Workspace"
 description: "A native-first macOS development environment for humans and AI coding agents, using Homebrew, Mise, uv, pnpm and Podman."
-date: "2026-11-26"
+date: "2026-11-25"
 tags: "macOS, Development Environment, Mise, Python, Node.js"
 slug: "rolling-toolbox-pinned-workspace"
 author: "Cenz Wong"
