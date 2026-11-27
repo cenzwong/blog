@@ -1,0 +1,30 @@
+[tools]
+node = "22.16.0"
+python = "3.12.16"
+
+[settings]
+python.venv_stdlib = true
+
+[env]
+_.python.venv = { path = ".venv", create = true }
+
+[tasks.setup]
+description = "Install JavaScript and Python dependencies"
+run = ["npm ci", "python -m pip install -r requirements.txt"]
+
+[tasks.dev]
+description = "Build, serve, and watch article sources"
+run = "npm run dev"
+
+[tasks.build]
+description = "Build and validate the static site and search index"
+run = "npm run build"
+
+[tasks.test]
+description = "Build the site and run the automated tests"
+depends = ["build"]
+run = "npm test"
+
+[tasks.preview]
+description = "Serve the last production build"
+run = "npm run preview"
