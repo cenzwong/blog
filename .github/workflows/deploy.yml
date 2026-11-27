@@ -10,15 +10,19 @@ on:
 permissions:
   contents: read
 
+env:
+  PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /usr/bin/google-chrome
+
 jobs:
   validate:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: jdx/mise-action@v5.0.0
+      - run: test -x "$PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH"
       - run: mise run setup
-      - run: pnpm exec playwright install --with-deps chromium
       - run: mise run check
       - run: mise run test
       - run: pnpm run perf
@@ -48,6 +52,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - name: Checkout Code
         uses: actions/checkout@v7
@@ -55,11 +60,11 @@ jobs:
       - name: Set up mise
         uses: jdx/mise-action@v5.0.0
 
+      - name: Verify runner browser
+        run: test -x "$PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH"
+
       - name: Install Dependencies
         run: mise run setup
-
-      - name: Install browser for end-to-end tests
-        run: pnpm exec playwright install --with-deps chromium
 
       - name: Check Astro and TypeScript
         run: mise run check

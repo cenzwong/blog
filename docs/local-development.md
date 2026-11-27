@@ -9,7 +9,7 @@ mise run setup
 mise run dev
 ```
 
-Mise pins Node.js and pnpm. Setup installs the frozen pnpm dependencies, ensures a Chrome or Chromium browser is available for Mermaid rendering, and ensures a Chromium browser is available for Playwright tests. On macOS, an existing Chrome installation can be reused; otherwise setup installs Playwright Chromium. Set `PUPPETEER_EXECUTABLE_PATH` to select a browser. If no supported browser exists, setup installs the Chrome version pinned by Puppeteer. Re-run setup when dependency manifests change.
+Mise pins Node.js and pnpm. Setup installs the frozen pnpm dependencies, ensures a Chrome or Chromium browser is available for Mermaid rendering, and ensures a Chromium browser is available for Playwright tests. On macOS, an existing Chrome installation can be reused; otherwise setup installs Playwright Chromium. Set `PUPPETEER_EXECUTABLE_PATH` to select a browser for diagrams and `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` for browser tests. CI uses the Chrome installed on its Ubuntu runner rather than downloading a separate Playwright browser, so its version follows the runner image. If no supported diagram browser exists, setup installs the Chrome version pinned by Puppeteer. Re-run setup when dependency manifests change.
 
 Contributors without mise can use Node.js and pnpm at the versions in `mise.toml`: run `pnpm install --frozen-lockfile`, `pnpm run setup:browser`, and `pnpm run setup:playwright`. The standard commands are `pnpm dev`, `pnpm build`, `pnpm preview`, `pnpm test`, `pnpm check`, `pnpm lint`, and `pnpm perf`.
 
