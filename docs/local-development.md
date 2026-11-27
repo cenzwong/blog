@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Use Node.js 22.16.0 and Python 3.12.11, pinned in optional `mise.toml`. The tools remain optional; standard Node.js/Python installations work. Restore dependencies with `npm ci` and `python3 -m pip install -r requirements.txt`. The pinned PyYAML dependency provides standards-compliant frontmatter parsing.
+Use Node.js 22.16.0 and Python 3.12.16, pinned in optional `mise.toml`. The tools remain optional; standard Node.js/Python installations work. Restore dependencies with `npm ci` and `python3 -m pip install -r requirements.txt`. The pinned PyYAML dependency provides standards-compliant frontmatter parsing.
 
 ## Write an article
 

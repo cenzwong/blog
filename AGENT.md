@@ -14,7 +14,7 @@ Cenz.Blog is a vanilla JavaScript and Vite static site. Python validates Markdow
 
 ## Development commands
 
-Use Node.js 22.16.0 and Python 3.12.11 as pinned in optional `mise.toml`. Contributors can also install compatible runtimes directly. Install dependencies with `npm ci` and Python build requirements with `python3 -m pip install -r requirements.txt`.
+Use Node.js 22.16.0 and Python 3.12.16 as pinned in optional `mise.toml`. Contributors can also install compatible runtimes directly. Install dependencies with `npm ci` and Python build requirements with `python3 -m pip install -r requirements.txt`.
 
 ```sh
 npm run dev       # build and serve generated static routes; rebuild after content edits
